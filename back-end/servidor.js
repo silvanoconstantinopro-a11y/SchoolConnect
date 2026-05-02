@@ -2,14 +2,13 @@ import "dotenv/config";
 import http from "http";
 import express from "express";
 import cors from "cors";
-import path from "path"; // Import necessário para manipular caminhos
-import { fileURLToPath } from "url"; // Necessário para ES Modules
+import path from "path";
+import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
-import { JWT } from "./bcrypt-jwt/jwt.js";
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
-import { routerAviso }  from "./rotas/rotasAviso.js";
+import { routerAviso } from "./rotas/rotasAviso.js";
 import { routerAluno } from "./rotas/rotasAluno.js";
 import { routerDisciplina } from "./rotas/rotasDisciplina.js";
 import { routerEvento } from "./rotas/rotasEvento.js";
@@ -23,36 +22,34 @@ import { routerMensagem } from "./rotas/rotasMensagem.js";
 import statsRoutes from "./rotas/rotasStats.js";
 import routerFeedback from "./rotas/rotasFeedback.js";
 
-// Configuração de diretórios para ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// CAMINHOS CORRIGIDOS PARA A TUA ESTRUTURA
+const pastaProjeto = path.resolve(__dirname, ".."); 
+const frontPath = path.join(pastaProjeto, "front-end");
+const imgPath = path.join(pastaProjeto, "img"); // A pasta img que está fora do front-end
 
 const PORTA = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 
-// 1. Configurações do middleware
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
+app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], allowedHeaders: ["Content-Type", "Authorization"] }));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-// 2. Servir arquivos estáticos (Uploads e Front-end)
+// --- SERVIR ARQUIVOS ESTÁTICOS (A MÁGICA ESTÁ AQUI) ---
+
+// 1. Serve a pasta front-end
+app.use(express.static(frontPath));
+
+// 2. Serve a pasta img separadamente (como ela está fora do front-end)
+app.use("/img", express.static(imgPath));
+
+// 3. Serve a pasta de uploads do back-end
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Configuração vital: serve a pasta front-end que está fora da pasta back-end
-// No Render, a estrutura é /src/back-end/ e /src/front-end/
-app.use(express.static(path.join(__dirname, "..", "front-end")));
-
-// 3. Rotas da API
-app.get("/api", (_, res) => {
-    res.json({mensagem: "Seja bem-vindo à API da Plataforma de Comunicação Escola-Família (SchoolConnect)!"});
-});
-
+// --- ROTAS DA API ---
 app.use("/api", routerUsuarios);
 app.use("/api", routerAviso);
 app.use("/api", routerAluno);
@@ -68,18 +65,25 @@ app.use("/api", routerMensagem);
 app.use("/api", statsRoutes);
 app.use("/api/feedbacks", routerFeedback);
 
-// 4. Rota "Catch-all" para o Front-end
-// Se não for uma rota de API ou arquivo estático, envia o index.html
-app.get("(.*)", (req, res) => {
-    if (!req.path.startsWith("/api")) {
-        res.sendFile(path.join(__dirname, "..", "front-end", "index.html"));
-    }
+app.get("/api", (_, res) => res.json({ mensagem: "SchoolConnect API Online!" }));
+
+// --- NAVEGAÇÃO (ABRIR INDEX.HTML) ---
+app.use((req, res, next) => {
+    if (req.url.startsWith('/api')) return next();
+
+    // Tenta encontrar no front-end
+    const ficheiro = path.join(frontPath, req.path);
+    
+    res.sendFile(ficheiro, (err) => {
+        if (err) {
+            // Se não for um ficheiro real, abre o index principal
+            res.sendFile(path.join(frontPath, "index.html"));
+        }
+    });
 });
 
-const conexoes = new Map();
-const wss = configurarWebSocket(server);
+configurarWebSocket(server);
 
 server.listen(PORTA, () => {
     console.log(`Servidor rodando em: https://schoolconnect-0ud2.onrender.com`);
-    console.log(`Porta ativa: ${PORTA}`);
 });
