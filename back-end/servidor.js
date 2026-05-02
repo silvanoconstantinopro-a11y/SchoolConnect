@@ -70,7 +70,7 @@ app.use("/api/feedbacks", routerFeedback);
 
 // 4. Rota "Catch-all" para o Front-end
 // Se não for uma rota de API ou arquivo estático, envia o index.html
-app.get("*", (req, res) => {
+app.get("(.*)", (req, res) => {
     if (!req.path.startsWith("/api")) {
         res.sendFile(path.join(__dirname, "..", "front-end", "index.html"));
     }
