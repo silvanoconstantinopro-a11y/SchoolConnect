@@ -1,0 +1,1812 @@
+<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel do Professor - SchoolConnect</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="../img/logo.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary:   "#15803D",
+            secondary: "#16A34A",
+            accent:    "#FACC15",
+            dark:      "#0F172A",
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .spinner { border:3px solid #e5e7eb; border-top:3px solid #15803D; border-radius:50%; width:24px; height:24px; animation:spin 0.8s linear infinite; display:inline-block; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .msg-own   { background:#15803D; color:white; border-radius:18px 18px 4px 18px; }
+    .msg-other { background:#f3f4f6; color:#1f2937; border-radius:18px 18px 18px 4px; }
+    .conversa-item:hover { background:#f0fdf4; }
+    .conversa-item.active { background:#dcfce7; border-left:3px solid #15803D; }
+    #messagesArea { scroll-behavior: smooth; }
+    .online-dot { width:10px; height:10px; background:#22c55e; border-radius:50%; border:2px solid white; }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+<div class="flex min-h-screen">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="fixed md:sticky top-0 left-0 w-64 bg-primary text-white p-6 flex flex-col h-screen transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 md:z-auto overflow-y-auto">
+  
+  <!-- HEADER -->
+  <div class="mb-10 text-center border-b border-white/20 pb-6">
+
+    <!-- LOGO -->
+    <div class="flex justify-center mb-4">
+      <div class="w-20 h-20 bg-white rounded-2xl shadow-md flex items-center justify-center">
+        <img src="../img/logo.png" 
+             class="h-12 object-contain" 
+             alt="Logo"/>
+      </div>
+    </div>
+
+    <!-- TÍTULO -->
+    <h2 class="text-lg font-bold tracking-wide">
+      Painel do Professor
+    </h2>
+
+    <!-- NOME DO PROFESSOR -->
+    <p id="sidebarNome" class="text-green-200 text-xs mt-2 truncate">
+      A carregar...
+    </p>
+
+  </div>
+
+
+
+
+    <nav class="space-y-1 flex-1">
+      <a href="#" onclick="showSection('inicio'); return false;" id="nav-inicio"
+         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary font-semibold transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Início
+      </a>
+      <a href="#" onclick="showSection('notas'); return false;" id="nav-notas"
+         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+        Lançar Notas
+      </a>
+      <a href="#" onclick="showSection('reunioes'); return false;" id="nav-reunioes"
+         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        Reuniões
+        <span id="badgeReunioes" class="hidden ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+      </a>
+      <a href="#" onclick="showSection('mensagens'); return false;" id="nav-mensagens"
+         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        Mensagens
+        <span id="badgeMsgs" class="hidden ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+      </a>
+      <a href="index.html"
+         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+        Notícias
+      </a>
+    </nav>
+
+    <button onclick="terminarSessao()"
+            class="w-full bg-accent text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition text-sm mt-4">
+      Terminar Sessão
+    </button>
+  </aside>
+
+  <!-- OVERLAY (Mobile) -->
+  <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/50 z-30 md:hidden"></div>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex-1 p-6 overflow-auto w-full">
+
+    <!-- TOPO -->
+    <header class="flex justify-between items-center mb-6">
+      <div class="flex items-center gap-4 flex-1">
+        <!-- Botão Hamburger (Mobile) -->
+        <button id="menuToggle" class="md:hidden text-primary hover:bg-gray-100 p-2 rounded-lg transition" aria-label="Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div>
+          <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Início</h1>
+          <p class="text-sm text-gray-500" id="pageSubtitle">Bem-vindo ao seu painel</p>
+        </div>
+      </div>
+
+      <div class="relative">
+        <button id="accountButton"
+                class="bg-white text-primary px-3 py-2 rounded-lg font-semibold flex items-center gap-3 shadow hover:shadow-md transition focus:outline-none">
+          <div class="relative">
+            <span id="avatarInicial" class="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">?</span>
+            <span class="online-dot absolute -bottom-0.5 -right-0.5"></span>
+          </div>
+          <span id="headerNome" class="hidden md:inline text-gray-700 text-sm max-w-32 truncate">A carregar...</span>
+          <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div id="accountMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black/5 z-50 overflow-hidden">
+          <div class="px-4 py-3 border-b bg-gray-50">
+            <p class="text-xs text-gray-500">Sessão activa · PROFESSOR</p>
+            <p id="menuNome" class="text-sm font-bold text-gray-800 truncate"></p>
+            <p id="menuEmail" class="text-xs text-gray-500 truncate"></p>
+          </div>
+          <button onclick="terminarSessao()" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium">
+            Terminar Sessão
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- TOAST -->
+    <div id="toast" class="fixed top-6 right-6 z-50 hidden">
+      <div id="toastInner" class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in">
+        <span id="toastIcon"></span><span id="toastMsg"></span>
+      </div>
+    </div>
+
+    <!-- ===== INÍCIO ===== -->
+    <section id="inicioSection" class="fade-in">
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-gray-500 text-sm font-medium">Turmas</p>
+            <span class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </span>
+          </div>
+          <p id="statTurmas" class="text-3xl font-bold text-primary">-</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-gray-500 text-sm font-medium">Disciplinas</p>
+            <span class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253"/></svg>
+            </span>
+          </div>
+          <p id="statDisciplinas" class="text-3xl font-bold text-yellow-600">-</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl shadow hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-gray-500 text-sm font-medium">Reuniões</p>
+            <span class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </span>
+          </div>
+          <p id="statReunioes" class="text-3xl font-bold text-blue-600">-</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-bold text-gray-800 mb-4">O Meu Perfil</h2>
+        <div id="perfilProfessor">
+          <div class="flex justify-center py-6"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== NOTAS ===== -->
+    <section id="notasSection" class="hidden fade-in space-y-6">
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Lançar Nota</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Número de Matrícula <span class="text-red-500">*</span></label>
+            <div class="flex gap-2">
+              <input type="text" id="matriculaInput" placeholder="Ex: 2024-0001"
+                     class="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+              <button onclick="pesquisarAluno()"
+                      class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-secondary font-semibold transition">
+                Pesquisar
+              </button>
+            </div>
+          </div>
+
+          <div id="infoAluno" class="hidden bg-green-50 border border-green-200 rounded-xl p-4 fade-in">
+            <div class="grid md:grid-cols-3 gap-4">
+              <div><p class="text-xs text-gray-500 font-semibold mb-1">ALUNO</p><p id="alunoNome" class="font-bold text-gray-800"></p></div>
+              <div><p class="text-xs text-gray-500 font-semibold mb-1">TURMA</p><p id="alunoTurma" class="font-semibold text-gray-700"></p></div>
+              <div><p class="text-xs text-gray-500 font-semibold mb-1">ENCARREGADO</p><p id="alunoEncarregado" class="font-semibold text-gray-700"></p></div>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Disciplina <span class="text-red-500">*</span></label>
+              <select id="disciplinaSelect" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Nota (0–20) <span class="text-red-500">*</span></label>
+              <input type="number" id="notaInput" min="0" max="20" step="0.5" placeholder="Ex: 15.5"
+                     class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Avaliação <span class="text-red-500">*</span></label>
+              <select id="tipoAvaliacaoSelect" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Selecione...</option>
+                <option>Teste</option><option>Trabalho</option>
+                <option>Participação</option><option>Exame</option><option>Projecto</option>
+              </select>
+            </div>
+          </div>
+
+          <button onclick="guardarNota()" id="btnGuardarNota"
+                  class="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-secondary transition">
+            Guardar e Enviar Nota
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800">Notas Registadas</h2>
+          <div class="flex gap-2">
+            <input type="text" id="searchNotas" placeholder="Pesquisar..." oninput="filtrarTabelaNotas()"
+                   class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+            <button onclick="exportarNotasCSV()"
+                    class="bg-accent text-black px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-400 transition">
+              Exportar CSV
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="p-3 text-left font-semibold text-gray-600">Aluno</th>
+                <th class="p-3 text-left font-semibold text-gray-600">Matrícula</th>
+                <th class="p-3 text-left font-semibold text-gray-600">Disciplina</th>
+                <th class="p-3 text-left font-semibold text-gray-600">Tipo</th>
+                <th class="p-3 text-center font-semibold text-gray-600">Nota</th>
+                <th class="p-3 text-left font-semibold text-gray-600">Data</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaNotas" class="divide-y divide-gray-100">
+              <tr><td colspan="6" class="p-8 text-center text-gray-400">Nenhuma nota registada</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== REUNIÕES ===== -->
+    <section id="reunioesSection" class="hidden fade-in space-y-6">
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-2xl shadow">
+          <p class="text-gray-500 text-sm">Total</p>
+          <p id="statTotalReunioes" class="text-3xl font-bold text-primary mt-1">-</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow">
+          <p class="text-gray-500 text-sm">Online</p>
+          <p id="statOnlineReunioes" class="text-3xl font-bold text-blue-600 mt-1">-</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow">
+          <p class="text-gray-500 text-sm">Presenciais</p>
+          <p id="statPresencialReunioes" class="text-3xl font-bold text-yellow-600 mt-1">-</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-800">Reuniões Agendadas</h2>
+          <div class="flex gap-2">
+            <button onclick="carregarReunioes()" class="text-sm text-primary font-semibold hover:underline">Actualizar</button>
+            <button onclick="abrirModalReuniao()"
+                    class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-secondary transition">
+              + Agendar Reunião
+            </button>
+          </div>
+        </div>
+        <div id="listaReunioes" class="space-y-4">
+          <div class="flex justify-center py-8"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL AGENDAR REUNIÃO -->
+    <div id="modalReuniao" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto fade-in">
+        <div class="p-8">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Agendar Nova Reunião</h3>
+            <button onclick="fecharModalReuniao()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+          </div>
+
+          <!-- Tipo de reunião -->
+          <div class="mb-5">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Tipo de Reunião <span class="text-red-500">*</span></label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-primary transition" id="lblPresencial">
+                <input type="radio" name="tipoReuniao" value="presencial" checked onchange="alternarTipoReuniao(this.value)" class="accent-primary" />
+                <div>
+                  <p class="font-semibold text-gray-800">Presencial</p>
+                  <p class="text-xs text-gray-500">Na escola</p>
+                </div>
+              </label>
+              <label class="flex items-center gap-3 p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-primary transition" id="lblOnline">
+                <input type="radio" name="tipoReuniao" value="online" onchange="alternarTipoReuniao(this.value)" class="accent-primary" />
+                <div>
+                  <p class="font-semibold text-gray-800">Online</p>
+                  <p class="text-xs text-gray-500">Google Meet / Zoom</p>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Encarregados (multi-select) -->
+          <div class="mb-5">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">
+              Encarregados Convidados <span class="text-red-500">*</span>
+              <span class="text-xs font-normal text-gray-400 ml-1">(pode seleccionar vários)</span>
+            </label>
+            <div id="checkboxEncarregados" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto border border-gray-200 rounded-xl p-3 bg-gray-50">
+              <div class="flex justify-center py-4 col-span-2"><div class="spinner"></div></div>
+            </div>
+          </div>
+
+          <!-- Assunto -->
+          <div class="mb-5">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Assunto <span class="text-red-500">*</span></label>
+            <input type="text" id="reuniaoAssunto" placeholder="Ex: Discussão sobre desempenho académico"
+                   class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+
+          <!-- Data e Hora -->
+          <div class="grid grid-cols-2 gap-4 mb-5">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Data <span class="text-red-500">*</span></label>
+              <input type="date" id="reuniaoData" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Hora <span class="text-red-500">*</span></label>
+              <input type="time" id="reuniaoHora" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+          </div>
+
+          <!-- Campo LOCAL (só presencial) -->
+          <div id="campoLocal" class="mb-5">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Local <span class="text-red-500">*</span></label>
+            <input type="text" id="reuniaoLocal" placeholder="Ex: Sala 12-A, Bloco B"
+                   class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+
+          <!-- Campo LINK (só online) -->
+          <div id="campoLink" class="mb-5 hidden">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Link da Videoconferência <span class="text-red-500">*</span></label>
+            <div class="flex gap-2">
+              <input type="url" id="reuniaoLink" placeholder="https://meet.google.com/xxx-xxxx-xxx"
+                     class="flex-1 border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+              <a href="https://meet.google.com/new" target="_blank"
+                 class="bg-blue-600 text-white px-4 py-3 rounded-lg text-sm font-semibold hover:bg-blue-700 transition whitespace-nowrap flex items-center gap-1">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M15 8v8H5V8h10m1-2H4a1 1 0 00-1 1v10a1 1 0 001 1h12a1 1 0 001-1v-3.5l4 4v-11l-4 4V7a1 1 0 00-1-1z"/></svg>
+                Criar Meet
+              </a>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Crie um Google Meet e cole o link aqui</p>
+          </div>
+
+          <!-- Botões -->
+          <div class="flex gap-3 pt-4 border-t border-gray-100">
+            <button onclick="fecharModalReuniao()"
+                    class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">
+              Cancelar
+            </button>
+            <button onclick="agendarEEnviar()" id="btnAgendarEnviar"
+                    class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary font-semibold transition">
+              Agendar e Notificar Encarregados
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MENSAGENS (CHAT WEBSOCKET) ===== -->
+    <section id="mensagensSection" class="hidden fade-in">
+      <div class="bg-white rounded-2xl shadow overflow-hidden" style="height: calc(100vh - 160px); display:flex;">
+
+        <!-- Sidebar conversas -->
+        <div class="w-72 border-r border-gray-100 flex flex-col shrink-0">
+          <div class="p-4 border-b border-gray-100">
+            <h2 class="font-bold text-gray-800 mb-3">Mensagens</h2>
+            <input type="text" id="searchConversas" placeholder="Pesquisar..."
+                   oninput="filtrarConversas()"
+                   class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+          </div>
+          <div class="p-3 border-b border-gray-100">
+            <button onclick="abrirModalNovaConversa()"
+                    class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition text-sm font-semibold">
+              + Nova Mensagem
+            </button>
+          </div>
+          <div id="listaConversas" class="flex-1 overflow-y-auto">
+            <div class="flex justify-center py-8"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- Área do chat -->
+        <div class="flex-1 flex flex-col">
+
+          <!-- Header do chat -->
+          <div id="chatHeader" class="hidden border-b border-gray-100 p-4 flex items-center justify-between bg-white">
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <div id="chatAvatar" class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold"></div>
+                <span id="chatStatusDot" class="online-dot absolute -bottom-0.5 -right-0.5"></span>
+              </div>
+              <div>
+                <p id="chatNome" class="font-bold text-gray-800"></p>
+                <p id="chatStatus" class="text-xs text-green-600 font-medium">Online</p>
+              </div>
+            </div>
+            <button id="btnSelecionarMensagens" onclick="toggleModoSelecao()" class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-lg transition">Selecionar mensagens</button>
+          </div>
+
+          <!-- Empty state -->
+          <div id="chatEmpty" class="flex-1 flex items-center justify-center text-center p-8 bg-gray-50">
+            <div>
+              <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+              </svg>
+              <p class="text-gray-500 font-semibold">Selecione uma conversa</p>
+              <p class="text-gray-400 text-sm mt-1">ou inicie uma nova mensagem</p>
+            </div>
+          </div>
+
+          <!-- Mensagens -->
+          <div id="messagesArea" class="hidden flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50"></div>
+
+          <!-- Input -->
+          <div id="chatInput" class="hidden border-t border-gray-100 p-4 bg-white">
+            <!-- Indicador de typing -->
+            <div id="typingIndicator" class="hidden text-xs text-gray-400 mb-2 italic">
+              A escrever...
+            </div>
+            <div class="flex gap-2 items-end">
+              <textarea id="messageInput" rows="1" placeholder="Escreva uma mensagem..."
+                        class="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none max-h-28"
+                        onkeydown="handleMsgKeydown(event)"
+                        oninput="handleTyping()"></textarea>
+              <div class="flex flex-col items-end gap-2">
+                <input id="messageFile" type="file" class="hidden" onchange="handleFileSelected(event)" />
+                <button onclick="document.getElementById('messageFile').click()"
+                        class="bg-gray-100 text-gray-600 p-3 rounded-xl hover:bg-gray-200 transition shrink-0"
+                        type="button" title="Anexar arquivo">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656L4.929 11.586a6 6 0 108.485 8.485L17 15.485"/>
+                  </svg>
+                </button>
+                <button onclick="enviarMensagem()"
+                        class="bg-primary text-white p-3 rounded-xl hover:bg-secondary transition shrink-0"
+                        type="button">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div id="selectedFileName" class="mt-2 text-xs text-gray-500"></div>
+          </div>
+
+          <!-- Botão Eliminar Selecionadas -->
+          <div id="btnEliminarSelecionadas" class="hidden border-t border-gray-100 p-4 bg-white">
+            <button onclick="eliminarSelecionadas()" class="w-full bg-red-500 text-white py-3 rounded-xl hover:bg-red-600 transition">
+              Eliminar selecionadas
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal nova conversa -->
+      <div id="modalNovaConversa" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4 fade-in">
+          <h3 class="text-xl font-bold text-gray-800 mb-6">Nova Mensagem</h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Encarregado</label>
+              <select id="destinatarioMsg" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary">
+                <option value="">Selecionar...</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Mensagem</label>
+              <textarea id="primeiraMensagem" rows="4" placeholder="Escreva a sua mensagem..."
+                        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
+            </div>
+          </div>
+          <div class="flex gap-3 mt-6">
+            <button onclick="fecharModalNovaConversa()"
+                    class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">
+              Cancelar
+            </button>
+            <button onclick="iniciarConversa()"
+                    class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary font-semibold transition">
+              Enviar
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const API = "http://localhost:3002";
+  const WS  = "ws://localhost:3002";
+
+  if (window.location.protocol === 'file:') {
+    console.warn('Página carregada via file://. Abra a aplicação por um servidor local, por exemplo http://localhost:3002/front-end/dashboard-professor.html, para evitar problemas de origem e fetch.');
+  }
+
+  function getArquivoUrl(url) {
+    if (!url) return undefined;
+    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("blob:")) return url;
+    return url.startsWith("/") ? API + url : url;
+  }
+
+  // ── AUTH ──────────────────────────────────────────────
+  const token      = localStorage.getItem("token");
+  const usuarioStr = localStorage.getItem("usuario");
+  if (!token || !usuarioStr) { window.location.href = "login.html"; }
+  const professor = JSON.parse(usuarioStr);
+  if (professor.perfil !== "PROFESSOR") {
+    abrirModalNotificacao("Acesso Negado", "Você não tem permissão para acessar esta página.");
+    document.getElementById("modalNotificacao").querySelector("button").onclick = () => {
+      fecharModalNotificacao();
+      window.location.href = "login.html";
+    };
+  }
+
+  // ── HELPERS ───────────────────────────────────────────
+  async function apiFetch(url, opts = {}) {
+    const headers = { ...(opts.headers||{}), "Authorization": "Bearer " + token };
+    return fetch(API + url, { ...opts, headers });
+  }
+
+  function toast(msg, tipo = "sucesso") {
+    const ti = document.getElementById("toastInner");
+    ti.className = "flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in " +
+      (tipo==="sucesso"?"bg-green-600":tipo==="erro"?"bg-red-600":"bg-blue-600");
+    document.getElementById("toastIcon").textContent = tipo==="sucesso"?"✓":tipo==="erro"?"✕":"ℹ";
+    document.getElementById("toastMsg").textContent  = msg;
+    const t = document.getElementById("toast");
+    t.classList.remove("hidden");
+    setTimeout(()=>t.classList.add("hidden"), 3500);
+  }
+
+  // ── WEBSOCKET ─────────────────────────────────────────
+  let ws = null;
+  let destinatarioAtual = null;
+  let encarregados = [];
+  let conversas    = [];
+  let typingTimer  = null;
+
+  function conectarWS() {
+    // Conectar ao WebSocket passando o token como query param
+    ws = new WebSocket(WS + "?token=" + token);
+
+    ws.onopen = () => {
+      console.log("WebSocket conectado");
+    };
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.tipo === "mensagem") {
+        // Receber mensagem em tempo real
+        if (destinatarioAtual && (data.remetenteId === destinatarioAtual.id || data.destinatarioId === destinatarioAtual.id)) {
+          adicionarMensagemNoChat({
+            conteudo:   data.conteudo,
+            remetenteId: data.remetenteId,
+            criadoEm:   data.criadoEm || new Date().toISOString(),
+          });
+        }
+        // Actualizar badge de não lidas
+        if (data.remetenteId !== professor.id) {
+          actualizarBadge(1);
+          // Actualizar preview na lista de conversas
+          actualizarPreviewConversa(data.remetenteId, data.conteudo);
+        }
+      }
+
+      if (data.tipo === "typing") {
+        if (data.userId === destinatarioAtual?.id) {
+          const indicator = document.getElementById("typingIndicator");
+          indicator.classList.remove("hidden");
+          clearTimeout(typingTimer);
+          typingTimer = setTimeout(() => indicator.classList.add("hidden"), 2000);
+        }
+      }
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket desconectado — a reconectar...");
+      setTimeout(conectarWS, 3000);
+    };
+
+    ws.onerror = (err) => {
+      console.warn("WebSocket erro:", err);
+    };
+  }
+
+  function enviarWS(payload) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(payload));
+    }
+  }
+
+  // ── NAVEGAÇÃO ─────────────────────────────────────────
+  const seccoes = ["inicio","notas","reunioes","mensagens"];
+
+  function showSection(sec) {
+    activeSection = sec;
+
+    seccoes.forEach(s => {
+      document.getElementById(s + "Section").classList.add("hidden");
+      const nav = document.getElementById("nav-" + s);
+      if (nav) { nav.classList.remove("bg-secondary","font-semibold"); nav.classList.add("hover:bg-secondary"); }
+    });
+    document.getElementById(sec + "Section").classList.remove("hidden");
+    const an = document.getElementById("nav-" + sec);
+    if (an) { an.classList.add("bg-secondary","font-semibold"); an.classList.remove("hover:bg-secondary"); }
+
+    const t = { inicio:["Início","Bem-vindo"], notas:["Lançar Notas","Registar notas dos alunos"], reunioes:["Reuniões","Reuniões agendadas"], mensagens:["Mensagens","Chat com encarregados"] };
+    document.getElementById("pageTitle").textContent    = t[sec][0];
+    document.getElementById("pageSubtitle").textContent = t[sec][1];
+
+    if (sec === "notas") carregarNotasProfessor();
+    if (sec === "reunioes") { const badgeReunioes = document.getElementById("badgeReunioes"); badgeReunioes.classList.add("hidden"); carregarReunioes(); }
+    if (sec === "mensagens") {
+      document.getElementById("badgeMsgs").classList.add("hidden");
+      carregarConversas();
+      if (!ws) conectarWS();
+    }
+  }
+
+  // ── PERFIL ────────────────────────────────────────────
+  async function carregarStatsReunioes() {
+    try {
+      const res = await apiFetch(`/api/reunioes?usuarioId=${professor.id}`);
+      const data = await res.json();
+      document.getElementById("statReunioes").textContent = data.length;
+    } catch (error) {
+      console.error("Erro ao carregar estatísticas de reuniões:", error);
+      document.getElementById("statReunioes").textContent = "0";
+    }
+  }
+
+  async function preencherPerfil() {
+    const nome    = professor.nome || "Professor";
+    const inicial = nome[0]?.toUpperCase() || "P";
+
+    document.getElementById("sidebarNome").textContent   = nome;
+    document.getElementById("headerNome").textContent    = nome;
+    document.getElementById("menuNome").textContent      = nome;
+    document.getElementById("menuEmail").textContent     = professor.email || "";
+    document.getElementById("avatarInicial").textContent = inicial;
+
+    const turmasCount = professor.turmas?.length || 0;
+    document.getElementById("statTurmas").textContent     = turmasCount;
+    document.getElementById("statDisciplinas").textContent = professor.disciplinas?.length || 0;
+
+    // Carregar estatísticas de reuniões
+    await carregarStatsReunioes();
+
+    document.getElementById("perfilProfessor").innerHTML = `
+      <div class="flex items-center gap-5 p-5 bg-gradient-to-r from-green-50 to-white rounded-2xl border border-green-100 mb-4">
+        <div class="w-20 h-20 rounded-2xl bg-primary flex items-center justify-center text-white font-bold text-3xl shrink-0 shadow-lg">
+          ${inicial}
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-gray-800">${nome}</h3>
+          <p class="text-gray-500 text-sm mt-0.5">${professor.email}</p>
+          <p class="text-gray-500 text-sm mt-1">Código de Verificação: <span class="font-semibold text-gray-800">${professor.codigoVerificacao || "Não atribuído"}</span></p>
+          <span class="inline-block mt-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold">PROFESSOR</span>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="bg-gray-50 rounded-xl p-4">
+          <p class="text-xs text-gray-400 font-semibold mb-1 uppercase tracking-wide">Turmas que Leciona</p>
+          <p class="text-gray-800 font-semibold">${professor.turmas?.length ? professor.turmas.map(t => t.nome).join(", ") : "Não definido"}</p>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-4">
+          <p class="text-xs text-gray-400 font-semibold mb-1 uppercase tracking-wide">Telefone</p>
+          <p class="text-gray-800 font-semibold">${professor.telefone || "Não definido"}</p>
+        </div>
+        ${professor.disciplinas?.length ? `
+        <div class="bg-gray-50 rounded-xl p-4 md:col-span-2">
+          <p class="text-xs text-gray-400 font-semibold mb-2 uppercase tracking-wide">Disciplinas</p>
+          <div class="flex flex-wrap gap-2">
+            ${professor.disciplinas.map(d=>`<span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-semibold">${d.nome}</span>`).join("")}
+          </div>
+        </div>` : ""}
+        ${professor.cursos?.length ? `
+        <div class="bg-gray-50 rounded-xl p-4 md:col-span-2">
+          <p class="text-xs text-gray-400 font-semibold mb-2 uppercase tracking-wide">Cursos que Leciona</p>
+          <div class="flex flex-wrap gap-2">
+            ${professor.cursos.map(c=>`<span class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold">${c.nome}</span>`).join("")}
+          </div>
+        </div>` : ""}
+      </div>
+    `;
+
+    // Preencher select de disciplinas
+    const sel = document.getElementById("disciplinaSelect");
+    sel.innerHTML = '<option value="">Selecione a disciplina</option>';
+    if (professor.disciplinas?.length) {
+      professor.disciplinas.forEach(d => sel.innerHTML += `<option value="${d.id}">${d.nome}</option>`);
+    } else {
+      ["Matemática","Português","Inglês","Ciências","História","Geografia"].forEach(n => {
+        sel.innerHTML += `<option value="${n}">${n}</option>`;
+      });
+    }
+  }
+
+  // ── NOTAS ─────────────────────────────────────────────
+  let alunoSelecionado = null;
+  let notasLocais = [];
+
+  async function pesquisarAluno() {
+    const matricula = document.getElementById("matriculaInput").value.trim();
+    if (!matricula) return toast("Insira o número de matrícula", "erro");
+    try {
+      const res  = await apiFetch("/api/alunos");
+      const todos = await res.json();
+      const aluno = todos.find(a => a.numero_matricula === matricula);
+      if (!aluno) return toast("Aluno não encontrado", "erro");
+      alunoSelecionado = aluno;
+      document.getElementById("alunoNome").textContent        = aluno.nome;
+      document.getElementById("alunoTurma").textContent       = aluno.turma?.nome || aluno.classe || "-";
+      document.getElementById("alunoEncarregado").textContent = aluno.encarregado?.nome || "-";
+      document.getElementById("infoAluno").classList.remove("hidden");
+      toast("Aluno encontrado: " + aluno.nome);
+    } catch { toast("Erro ao pesquisar", "erro"); }
+  }
+
+  async function guardarNota() {
+    if (!alunoSelecionado) return toast("Pesquise um aluno primeiro", "erro");
+    const discVal = document.getElementById("disciplinaSelect").value;
+    const nota    = parseFloat(document.getElementById("notaInput").value);
+    const tipo    = document.getElementById("tipoAvaliacaoSelect").value;
+    if (!discVal) return toast("Selecione a disciplina", "erro");
+    if (isNaN(nota)||nota<0||nota>20) return toast("Nota deve ser entre 0 e 20", "erro");
+    if (!tipo) return toast("Selecione o tipo de avaliação", "erro");
+
+    const btn = document.getElementById("btnGuardarNota");
+    btn.disabled = true; btn.textContent = "A guardar...";
+    try {
+      const discId = parseInt(discVal);
+      const payload = { alunoId: alunoSelecionado.id, disciplinaId: isNaN(discId)?null:discId, valor: nota, tipo };
+      const res = await apiFetch("/api/notas", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) });
+      if (!res.ok) { const d=await res.json(); throw new Error(d.error||"Erro"); }
+      const discNome = document.getElementById("disciplinaSelect").options[document.getElementById("disciplinaSelect").selectedIndex].text;
+      notasLocais.unshift({ aluno:alunoSelecionado.nome, matricula:alunoSelecionado.numero_matricula, disciplina:discNome, tipo, nota, data:new Date().toLocaleDateString("pt-PT") });
+      renderizarTabelaNotas(notasLocais);
+      toast("Nota guardada com sucesso!");
+      document.getElementById("notaInput").value=""; document.getElementById("tipoAvaliacaoSelect").value="";
+      document.getElementById("matriculaInput").value=""; document.getElementById("infoAluno").classList.add("hidden");
+      alunoSelecionado=null;
+    } catch(err){ toast("Erro: "+err.message,"erro"); }
+    finally { btn.disabled=false; btn.textContent="Guardar e Enviar Nota"; }
+  }
+
+  async function carregarNotasProfessor() {
+    try {
+      const res = await apiFetch("/api/notas");
+      if (!res.ok) return;
+      const todas = await res.json();
+      notasLocais = Array.isArray(todas) ? todas.map(n => ({
+        aluno: n.aluno?.nome || "Aluno",
+        matricula: n.aluno?.numero_matricula || "",
+        disciplina: n.disciplina?.nome || "Disciplina",
+        tipo: n.tipo || "N/A",
+        nota: n.valor,
+        data: new Date(n.criadoEm || n.dataactualizacao || Date.now()).toLocaleDateString("pt-PT")
+      })) : [];
+      renderizarTabelaNotas(notasLocais);
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  function renderizarTabelaNotas(lista) {
+    const tb = document.getElementById("tabelaNotas");
+    if (!lista.length) { tb.innerHTML='<tr><td colspan="6" class="p-8 text-center text-gray-400">Nenhuma nota registada</td></tr>'; return; }
+    tb.innerHTML = lista.map(n=>{
+      const cor = n.nota>=15?"text-green-600 font-bold":n.nota>=10?"text-blue-600 font-bold":"text-red-600 font-bold";
+      return `<tr class="hover:bg-gray-50 transition">
+        <td class="p-3 font-medium text-gray-800">${n.aluno}</td>
+        <td class="p-3 text-gray-500 text-sm">${n.matricula}</td>
+        <td class="p-3 text-primary font-medium">${n.disciplina}</td>
+        <td class="p-3"><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-semibold">${n.tipo}</span></td>
+        <td class="p-3 text-center ${cor}">${n.nota}</td>
+        <td class="p-3 text-gray-400 text-sm">${n.data}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  function filtrarTabelaNotas() {
+    const q = document.getElementById("searchNotas").value.toLowerCase();
+    renderizarTabelaNotas(notasLocais.filter(n=>n.aluno.toLowerCase().includes(q)||n.disciplina.toLowerCase().includes(q)||n.matricula.toLowerCase().includes(q)));
+  }
+
+  function exportarNotasCSV() {
+    if (!notasLocais.length) return toast("Sem notas para exportar","info");
+    const rows=[["Aluno","Matrícula","Disciplina","Tipo","Nota","Data"],...notasLocais.map(n=>[n.aluno,n.matricula,n.disciplina,n.tipo,n.nota,n.data])];
+    const csv=rows.map(r=>r.join(",")).join("\n");
+    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
+    a.download="notas_"+new Date().toISOString().split("T")[0]+".csv"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    toast("CSV exportado!");
+  }
+
+  // ── REUNIÕES ──────────────────────────────────────────
+  function abrirModalReuniao() {
+    document.getElementById("modalReuniao").style.display = "flex";
+    document.getElementById("modalReuniao").classList.remove("hidden");
+    carregarEncarregadosParaReuniao();
+    // Data mínima = hoje
+    document.getElementById("reuniaoData").min = new Date().toISOString().split("T")[0];
+  }
+
+  function fecharModalReuniao() {
+    document.getElementById("modalReuniao").style.display = "none";
+    document.getElementById("modalReuniao").classList.add("hidden");
+  }
+
+  function alternarTipoReuniao(tipo) {
+    document.getElementById("campoLocal").classList.toggle("hidden", tipo === "online");
+    document.getElementById("campoLink").classList.toggle("hidden", tipo === "presencial");
+  }
+
+  async function carregarEncarregadosParaReuniao() {
+    const container = document.getElementById("checkboxEncarregados");
+    try {
+      const res   = await apiFetch("/api/usuarios");
+      const users = await res.json();
+      const encs  = users.filter(u => u.perfil === "ENCARREGADO");
+      if (!encs.length) {
+        container.innerHTML = '<p class="text-gray-400 text-sm text-center col-span-2 py-2">Nenhum encarregado registado</p>';
+        return;
+      }
+      container.innerHTML = encs.map(e => `
+        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-white cursor-pointer transition">
+          <input type="checkbox" value="${e.id}" data-nome="${e.nome}" data-email="${e.email || ''}"
+                 class="checkbox-enc accent-primary w-4 h-4" />
+          <div>
+            <p class="text-sm font-semibold text-gray-800">${e.nome}</p>
+            <p class="text-xs text-gray-400">${e.email || ''}</p>
+          </div>
+        </label>`).join("");
+    } catch {
+      container.innerHTML = '<p class="text-gray-400 text-sm text-center col-span-2">Erro ao carregar</p>';
+    }
+  }
+
+  async function agendarEEnviar() {
+    const tipo    = document.querySelector("input[name='tipoReuniao']:checked").value;
+    const assunto = document.getElementById("reuniaoAssunto").value.trim();
+    const data    = document.getElementById("reuniaoData").value;
+    const hora    = document.getElementById("reuniaoHora").value;
+    const local   = tipo === "presencial" ? document.getElementById("reuniaoLocal").value.trim() : "";
+    const link    = tipo === "online"     ? document.getElementById("reuniaoLink").value.trim()  : "";
+
+    // Encarregados seleccionados
+    const selecionados = [...document.querySelectorAll(".checkbox-enc:checked")].map(cb => ({
+      id:    parseInt(cb.value),
+      nome:  cb.dataset.nome,
+      email: cb.dataset.email,
+    }));
+
+    // Validações
+    if (!assunto)              return toast("Preencha o assunto", "erro");
+    if (!data || !hora)        return toast("Preencha data e hora", "erro");
+    if (tipo === "presencial" && !local) return toast("Preencha o local", "erro");
+    if (tipo === "online" && !link)      return toast("Preencha o link da videoconferência", "erro");
+    if (!selecionados.length)  return toast("Seleccione pelo menos um encarregado", "erro");
+
+    const btn = document.getElementById("btnAgendarEnviar");
+    btn.disabled = true; btn.textContent = "A agendar...";
+
+    try {
+      // 1. Criar reunião no banco
+      const titulo = assunto;
+      const localFinal = tipo === "presencial" ? local : "Online";
+      const linkFinal  = tipo === "online" ? link : null;
+
+      const participantesIds = selecionados.map(dest => dest.id);
+      const res = await apiFetch("/api/reunioes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          titulo,
+          local: localFinal,
+          linkMeeting: linkFinal,
+          participantesIds
+        }),
+      });
+
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error || "Erro ao agendar"); }
+
+      // 2. Enviar mensagem para cada encarregado via API de mensagens
+      const dataHora = new Date(data + "T" + hora).toLocaleString("pt-PT", { dateStyle:"full", timeStyle:"short" });
+      const msgConteudo = tipo === "presencial"
+        ? `📅 Reunião agendada
+
+Assunto: ${assunto}
+Data/Hora: ${dataHora}
+Local: ${local}
+
+Por favor confirme a sua presença.`
+        : `📅 Reunião online agendada
+
+Assunto: ${assunto}
+Data/Hora: ${dataHora}
+Link: ${link}
+
+Clique no link para entrar na reunião.`;
+
+      const envios = selecionados.map(enc =>
+        apiFetch("/api/mensagens", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ remetenteId: professor.id, destinatarioId: enc.id, conteudo: msgConteudo }),
+        })
+      );
+      await Promise.all(envios);
+
+      // 3. Notificar via WebSocket
+      selecionados.forEach(enc => {
+        enviarWS({ tipo: "mensagem", remetenteId: professor.id, destinatarioId: enc.id, conteudo: msgConteudo, criadoEm: new Date().toISOString() });
+      });
+
+      toast(`Reunião agendada e ${selecionados.length} encarregado(s) notificado(s)!`);
+      fecharModalReuniao();
+
+      // Limpar formulário
+      document.getElementById("reuniaoAssunto").value = "";
+      document.getElementById("reuniaoData").value    = "";
+      document.getElementById("reuniaoHora").value    = "";
+      document.getElementById("reuniaoLocal").value   = "";
+      document.getElementById("reuniaoLink").value    = "";
+      document.querySelectorAll(".checkbox-enc").forEach(cb => cb.checked = false);
+
+      carregarReunioes();
+
+    } catch(err) {
+      toast("Erro: " + err.message, "erro");
+    } finally {
+      btn.disabled = false; btn.textContent = "Agendar e Notificar Encarregados";
+    }
+  }
+
+  async function carregarReunioes() {
+    document.getElementById("listaReunioes").innerHTML='<div class="flex justify-center py-8"><div class="spinner"></div></div>';
+    try {
+      const res=await apiFetch(`/api/reunioes?usuarioId=${professor.id}`); const data=await res.json();
+      document.getElementById("statTotalReunioes").textContent     = data.length;
+      document.getElementById("statOnlineReunioes").textContent    = data.filter(r=>r.linkMeeting).length;
+      document.getElementById("statPresencialReunioes").textContent = data.filter(r=>!r.linkMeeting).length;
+      document.getElementById("statReunioes").textContent          = data.length;
+      const badgeReunioes = document.getElementById("badgeReunioes");
+      badgeReunioes.textContent = data.length;
+      if (data.length > 0) badgeReunioes.classList.remove("hidden"); else badgeReunioes.classList.add("hidden");
+      if (!data.length) { document.getElementById("listaReunioes").innerHTML='<p class="text-gray-400 text-center py-8">Nenhuma reunião agendada</p>'; return; }
+      document.getElementById("listaReunioes").innerHTML = data.map(r=>{
+        const criadoPor = r.criadoPor ? r.criadoPor.nome : "Administrador";
+        const participantsStr = r.participantes && r.participantes.length > 0 
+          ? r.participantes.map(p => p.usuario.nome).join(", ")
+          : "—";
+        const isOwner = r.criadoPor && r.criadoPor.id === professor.id;
+        return `
+        <div class="border-l-4 ${r.linkMeeting?"border-blue-400":"border-yellow-400"} bg-gray-50 p-5 rounded-xl hover:shadow-md transition">
+          <div class="flex justify-between items-start">
+            <div class="flex-1">
+              <h3 class="font-bold text-gray-800 text-lg">${r.titulo}</h3>
+              <p class="text-sm text-gray-600 mt-1">📍 ${r.local}</p>
+              <p class="text-xs text-gray-500 mt-2">👤 <strong>Agendada por:</strong> ${criadoPor}</p>
+              <p class="text-xs text-gray-500">👥 <strong>Para:</strong> ${participantsStr}</p>
+              ${r.linkMeeting?`<a href="${r.linkMeeting}" target="_blank" class="inline-flex items-center gap-1 mt-2 text-blue-600 text-sm font-semibold hover:underline">🎥 Entrar na reunião</a>`:""}
+              <p class="text-xs text-gray-400 mt-2">${new Date(r.criadoEm).toLocaleDateString("pt-PT")}</p>
+            </div>
+            <div class="flex flex-col items-end gap-2 shrink-0">
+              <span class="px-3 py-1 rounded-full text-xs font-semibold ${r.linkMeeting?"bg-blue-100 text-blue-700":"bg-yellow-100 text-yellow-700"}">
+                ${r.linkMeeting?"Online":"Presencial"}
+              </span>
+              ${isOwner ? `
+              <div class="flex gap-2">
+                <button onclick="abrirEditarReuniao(${r.id})" class="text-blue-600 hover:text-blue-800 font-semibold text-xs transition">Editar</button>
+                <button onclick="removerReuniao(${r.id})" class="text-red-500 hover:text-red-700 font-semibold text-xs transition">Remover</button>
+              </div>
+              ` : ""}
+            </div>
+          </div>
+        </div>`;
+      }).join("");
+    } catch { toast("Erro ao carregar reuniões","erro"); }
+  }
+
+  // ── MENSAGENS / CHAT ──────────────────────────────────
+  async function carregarEncarregados() {
+    try {
+      const res   = await apiFetch("/api/usuarios");
+      const users = await res.json();
+      encarregados = users.filter(u=>u.perfil==="ENCARREGADO");
+      const sel = document.getElementById("destinatarioMsg");
+      sel.innerHTML = '<option value="">Selecionar encarregado...</option>';
+      encarregados.forEach(e=>sel.innerHTML+=`<option value="${e.id}">${e.nome}</option>`);
+    } catch {}
+  }
+
+  async function carregarConversas() {
+    document.getElementById("listaConversas").innerHTML='<div class="flex justify-center py-8"><div class="spinner"></div></div>';
+    try {
+      // Carregar mensagens enviadas e recebidas
+      const res  = await apiFetch("/api/mensagens");
+      const json = await res.json();
+      const msgs = Array.isArray(json) ? json : [];
+      const unreadCount = msgs.filter(m => m.destinatarioId === professor.id && !m.deletadoParaDestinatario && m.remetenteId !== professor.id).length;
+      actualizarBadge(unreadCount, true);
+
+      // Agrupar por interlocutor
+      const mapa = {};
+      msgs.forEach(m => {
+        const outro = m.remetenteId === professor.id ? m.destinatarioId : m.remetenteId;
+        if (!mapa[outro] || new Date(m.criadoEm) > new Date(mapa[outro].criadoEm)) {
+          mapa[outro] = m;
+        }
+      });
+
+      conversas = Object.values(mapa);
+      await carregarEncarregados();
+      renderizarConversas(conversas);
+    } catch {
+      // Se endpoint não existir, mostrar lista de encarregados para iniciar conversa
+      await carregarEncarregados();
+      renderizarConversas([]);
+    }
+  }
+
+  function renderizarConversas(lista) {
+    const container = document.getElementById("listaConversas");
+    if (!encarregados.length && !lista.length) {
+      container.innerHTML='<p class="text-gray-400 text-sm text-center py-8 px-4">Nenhum encarregado registado</p>';
+      return;
+    }
+    // Mostrar encarregados com quem há conversa, e os que ainda não têm
+    const comConversa = new Set(lista.map(m=> m.remetenteId===professor.id?m.destinatarioId:m.remetenteId));
+    const todosIds    = [...new Set([...comConversa, ...encarregados.map(e=>e.id)])];
+
+    container.innerHTML = todosIds.map(id => {
+      const enc = encarregados.find(e=>e.id===id);
+      if (!enc) return "";
+      const ultima = lista.find(m=>(m.remetenteId===id||m.destinatarioId===id));
+      const preview = ultima ? (ultima.remetenteId===professor.id?"Você: ":"")+ultima.conteudo.substring(0,40)+"..." : "Clique para iniciar conversa";
+      return `
+        <div onclick="abrirConversa(${enc.id},'${enc.nome}')"
+             class="conversa-item cursor-pointer p-4 border-b border-gray-50 flex items-center gap-3 transition" id="conv-${enc.id}">
+          <div class="relative shrink-0">
+            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm">
+              ${enc.nome[0].toUpperCase()}
+            </div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-gray-800 text-sm truncate">${enc.nome}</p>
+            <p class="text-xs text-gray-400 truncate">${preview}</p>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function filtrarConversas() {
+    const q = document.getElementById("searchConversas").value.toLowerCase();
+    document.querySelectorAll(".conversa-item").forEach(el => {
+      el.style.display = el.textContent.toLowerCase().includes(q) ? "" : "none";
+    });
+  }
+
+  async function abrirConversa(encId, encNome) {
+    destinatarioAtual = { id: encId, nome: encNome };
+
+    // Highlight na lista
+    document.querySelectorAll(".conversa-item").forEach(el=>el.classList.remove("active"));
+    document.getElementById("conv-"+encId)?.classList.add("active");
+
+    // Mostrar header do chat
+    document.getElementById("chatHeader").classList.remove("hidden");
+    document.getElementById("chatAvatar").textContent = encNome[0].toUpperCase();
+    document.getElementById("chatNome").textContent   = encNome;
+    document.getElementById("chatEmpty").classList.add("hidden");
+    document.getElementById("messagesArea").classList.remove("hidden");
+    document.getElementById("chatInput").classList.remove("hidden");
+
+    // Carregar histórico
+    await carregarMensagens(encId);
+
+    // Informar WebSocket sobre a conversa activa
+    enviarWS({ tipo: "entrar_conversa", destinatarioId: encId });
+  }
+
+  async function carregarMensagens(encId) {
+    const area = document.getElementById("messagesArea");
+    area.innerHTML = '<div class="flex justify-center py-4"><div class="spinner"></div></div>';
+    try {
+      const res  = await apiFetch("/api/mensagens");
+      const msgs = await res.json();
+      const filtradas = Array.isArray(msgs)
+        ? msgs.filter(m=>(m.remetenteId===professor.id&&m.destinatarioId===encId)||(m.remetenteId===encId&&m.destinatarioId===professor.id))
+        : [];
+      area.innerHTML = filtradas.length ? "" : '<p class="text-gray-400 text-center text-sm py-4">Sem mensagens ainda. Inicie a conversa!</p>';
+      filtradas.forEach(m => adicionarMensagemNoChat(m, false));
+      area.scrollTop = area.scrollHeight;
+    } catch {
+      area.innerHTML = '<p class="text-gray-400 text-center text-sm py-4">Inicie a conversa!</p>';
+    }
+  }
+
+  function adicionarMensagemNoChat(msg, scroll=true) {
+    const area   = document.getElementById("messagesArea");
+    const isOwn  = msg.remetenteId === professor.id;
+    const hora   = new Date(msg.criadoEm).toLocaleTimeString("pt-PT",{hour:"2-digit",minute:"2-digit"});
+    const editado = msg.editadoEm ? " (editado)" : "";
+    const arquivoUrl = getArquivoUrl(msg.arquivoUrl);
+    const isImage = arquivoUrl && (msg.arquivoTipo?.startsWith("image/") || (msg.arquivoNome && /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(msg.arquivoNome)));
+    const arquivoHtml = arquivoUrl
+      ? isImage
+        ? `<div class="mt-3"><a href="${arquivoUrl}" target="_blank" class="block overflow-hidden rounded-xl border border-gray-200"><img src="${arquivoUrl}" alt="${msg.arquivoNome || 'Imagem'}" class="w-full h-auto object-contain"/></a><div class="mt-2 text-xs text-gray-500">${msg.arquivoNome || 'Imagem'}</div></div>`
+        : `<div class="mt-3 text-sm"><a href="${arquivoUrl}" download="${msg.arquivoNome || ''}" class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl text-blue-600 hover:bg-gray-50" target="_blank">${msg.arquivoNome || 'Baixar arquivo'}</a></div>`
+      : "";
+    const div    = document.createElement("div");
+    div.className = "flex " + (isOwn ? "justify-end" : "justify-start") + " group cursor-pointer";
+    div.setAttribute('data-msg-id', msg.id);
+    div.onclick = () => mostrarMenuMensagem(msg.id, msg.conteudo, div);
+    div.innerHTML = `
+      <div class="max-w-xs lg:max-w-md relative">
+        <div class="${isOwn?"msg-own":"msg-other"} px-4 py-2.5 text-sm shadow-sm">
+          ${msg.conteudo || ""}${arquivoHtml}${editado}
+        </div>
+        <p class="text-xs text-gray-400 mt-1 ${isOwn?"text-right":"text-left"}">${hora}</p>
+      </div>`;
+    area.appendChild(div);
+    if (scroll) area.scrollTop = area.scrollHeight;
+  }
+
+  function mostrarMenuMensagem(msgId, conteudo, element) {
+    // Remover menus anteriores
+    document.querySelectorAll('.menu-mensagem').forEach(m => m.remove());
+
+    const escapedContent = conteudo.replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
+    const menu = document.createElement('div');
+    menu.className = 'menu-mensagem absolute bg-white border border-gray-200 rounded-lg shadow-lg z-10';
+    menu.innerHTML = `
+      <button onclick="editarMensagem(${msgId}, '${escapedContent}')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-blue-600">Editar</button>
+      <button onclick="deletarMensagem(${msgId})" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">Eliminar</button>
+    `;
+
+    element.appendChild(menu);
+    menu.style.minWidth = '130px';
+    menu.style.top = '0';
+    menu.style.left = '0';
+    menu.style.padding = '0.25rem 0';
+
+    // Fechar menu ao clicar fora
+    setTimeout(() => {
+      document.addEventListener('click', function closeMenu(e) {
+        if (!menu.contains(e.target) && !element.contains(e.target)) {
+          menu.remove();
+          document.removeEventListener('click', closeMenu);
+        }
+      });
+    }, 0);
+  }
+
+  let mensagemParaEditar = null;
+
+  async function editarMensagem(msgId, conteudoAtual) {
+    mensagemParaEditar = msgId;
+    document.getElementById("editMessageInput").value = conteudoAtual;
+    document.getElementById("modalEditarMensagem").style.display = "flex";
+    document.getElementById("modalEditarMensagem").classList.remove("hidden");
+  }
+
+  async function salvarEdicaoMensagem() {
+    if (!mensagemParaEditar) return;
+    const msgId = mensagemParaEditar;
+    const novoConteudo = document.getElementById("editMessageInput").value.trim();
+    if (!novoConteudo) {
+      toast('A mensagem não pode estar vazia', 'erro');
+      return;
+    }
+    fecharModalEditar();
+    try {
+      const res = await apiFetch(`/api/mensagens/${msgId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ conteudo: novoConteudo })
+      });
+      if (res.ok) {
+        // Atualizar UI
+        const msgElement = document.querySelector(`[onclick*="mostrarMenuMensagem(${msgId}"]`);
+        if (msgElement) {
+          msgElement.previousElementSibling.textContent = novoConteudo + ' (editado)';
+        }
+        // Notificar via WS
+        enviarWS({ tipo: 'mensagem_editada', mensagemId: msgId, conteudo: novoConteudo, destinatarioId: destinatarioAtual.id });
+        toast('Mensagem editada!');
+      } else {
+        toast('Erro ao editar mensagem', 'erro');
+      }
+    } catch (error) {
+      toast('Erro ao editar mensagem', 'erro');
+    }
+  }
+
+  let modoSelecao = false;
+  let mensagensSelecionadas = [];
+
+  function toggleModoSelecao() {
+    modoSelecao = !modoSelecao;
+    mensagensSelecionadas = [];
+    const btnSelecionar = document.getElementById("btnSelecionarMensagens");
+    const inputArea = document.getElementById("chatInput");
+    const btnEliminarSelecionadas = document.getElementById("btnEliminarSelecionadas");
+
+    if (modoSelecao) {
+      btnSelecionar.textContent = "Cancelar seleção";
+      inputArea.classList.add("hidden");
+      btnEliminarSelecionadas.classList.remove("hidden");
+      adicionarCheckboxes();
+    } else {
+      btnSelecionar.textContent = "Selecionar mensagens";
+      inputArea.classList.remove("hidden");
+      btnEliminarSelecionadas.classList.add("hidden");
+      removerCheckboxes();
+    }
+  }
+
+  function adicionarCheckboxes() {
+    const mensagens = document.querySelectorAll("#messagesArea .flex");
+    mensagens.forEach((msgDiv, index) => {
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "mr-2 w-4 h-4";
+      checkbox.onchange = () => toggleSelecao(index);
+      msgDiv.insertBefore(checkbox, msgDiv.firstChild);
+    });
+  }
+
+  function removerCheckboxes() {
+    const checkboxes = document.querySelectorAll("#messagesArea input[type='checkbox']");
+    checkboxes.forEach(cb => cb.remove());
+  }
+
+  function toggleSelecao(index) {
+    if (mensagensSelecionadas.includes(index)) {
+      mensagensSelecionadas = mensagensSelecionadas.filter(i => i !== index);
+    } else {
+      mensagensSelecionadas.push(index);
+    }
+  }
+
+  async function eliminarSelecionadas() {
+    if (mensagensSelecionadas.length === 0) return;
+    // Abrir modal para escolher tipo
+    abrirModalEliminarSelecionadas();
+  }
+
+  function abrirModalEliminarSelecionadas() {
+    const modal = document.getElementById("modalEliminarSelecionadas");
+    modal.style.display = "flex";
+    modal.classList.remove("hidden");
+  }
+
+  function fecharModalEliminarSelecionadas() {
+    const modal = document.getElementById("modalEliminarSelecionadas");
+    modal.style.display = "none";
+    modal.classList.add("hidden");
+  }
+
+  async function confirmarEliminarSelecionadas(tipo) {
+    fecharModalEliminarSelecionadas();
+    const mensagens = document.querySelectorAll("#messagesArea .flex");
+    for (const index of mensagensSelecionadas) {
+      const msgDiv = mensagens[index];
+      if (!msgDiv) continue;
+      const msgId = msgDiv.dataset.msgId;
+      if (!msgId) continue;
+      try {
+        const res = await apiFetch(`/api/mensagens/${msgId}`, { 
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tipo })
+        });
+        if (res.ok) {
+          if (tipo === 'para_mim') {
+            msgDiv.style.display = 'none';
+          } else {
+            msgDiv.remove();
+          }
+        } else {
+          console.error(`Falha ao eliminar mensagem ${msgId}`, await res.text());
+        }
+      } catch (error) {
+        console.error("Erro ao eliminar mensagem", error);
+      }
+    }
+    toast(`Mensagens eliminadas ${tipo === 'para_todos' ? 'para todos' : 'para você'}!`);
+    toggleModoSelecao(); // Sair do modo seleção
+  }
+
+  function fecharModalEditar() {
+    document.getElementById("modalEditarMensagem").style.display = "none";
+    document.getElementById("modalEditarMensagem").classList.add("hidden");
+    document.getElementById("editMessageInput").value = "";
+  }
+
+  function fecharModalDeletar() {
+    document.getElementById("modalDeletarMensagem").style.display = "none";
+    document.getElementById("modalDeletarMensagem").classList.add("hidden");
+    mensagemParaDeletar = null;
+  }
+
+  async function confirmarDelecaoMensagem(tipo) {
+    if (!mensagemParaDeletar) return;
+    const msgId = mensagemParaDeletar;
+    fecharModalDeletar();
+    try {
+      const res = await apiFetch(`/api/mensagens/${msgId}`, { 
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tipo })
+      });
+      if (res.ok) {
+        const msgDiv = document.querySelector(`[data-msg-id="${msgId}"]`);
+        if (tipo === 'para_mim') {
+          // Ocultar a mensagem para o usuário atual
+          msgDiv.style.display = 'none';
+        } else {
+          // Remover completamente
+          msgDiv.remove();
+        }
+      } else {
+        toast('Erro ao eliminar mensagem', 'erro');
+      }
+    } catch (error) {
+    }
+  }
+
+  async function deletarMensagem(msgId) {
+    mensagemParaDeletar = msgId;
+    document.getElementById("modalDeletarMensagem").style.display = "flex";
+    document.getElementById("modalDeletarMensagem").classList.remove("hidden");
+  }
+
+  async function enviarMensagem() {
+    const input     = document.getElementById("messageInput");
+    const fileInput = document.getElementById("messageFile");
+    const conteudo  = input.value.trim();
+    const arquivo   = fileInput.files[0];
+    if ((!conteudo && !arquivo) || !destinatarioAtual) return;
+
+    const formData = new FormData();
+    formData.append("remetenteId", professor.id);
+    formData.append("destinatarioId", destinatarioAtual.id);
+    if (conteudo) formData.append("conteudo", conteudo);
+    if (arquivo) formData.append("arquivo", arquivo);
+
+    const msg = {
+      remetenteId:    professor.id,
+      destinatarioId: destinatarioAtual.id,
+      conteudo,
+      criadoEm:       new Date().toISOString(),
+      arquivoNome:    arquivo?.name,
+      arquivoUrl:     arquivo ? URL.createObjectURL(arquivo) : undefined,
+    };
+
+    // Mostrar imediatamente no chat (optimistic)
+    adicionarMensagemNoChat(msg);
+    input.value = "";
+    input.style.height = "auto";
+    fileInput.value = "";
+    document.getElementById("selectedFileName").textContent = "";
+
+    // Enviar via WebSocket
+    enviarWS({ tipo: "mensagem", ...msg });
+
+    // Persistir no banco via API
+    try {
+      await apiFetch("/api/mensagens", {
+        method: "POST",
+        body: formData,
+      });
+      actualizarPreviewConversa(destinatarioAtual.id, "Você: " + (conteudo || arquivo?.name || "Arquivo enviado"));
+    } catch { toast("Erro ao enviar mensagem","erro"); }
+  }
+
+  function handleFileSelected(event) {
+    const file = event.target.files[0];
+    document.getElementById("selectedFileName").textContent = file ? `Anexo: ${file.name}` : "";
+  }
+
+  function handleMsgKeydown(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); enviarMensagem(); }
+  }
+
+  function handleTyping() {
+    // Auto-resize textarea
+    const ta = document.getElementById("messageInput");
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 112) + "px";
+    // Notificar typing via WS
+    enviarWS({ tipo: "typing", userId: professor.id, destinatarioId: destinatarioAtual?.id });
+  }
+
+  function actualizarPreviewConversa(encId, preview) {
+    const el = document.getElementById("conv-"+encId);
+    if (el) {
+      const p = el.querySelector("p:last-child");
+      if (p) p.textContent = preview.substring(0,45)+"...";
+    }
+  }
+
+  let badgeCount = 0;
+  let activeSection = "inicio";
+
+  function actualizarBadge(n, absolute = false) {
+    badgeCount = absolute ? n : badgeCount + n;
+    const badge = document.getElementById("badgeMsgs");
+    if (badgeCount > 0 && activeSection !== "mensagens") {
+      badge.classList.remove("hidden");
+      badge.textContent = badgeCount;
+    } else {
+      badge.classList.add("hidden");
+    }
+  }
+
+  async function carregarBadgeMensagens() {
+    try {
+      const res = await apiFetch("/api/mensagens");
+      const json = await res.json();
+      const msgs = Array.isArray(json) ? json : [];
+      const unreadCount = msgs.filter(m => m.destinatarioId === professor.id && !m.deletadoParaDestinatario && m.remetenteId !== professor.id).length;
+      actualizarBadge(unreadCount, true);
+    } catch {
+      actualizarBadge(0, true);
+    }
+  }
+
+  async function iniciarConversa() {
+    const encId    = document.getElementById("destinatarioMsg").value;
+    const conteudo = document.getElementById("primeiraMensagem").value.trim();
+    if (!encId)    return toast("Selecione um encarregado","erro");
+    if (!conteudo) return toast("Escreva uma mensagem","erro");
+    try {
+      await apiFetch("/api/mensagens", {
+        method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({ remetenteId:professor.id, destinatarioId:parseInt(encId), conteudo }),
+      });
+      enviarWS({ tipo:"mensagem", remetenteId:professor.id, destinatarioId:parseInt(encId), conteudo, criadoEm:new Date().toISOString() });
+      toast("Mensagem enviada!");
+      fecharModalNovaConversa();
+      document.getElementById("primeiraMensagem").value="";
+      const enc = encarregados.find(e=>e.id===parseInt(encId));
+      if (enc) setTimeout(()=>abrirConversa(enc.id,enc.nome),300);
+      carregarConversas();
+    } catch { toast("Erro ao enviar","erro"); }
+  }
+
+  function abrirModalNovaConversa() {
+    document.getElementById("modalNovaConversa").style.display="flex";
+    document.getElementById("modalNovaConversa").classList.remove("hidden");
+  }
+  function fecharModalNovaConversa() {
+    document.getElementById("modalNovaConversa").style.display="none";
+    document.getElementById("modalNovaConversa").classList.add("hidden");
+  }
+
+  // ── DROPDOWN CONTA ────────────────────────────────────
+  document.getElementById("accountButton").addEventListener("click", function(e) {
+    e.stopPropagation();
+    document.getElementById("accountMenu").classList.toggle("hidden");
+  });
+  document.addEventListener("click",()=>document.getElementById("accountMenu").classList.add("hidden"));
+
+  function terminarSessao() {
+    abrirModalConfirmacao("Terminar Sessão", "Tem a certeza que deseja terminar a sessão?", () => {
+      if (ws) ws.close();
+      localStorage.removeItem("token");
+      localStorage.removeItem("usuario");
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("adminLogado");
+      window.location.href = "login.html";
+    });
+  }
+
+  // ARRANQUE 
+  (async () => {
+    await preencherPerfil();
+    await carregarBadgeMensagens();
+    showSection("inicio");
+  })();
+</script>
+
+<!-- MODAL EDITAR MENSAGEM -->
+<div id="modalEditarMensagem" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
+    <h3 class="text-lg font-semibold mb-4">Editar Mensagem</h3>
+    <textarea id="editMessageInput" class="w-full p-3 border border-gray-300 rounded-lg resize-none" rows="3" placeholder="Digite a nova mensagem..."></textarea>
+    <div class="flex justify-end gap-3 mt-4">
+      <button onclick="fecharModalEditar()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button>
+      <button onclick="salvarEdicaoMensagem()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIRMAR DELEÇÃO -->
+<div id="modalDeletarMensagem" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
+    <h3 class="text-lg font-semibold mb-4">Eliminar Mensagem</h3>
+    <p class="text-gray-600 mb-4">Escolha como deseja eliminar a mensagem:</p>
+    <div class="flex flex-col gap-3">
+      <button onclick="confirmarDelecaoMensagem('para_mim')" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">Eliminar para mim</button>
+      <button onclick="confirmarDelecaoMensagem('para_todos')" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Eliminar para todos</button>
+    </div>
+    <div class="flex justify-end mt-4">
+      <button onclick="fecharModalDeletar()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ELIMINAR SELECIONADAS -->
+<div id="modalEliminarSelecionadas" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50">
+  <div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
+    <h3 class="text-lg font-semibold mb-4">Eliminar Mensagens Selecionadas</h3>
+    <p class="text-gray-600 mb-4">Escolha como deseja eliminar as mensagens selecionadas:</p>
+    <div class="flex flex-col gap-3">
+      <button onclick="confirmarEliminarSelecionadas('para_mim')" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">Eliminar para mim</button>
+      <button onclick="confirmarEliminarSelecionadas('para_todos')" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Eliminar para todos</button>
+    </div>
+    <div class="flex justify-end mt-4">
+      <button onclick="fecharModalEliminarSelecionadas()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button>
+    </div>
+  </div>
+</div>
+<div id="modalConfirmar" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4 fade-in">
+
+    <h2 id="modalTitulo" class="text-xl font-bold text-gray-800 mb-4">
+      Confirmar ação
+    </h2>
+
+    <p id="mensagemConfirmar" class="text-gray-600 mb-6">
+      Tem a certeza desta ação?
+    </p>
+
+    <div class="flex gap-3">
+      <button onclick="fecharModalConfirmar()"
+        class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">
+        Cancelar
+      </button>
+
+      <button id="btnConfirmarRemocao"
+        class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-semibold transition">
+        Confirmar
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL DE NOTIFICAÇÃO -->
+<div id="modalNotificacao" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4 fade-in">
+
+    <h2 id="modalNotificacaoTitulo" class="text-xl font-bold text-gray-800 mb-4">
+      Notificação
+    </h2>
+
+    <p id="mensagemNotificacao" class="text-gray-600 mb-6">
+      Mensagem aqui.
+    </p>
+
+    <div class="flex justify-center">
+      <button onclick="fecharModalNotificacao()"
+        class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 font-semibold transition">
+        OK
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script src="utils.js"></script>
+
+<script>
+  // ── MENU RESPONSIVO ──────────────────────────────────────────
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const menuToggle = document.getElementById('menuToggle');
+  
+  function toggleSidebar() {
+    sidebar.classList.toggle('-translate-x-full');
+    sidebarOverlay.classList.toggle('hidden');
+  }
+  
+  menuToggle?.addEventListener('click', toggleSidebar);
+  sidebarOverlay?.addEventListener('click', toggleSidebar);
+  
+  // Fechar sidebar ao clicar em um link da nav
+  document.querySelectorAll('#sidebar a').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth < 768) {
+        toggleSidebar();
+      }
+    });
+  });
+
+  // ── EDITAR E REMOVER REUNIÃO ──────────────────────────────────
+  async function abrirEditarReuniao(id) {
+    try {
+      const res = await apiFetch("/api/reunioes/" + id);
+      if (!res.ok) throw new Error();
+      const reuniao = await res.json();
+
+      document.getElementById("editReuniaoId").value     = reuniao.id;
+      document.getElementById("editReuniaoTitulo").value = reuniao.titulo || "";
+      document.getElementById("editReuniaoLocal").value  = reuniao.local || "";
+      document.getElementById("editReuniaoLink").value   = reuniao.linkMeeting || "";
+
+      const tipo = reuniao.linkMeeting ? "online" : "presencial";
+      alternarTipoReuniaoEditar(tipo);
+
+      const participantesIds = reuniao.participantes?.map(p => p.usuarioId) || [];
+      await carregarDestinatarios("checkboxDestinatariosEditar", participantesIds);
+      abrirModal("modalEditarReuniao");
+    } catch {
+      toast("Erro ao carregar reunião", "erro");
+    }
+  }
+
+  async function guardarEdicaoReuniao() {
+    const id     = document.getElementById("editReuniaoId").value;
+    const titulo = document.getElementById("editReuniaoTitulo").value.trim();
+    const tipo   = document.querySelector("input[name='editTipoReuniao']:checked").value;
+    const local  = tipo === "presencial" ? document.getElementById("editReuniaoLocal").value.trim() : "";
+    const link   = tipo === "online" ? document.getElementById("editReuniaoLink").value.trim() : "";
+    const participantesIds = [...document.querySelectorAll(".checkbox-dest-edit:checked")].map(cb => parseInt(cb.value, 10));
+    if (!titulo) return toast("Título obrigatório", "erro");
+    if (tipo === "presencial" && !local) return toast("Preencha o local", "erro");
+    if (tipo === "online" && !link) return toast("Preencha o link da videoconferência", "erro");
+    if (!participantesIds.length) return toast("Seleccione pelo menos um destinatário", "erro");
+    try {
+      const res = await apiFetch("/api/reunioes/" + id, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ titulo, local, linkMeeting: link || null, participantesIds })
+      });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error); }
+      fecharModal("modalEditarReuniao");
+      toast("Reunião actualizada!");
+      carregarReunioes();
+    } catch (e) { toast("Erro: " + e.message, "erro"); }
+  }
+
+  async function removerReuniao(id) {
+    abrirModalConfirmacao("Remover Reunião", "Esta acção não pode ser desfeita.", async () => {
+      try {
+        const res = await apiFetch("/api/reunioes/" + id, { method: "DELETE" });
+        if (!res.ok) throw new Error();
+        toast("Reunião removida");
+        carregarReunioes();
+      } catch { toast("Erro ao remover", "erro"); }
+    });
+  }
+
+  function alternarTipoReuniaoEditar(tipo) {
+    const campoLocal = document.getElementById("editCampoLocal");
+    const campoLink = document.getElementById("editCampoLink");
+    if (tipo === "online") {
+      campoLocal.classList.add("hidden");
+      campoLink.classList.remove("hidden");
+    } else {
+      campoLocal.classList.remove("hidden");
+      campoLink.classList.add("hidden");
+    }
+  }
+
+  async function carregarDestinatarios(containerId = "checkboxDestinatarios", selectedIds = []) {
+    const cont = document.getElementById(containerId);
+    if (!cont) return;
+    cont.innerHTML = '<div class="flex justify-center py-4 col-span-2"><div class="spinner"></div></div>';
+    try {
+      const res   = await apiFetch("/api/usuarios");
+      const users = await res.json();
+      const lista = users.filter(u => u.perfil === "PROFESSOR" || u.perfil === "ENCARREGADO");
+      renderizarCheckboxes(lista, containerId, selectedIds);
+    } catch {
+      cont.innerHTML = '<p class="text-gray-400 text-xs text-center col-span-2 py-2">Erro ao carregar utilizadores</p>';
+    }
+  }
+
+  function renderizarCheckboxes(lista, containerId = "checkboxDestinatarios", selectedIds = []) {
+    const cont = document.getElementById(containerId);
+    if (!cont) return;
+    if (!lista.length) {
+      cont.innerHTML = '<p class="text-gray-400 text-xs text-center col-span-2 py-2">Nenhum utilizador</p>';
+      return;
+    }
+    const checkboxClass = containerId === "checkboxDestinatarios" ? "checkbox-dest" : "checkbox-dest-edit";
+    cont.innerHTML = lista.map(u => `
+      <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-white cursor-pointer transition">
+        <input type="checkbox" value="${u.id}" data-nome="${u.nome}" data-email="${u.email||''}"
+               class="${checkboxClass} accent-primary w-4 h-4" ${selectedIds.includes(u.id) ? "checked" : ""}/>
+        <div>
+          <p class="text-sm font-semibold text-gray-800">${u.nome}</p>
+          <p class="text-xs text-gray-400">${u.perfil === "PROFESSOR" ? "👨‍🏫 Professor" : "👨‍👩‍👧 Encarregado"}</p>
+        </div>
+      </label>`).join("");
+  }
+</script>
+
+<!-- MODAL EDITAR REUNIÃO -->
+<div id="modalEditarReuniao" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 fade-in">
+    <div class="p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800">Editar Reunião</h3>
+        <button onclick="fecharModal('modalEditarReuniao')" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+      </div>
+      <input type="hidden" id="editReuniaoId"/>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Título</label>
+          <input type="text" id="editReuniaoTitulo" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Reunião</label>
+          <div class="flex items-center gap-4">
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="editTipoReuniao" value="presencial" checked onchange="alternarTipoReuniaoEditar('presencial')" class="accent-primary" />
+              <span class="text-sm text-gray-700">Presencial</span>
+            </label>
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="editTipoReuniao" value="online" onchange="alternarTipoReuniaoEditar('online')" class="accent-primary" />
+              <span class="text-sm text-gray-700">Online</span>
+            </label>
+          </div>
+        </div>
+        <div id="editCampoLocal">
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Local</label>
+          <input type="text" id="editReuniaoLocal" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div id="editCampoLink" class="hidden">
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Link de Meeting</label>
+          <input type="url" id="editReuniaoLink" placeholder="https://meet.google.com/..." class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"/>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1">Destinatários</label>
+          <div id="checkboxDestinatariosEditar" class="grid grid-cols-2 gap-2 max-h-56 overflow-y-auto border border-gray-200 rounded-xl p-3 bg-gray-50"></div>
+          <p class="text-xs text-gray-400 mt-2">Marque os utilizadores que devem receber esta reunião.</p>
+        </div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button onclick="fecharModal('modalEditarReuniao')" class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">Cancelar</button>
+        <button onclick="guardarEdicaoReuniao()" class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary font-semibold transition">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

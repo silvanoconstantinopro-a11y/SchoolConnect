@@ -1,0 +1,63 @@
+import { ServiceAviso } from "../service/serviceAviso.js";
+
+export class ControllerAviso {
+
+    static async criarAviso(req, res) {
+    try {
+        const avisoCriado = await ServiceAviso.criarAviso(req.body);
+        res.status(201).json(avisoCriado);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+}
+
+
+    static async listarAvisos(req, res) {
+        try {
+            const avisos = await ServiceAviso.listarAvisos();
+            res.status(200).json(avisos);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+    static async obterAvisoPorId(req, res) {
+        try {
+            const { id } = req.params;
+            const aviso = await ServiceAviso.obterAvisoPorId(id);
+            res.status(200).json(aviso);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }   
+    }
+
+    static async atualizarAviso(req, res) {
+  try {
+    const { id } = req.params;
+
+    const { titulo, conteudo, imagem } = req.body;
+
+    const avisoAtualizado = await ServiceAviso.atualizarAviso(id, {
+      titulo,
+      conteudo,
+      imagem
+    });
+
+    res.status(200).json(avisoAtualizado);
+
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+
+    static async deletarAviso(req, res) {
+        try {
+            const { id } = req.params;
+            const avisoDeletado = await ServiceAviso.deletarAviso(id);
+            res.status(200).json(avisoDeletado);
+        } catch (error) {
+            res.status(400).json({ error: error.message });
+        }
+    }
+
+}

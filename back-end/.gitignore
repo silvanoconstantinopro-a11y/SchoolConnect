@@ -1,0 +1,5 @@
+node_modules
+# Arquivos que não devem subir para o repositório
+.env
+
+/generated/prisma
