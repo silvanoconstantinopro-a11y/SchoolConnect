@@ -5,10 +5,7 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
-
-// IMPORT CORRETO PARA O PRISMA (CommonJS)
-import pkg from "@prisma/client";
-const { PrismaClient } = pkg;
+import { PrismaClient } from "@prisma/client";
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
@@ -45,11 +42,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// Configuração CORS
 app.use(cors({ 
     origin: "*", 
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], 
-    allowedHeaders: ["Content-Type", "Authorization"] 
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], 
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: true
 }));
+
+// Middleware de parsing
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
@@ -174,6 +175,15 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
     }
 });
 
+// --- ROTA PARA VERIFICAR STATUS DO SERVIDOR ---
+app.get("/api/health", (req, res) => {
+    res.json({ 
+        status: "online", 
+        timestamp: new Date().toISOString(),
+        prisma: prisma ? "conectado" : "desconectado"
+    });
+});
+
 // --- SERVIR ARQUIVOS ESTÁTICOS ---
 app.use(express.static(frontPath));
 app.use("/img", express.static(imgPath));
@@ -195,33 +205,97 @@ app.use("/api", routerMensagem);
 app.use("/api", statsRoutes);
 app.use("/api/feedbacks", routerFeedback);
 
-app.get("/api", (_, res) => res.json({ mensagem: "SchoolConnect API Online!" }));
+app.get("/api", (_, res) => res.json({ 
+    mensagem: "SchoolConnect API Online!",
+    versao: "1.0.0",
+    endpoints: [
+        "/api/usuarios",
+        "/api/avisos",
+        "/api/alunos",
+        "/api/disciplinas",
+        "/api/eventos",
+        "/api/notas",
+        "/api/reunioes",
+        "/api/turmas",
+        "/api/admin",
+        "/api/cursos",
+        "/api/mensagens",
+        "/api/stats",
+        "/api/feedbacks",
+        "/api/debug-login",
+        "/api/criar-usuario-teste",
+        "/api/health"
+    ]
+}));
 
-// --- NAVEGAÇÃO ---
+// --- NAVEGAÇÃO SPA (React/Vue/HTML) ---
 app.use((req, res, next) => {
+    // Ignorar requisições de API e arquivos estáticos
     if (req.url.startsWith('/api')) return next();
+    if (req.url.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|json|xml|txt)$/)) return next();
     
     const ficheiro = path.join(frontPath, req.path);
     
     res.sendFile(ficheiro, (err) => {
         if (err) {
+            // Se não encontrar o arquivo, serve o index.html (para rotas SPA)
             res.sendFile(path.join(frontPath, "index.html"));
         }
     });
 });
 
+// Middleware para rotas não encontradas (404)
+app.use((req, res) => {
+    if (req.url.startsWith('/api')) {
+        res.status(404).json({ error: "Rota não encontrada" });
+    } else {
+        res.status(404).sendFile(path.join(frontPath, "404.html"), (err) => {
+            if (err) res.status(404).send("Página não encontrada");
+        });
+    }
+});
+
 // Middleware de erro global
 app.use((err, req, res, next) => {
     console.error("❌ Erro não tratado:", err);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    console.error("Stack:", err.stack);
+    res.status(500).json({ 
+        error: "Erro interno do servidor",
+        message: process.env.NODE_ENV === "development" ? err.message : undefined
+    });
 });
 
+// Configurar WebSocket
 configurarWebSocket(server);
 
+// Graceful Shutdown
+process.on('SIGTERM', async () => {
+    console.log('🛑 Recebido SIGTERM, encerrando servidor...');
+    await prisma.$disconnect();
+    server.close(() => {
+        console.log('✅ Servidor encerrado');
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', async () => {
+    console.log('🛑 Recebido SIGINT, encerrando servidor...');
+    await prisma.$disconnect();
+    server.close(() => {
+        console.log('✅ Servidor encerrado');
+        process.exit(0);
+    });
+});
+
+// Iniciar servidor
 server.listen(PORTA, () => {
     console.log(`🚀 Servidor rodando em: https://schoolconnect-0ud2.onrender.com`);
     console.log(`📡 Porta: ${PORTA}`);
     console.log(`🔧 Rotas de debug disponíveis:`);
     console.log(`   POST /api/debug-login - Testar login`);
     console.log(`   POST /api/criar-usuario-teste - Criar usuário de teste`);
+    console.log(`   GET  /api/health - Verificar status do servidor`);
+    console.log(`📁 Front-end: ${frontPath}`);
+    console.log(`🖼️  Imagens: ${imgPath}`);
+    console.log(`📤 Uploads: ${path.join(__dirname, "uploads")}`);
 });
