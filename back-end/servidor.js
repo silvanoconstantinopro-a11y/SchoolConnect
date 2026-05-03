@@ -5,7 +5,10 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
-import { PrismaClient } from "@prisma/client";
+
+// IMPORT CORRETO PARA O PRISMA (CommonJS)
+import pkg from "@prisma/client";
+const { PrismaClient } = pkg;
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
