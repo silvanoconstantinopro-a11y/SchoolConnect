@@ -5,7 +5,10 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
-import { PrismaClient } from "@prisma/client";
+
+// ✅ IMPORTAÇÃO CORRETA PARA PRISMA v7.x
+import pkg from "@prisma/client";
+const { PrismaClient } = pkg;
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
@@ -89,8 +92,7 @@ app.post("/api/debug-login", async (req, res) => {
             id: usuario.id,
             email: usuario.email,
             nome: usuario.nome,
-            perfil: usuario.perfil,
-            senhaHash: usuario.senha ? usuario.senha.substring(0, 30) + "..." : "SEM HASH"
+            perfil: usuario.perfil
         });
         
         // Importar função compareSenha
@@ -188,6 +190,7 @@ app.get("/api/health", (req, res) => {
 app.use(express.static(frontPath));
 app.use("/img", express.static(imgPath));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/generated", express.static(path.join(__dirname, "generated")));
 
 // --- ROTAS DA API ---
 app.use("/api", routerUsuarios);
@@ -207,28 +210,10 @@ app.use("/api/feedbacks", routerFeedback);
 
 app.get("/api", (_, res) => res.json({ 
     mensagem: "SchoolConnect API Online!",
-    versao: "1.0.0",
-    endpoints: [
-        "/api/usuarios",
-        "/api/avisos",
-        "/api/alunos",
-        "/api/disciplinas",
-        "/api/eventos",
-        "/api/notas",
-        "/api/reunioes",
-        "/api/turmas",
-        "/api/admin",
-        "/api/cursos",
-        "/api/mensagens",
-        "/api/stats",
-        "/api/feedbacks",
-        "/api/debug-login",
-        "/api/criar-usuario-teste",
-        "/api/health"
-    ]
+    versao: "1.0.0"
 }));
 
-// --- NAVEGAÇÃO SPA (React/Vue/HTML) ---
+// --- NAVEGAÇÃO SPA ---
 app.use((req, res, next) => {
     // Ignorar requisições de API e arquivos estáticos
     if (req.url.startsWith('/api')) return next();
@@ -238,7 +223,6 @@ app.use((req, res, next) => {
     
     res.sendFile(ficheiro, (err) => {
         if (err) {
-            // Se não encontrar o arquivo, serve o index.html (para rotas SPA)
             res.sendFile(path.join(frontPath, "index.html"));
         }
     });
@@ -297,5 +281,4 @@ server.listen(PORTA, () => {
     console.log(`   GET  /api/health - Verificar status do servidor`);
     console.log(`📁 Front-end: ${frontPath}`);
     console.log(`🖼️  Imagens: ${imgPath}`);
-    console.log(`📤 Uploads: ${path.join(__dirname, "uploads")}`);
 });
