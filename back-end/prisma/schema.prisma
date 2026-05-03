@@ -1,18 +1,16 @@
-// Configuração do Gerador do Cliente Prisma
 generator client {
-  provider      = "prisma-client-js"
-  // Definindo o output para dentro da pasta do back-end para evitar problemas no Render
-  output        = "../back-end/generated/prisma-client"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
-// Configuração da Base de Dados
 datasource db {
   provider = "sqlite"
-  
+  url      = env("DATABASE_URL")
 }
 
-// --- ENUMS ---
+// =========================
+// ENUMS
+// =========================
 
 enum Perfil {
   ADMIN
@@ -26,18 +24,21 @@ enum Relacao {
   TUTOR
 }
 
-// --- MODELOS ---
+// =========================
+// USUÁRIO
+// =========================
 
 model Usuario {
-  id                Int      @id @default(autoincrement())
-  nome              String
-  email             String   @unique
-  senha             String
-  telefone          String   @unique
-  perfil            Perfil
-  imagem            String?
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  telefone  String   @unique
+  perfil    Perfil
+  imagem    String?
+
+  criadoEm  DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 
   relacaoEducando   Relacao?
   codigoVerificacao String?
@@ -56,197 +57,256 @@ model Usuario {
   @@map("usuarios")
 }
 
+// =========================
+// ALUNO
+// =========================
+
 model Aluno {
-  id                Int      @id @default(autoincrement())
-  nome              String
-  numero_matricula  String   @unique
-  telefone          String   @unique
-  imagem            String?
-  classe            String
+  id        Int    @id @default(autoincrement())
+  nome      String
+  matricula String @unique
+  telefone  String @unique
+  imagem    String?
+  classe    String
 
-  turmaId           Int
-  encarregadoId     Int?
-  cursoId           Int
+  turmaId       Int
+  encarregadoId Int?
+  cursoId       Int
 
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+  criadoEm      DateTime @default(now())
+  atualizadoEm  DateTime @updatedAt
 
-  // RELAÇÕES
-  turma             Turma    @relation(fields: [turmaId], references: [id])
-  encarregado       Usuario? @relation("EncarregadoAlunos", fields: [encarregadoId], references: [id])
-  curso             Curso    @relation(fields: [cursoId], references: [id])
-  notas             Nota[]
+  turma       Turma    @relation(fields: [turmaId], references: [id])
+  encarregado Usuario? @relation("EncarregadoAlunos", fields: [encarregadoId], references: [id])
+  curso       Curso    @relation(fields: [cursoId], references: [id])
+  notas       Nota[]
 
   @@map("alunos")
 }
 
+// =========================
+// TURMA
+// =========================
+
 model Turma {
-  id                Int      @id @default(autoincrement())
-  nome              String
-  usuarioId         Int?     // professor
+  id   Int    @id @default(autoincrement())
+  nome String
 
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+  professorId Int?
 
-  // RELAÇÕES
-  professor         Usuario? @relation(fields: [usuarioId], references: [id])
-  alunos            Aluno[]
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  professor Usuario? @relation(fields: [professorId], references: [id])
+  alunos    Aluno[]
 
   @@map("turmas")
 }
 
-model Disciplina {
-  id                Int      @id @default(autoincrement())
-  nome              String
-  descricao         String
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
-  cursoId           Int
+// =========================
+// DISCIPLINA
+// =========================
 
-  curso             Curso    @relation(fields: [cursoId], references: [id])
-  professores       Usuario[] @relation("ProfessorDisciplinas")
-  notas             Nota[]
+model Disciplina {
+  id        Int    @id @default(autoincrement())
+  nome      String
+  descricao String
+  cursoId   Int
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  curso       Curso     @relation(fields: [cursoId], references: [id])
+  professores Usuario[] @relation("ProfessorDisciplinas")
+  notas       Nota[]
 
   @@map("disciplinas")
 }
 
+// =========================
+// NOTAS
+// =========================
+
 model Nota {
-  id                Int      @id @default(autoincrement())
-  valor             Float
-  tipo              String
+  id    Int   @id @default(autoincrement())
+  valor Float
+  tipo  String
 
-  alunoId           Int
-  disciplinaId      Int
+  alunoId      Int
+  disciplinaId Int
 
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 
-  // RELAÇÕES
-  aluno             Aluno      @relation(fields: [alunoId], references: [id])
-  disciplina        Disciplina @relation(fields: [disciplinaId], references: [id])
+  aluno      Aluno      @relation(fields: [alunoId], references: [id])
+  disciplina Disciplina @relation(fields: [disciplinaId], references: [id])
 
   @@map("notas")
 }
 
+// =========================
+// MENSAGENS
+// =========================
+
 model Mensagem {
-  id                Int       @id @default(autoincrement())
-  conteudo          String
-  remetenteId       Int
-  destinatarioId    Int
+  id       Int    @id @default(autoincrement())
+  conteudo String
 
-  criadoEm          DateTime  @default(now())
-  dataactualizacao  DateTime  @updatedAt
-  editadoEm         DateTime?
+  remetenteId    Int
+  destinatarioId Int
 
-  deletadoParaRemetente   Boolean @default(false)
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+  editadoEm    DateTime?
+
+  deletadoParaRemetente    Boolean @default(false)
   deletadoParaDestinatario Boolean @default(false)
-  arquivoUrl              String?
-  arquivoNome             String?
-  arquivoTipo             String?
-  arquivoTamanho          Int?
 
-  // RELAÇÕES
-  remetente         Usuario   @relation("Remetente", fields: [remetenteId], references: [id])
-  destinatario      Usuario   @relation("Destinatario", fields: [destinatarioId], references: [id])
+  arquivoUrl      String?
+  arquivoNome     String?
+  arquivoTipo     String?
+  arquivoTamanho  Int?
+
+  remetente    Usuario @relation("Remetente", fields: [remetenteId], references: [id])
+  destinatario Usuario @relation("Destinatario", fields: [destinatarioId], references: [id])
 
   @@map("mensagens")
 }
 
+// =========================
+// AVISOS
+// =========================
+
 model Aviso {
-  id                Int      @id @default(autoincrement())
-  titulo            String
-  conteudo          String
-  imagem            String?
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+  id        Int    @id @default(autoincrement())
+  titulo    String
+  conteudo  String
+  imagem    String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 
   @@map("avisos")
 }
 
+// =========================
+// RELATÓRIO
+// =========================
+
 model Relatorio {
-  id                Int      @id @default(autoincrement())
-  titulo            String
-  conteudo          String
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+  id       Int    @id @default(autoincrement())
+  titulo   String
+  conteudo String
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 
   @@map("relatorios")
 }
 
+// =========================
+// EVENTO
+// =========================
+
 model Evento {
-  id                Int      @id @default(autoincrement())
-  titulo            String
-  descricao         String
-  imagem            String?
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+  id        Int    @id @default(autoincrement())
+  titulo    String
+  descricao String
+  imagem    String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 
   @@map("eventos")
 }
 
-model Reuniao {
-  id                Int      @id @default(autoincrement())
-  linkMeeting       String?
-  local             String
-  titulo            String
-  criadoPorId       Int?
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+// =========================
+// REUNIÃO
+// =========================
 
-  criadoPor         Usuario? @relation(fields: [criadoPorId], references: [id])
-  participantes     ReuniaoParticipante[]
+model Reuniao {
+  id          Int    @id @default(autoincrement())
+  titulo      String
+  local       String
+  linkMeeting String?
+
+  criadoPorId Int?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  criadoPor     Usuario?              @relation(fields: [criadoPorId], references: [id])
+  participantes ReuniaoParticipante[]
 
   @@map("reunioes")
 }
 
-model Curso {
-  id                Int      @id @default(autoincrement())
-  nome              String
-  descricao         String
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+// =========================
+// CURSO
+// =========================
 
-  // RELAÇÕES
-  disciplinas       Disciplina[]
-  alunos            Aluno[]
-  professores       Usuario[]    @relation("ProfessorCursos")
+model Curso {
+  id        Int    @id @default(autoincrement())
+  nome      String
+  descricao String
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  disciplinas Disciplina[]
+  alunos      Aluno[]
+  professores Usuario[] @relation("ProfessorCursos")
 
   @@map("cursos")
 }
 
+// =========================
+// PARTICIPANTES REUNIÃO
+// =========================
+
 model ReuniaoParticipante {
-  id        Int     @id @default(autoincrement())
+  id        Int @id @default(autoincrement())
   reuniaoId Int
   usuarioId Int
 
-  reuniao   Reuniao @relation(fields: [reuniaoId], references: [id])
-  usuario   Usuario @relation(fields: [usuarioId], references: [id])
+  reuniao Reuniao @relation(fields: [reuniaoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
 
   @@unique([reuniaoId, usuarioId])
   @@map("reuniao_participantes")
 }
 
+// =========================
+// FEEDBACK
+// =========================
+
 model Feedback {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  email     String
-  assunto   String
-  mensagem  String
-  criadoEm  DateTime @default(now())
+  id       Int    @id @default(autoincrement())
+  nome     String
+  email    String
+  assunto  String
+  mensagem String
+
+  criadoEm DateTime @default(now())
 
   @@map("feedbacks")
 }
 
-model CodigoProfessor {
-  id                Int      @id @default(autoincrement())
-  codigo            String   @unique
-  usado             Boolean  @default(false)
-  criadoEm          DateTime @default(now())
-  dataactualizacao  DateTime @updatedAt
+// =========================
+// CÓDIGO PROFESSOR
+// =========================
 
-  // RELAÇÃO
-  professor         Usuario? @relation(fields: [professorId], references: [id])
-  professorId       Int?     @unique
+model CodigoProfessor {
+  id     Int    @id @default(autoincrement())
+  codigo String @unique
+  usado  Boolean @default(false)
+
+  professorId Int? @unique
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  professor Usuario? @relation(fields: [professorId], references: [id])
 
   @@map("codigos_professor")
 }
