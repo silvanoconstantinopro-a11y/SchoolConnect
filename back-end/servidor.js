@@ -7,7 +7,7 @@ import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
 
 // ✅ IMPORTAÇÃO E INICIALIZAÇÃO ÚNICA PARA PRISMA v7.x
-import { PrismaClient } from "./generated/prisma-client/index.js";
+import { PrismaClient } from "./generated/prisma/index.js";
 const prisma = new PrismaClient({
   datasourceUrl: process.env.DATABASE_URL,
 });
