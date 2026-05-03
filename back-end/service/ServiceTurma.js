@@ -4,7 +4,7 @@ export class ServiceTurma {
 
     static async criarTurma(dados) {
         try {
-            const { nome, usuarioId } = dados;
+            const { nome, usuarioId: professorId } = dados;
 
             if (!nome) {
                 throw new Error("Nome é obrigatório.");
@@ -13,7 +13,7 @@ export class ServiceTurma {
             const novaTurma = await prisma.turma.create({
                 data: {
                     nome,
-                    ...(usuarioId !== null && { usuarioId: Number(usuarioId) })
+                    ...(pid != null && { professorId: Number(pid) })
                 }
             });
 
@@ -60,7 +60,7 @@ export class ServiceTurma {
 
     static async atualizarTurma(id, dados) {
         try {
-            const { nome, usuarioId } = dados;
+            const { nome, usuarioId: professorId } = dados;
 
             const turmaExistente = await prisma.turma.findUnique({
                 where: { id: Number(id) }
@@ -74,7 +74,7 @@ export class ServiceTurma {
                 where: { id: Number(id) },
                 data: {
                     nome,
-                    usuarioId: usuarioId !== undefined ? (usuarioId ? Number(usuarioId) : null) : undefined
+                    professorId: pid !== undefined ? (pid ? Number(pid) : null) : undefined
                 }
             });
 
