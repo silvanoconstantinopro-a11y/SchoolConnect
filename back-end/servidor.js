@@ -5,11 +5,10 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
+<<<<<<< HEAD
 import { PrismaClient } from "@prisma/client";
-
-// IMPORT CORRETO PARA O PRISMA (CommonJS)
-
-const { PrismaClient } = pkg;
+=======
+>>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
@@ -38,7 +37,6 @@ const imgPath = path.join(pastaProjeto, "img");
 const PORTA = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
-const prisma = new PrismaClient();
 
 // Middleware de LOG para todas as requisições
 app.use((req, res, next) => {
@@ -46,11 +44,15 @@ app.use((req, res, next) => {
     next();
 });
 
+// Configuração CORS
 app.use(cors({ 
     origin: "*", 
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], 
-    allowedHeaders: ["Content-Type", "Authorization"] 
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"], 
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    credentials: true
 }));
+
+// Middleware de parsing
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
@@ -58,9 +60,6 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.post("/api/debug-login", async (req, res) => {
     try {
         const { email, senha } = req.body;
-        console.log("=== DEBUG LOGIN ===");
-        console.log("Email recebido:", email);
-        console.log("Senha recebida:", senha ? "***" : "vazia");
         
         if (!email || !senha) {
             return res.status(400).json({ 
@@ -71,13 +70,11 @@ app.post("/api/debug-login", async (req, res) => {
         
         const emailFormatado = email.trim().toLowerCase();
         
-        // Buscar usuário
         const usuario = await prisma.usuario.findUnique({
             where: { email: emailFormatado }
         });
         
         if (!usuario) {
-            console.log("❌ Usuário NÃO encontrado");
             return res.json({ 
                 success: false, 
                 message: "Usuário não encontrado",
@@ -85,20 +82,8 @@ app.post("/api/debug-login", async (req, res) => {
             });
         }
         
-        console.log("✅ Usuário encontrado:", {
-            id: usuario.id,
-            email: usuario.email,
-            nome: usuario.nome,
-            perfil: usuario.perfil,
-            senhaHash: usuario.senha ? usuario.senha.substring(0, 30) + "..." : "SEM HASH"
-        });
-        
-        // Importar função compareSenha
         const { compareSenha } = await import('./bcrypt-jwt/hashSenha.js');
-        
-        // Testar senha
         const senhaValida = await compareSenha(senha, usuario.senha);
-        console.log("🔐 Senha válida:", senhaValida);
         
         if (!senhaValida) {
             return res.json({
@@ -109,7 +94,6 @@ app.post("/api/debug-login", async (req, res) => {
             });
         }
         
-        // Gerar token
         const { JWT } = await import('./bcrypt-jwt/jwt.js');
         const token = JWT.gerarToken({
             id: usuario.id,
@@ -131,11 +115,9 @@ app.post("/api/debug-login", async (req, res) => {
         });
         
     } catch (error) {
-        console.error("❌ Erro no debug:", error);
         res.status(500).json({ 
             success: false, 
-            error: error.message,
-            stack: error.stack 
+            error: error.message
         });
     }
 });
@@ -148,9 +130,7 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
         
         const usuario = await prisma.usuario.upsert({
             where: { email: "teste@schoolconnect.com" },
-            update: {
-                senha: senhaHash
-            },
+            update: { senha: senhaHash },
             create: {
                 nome: "Usuário Teste",
                 email: "teste@schoolconnect.com",
@@ -160,8 +140,6 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
             }
         });
         
-        console.log("✅ Usuário de teste criado/atualizado:", usuario.email);
-        
         res.json({
             success: true,
             message: "Usuário de teste criado com sucesso",
@@ -170,15 +148,24 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
         });
         
     } catch (error) {
-        console.error("❌ Erro ao criar usuário de teste:", error);
         res.status(500).json({ error: error.message });
     }
+});
+
+// --- ROTA PARA VERIFICAR STATUS DO SERVIDOR ---
+app.get("/api/health", (req, res) => {
+    res.json({ 
+        status: "online", 
+        timestamp: new Date().toISOString(),
+        prisma: prisma ? "conectado" : "desconectado"
+    });
 });
 
 // --- SERVIR ARQUIVOS ESTÁTICOS ---
 app.use(express.static(frontPath));
 app.use("/img", express.static(imgPath));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/generated", express.static(path.join(__dirname, "generated")));
 
 // --- ROTAS DA API ---
 app.use("/api", routerUsuarios);
@@ -196,12 +183,23 @@ app.use("/api", routerMensagem);
 app.use("/api", statsRoutes);
 app.use("/api/feedbacks", routerFeedback);
 
-app.get("/api", (_, res) => res.json({ mensagem: "SchoolConnect API Online!" }));
+app.get("/api", (_, res) => res.json({ 
+    mensagem: "SchoolConnect API Online!",
+    versao: "1.0.0"
+}));
 
+<<<<<<< HEAD
 // --- NAVEGAÇÃO ---
 app.use((req, res, next) => {
     if (req.url.startsWith('/api')) return next();
     
+=======
+// --- NAVEGAÇÃO (ABRIR INDEX.HTML) ---
+app.use((req, res, next) => {
+    if (req.url.startsWith('/api')) return next();
+
+    // Tenta encontrar no front-end
+>>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
     const ficheiro = path.join(frontPath, req.path);
     
     res.sendFile(ficheiro, (err) => {
@@ -211,18 +209,43 @@ app.use((req, res, next) => {
     });
 });
 
+<<<<<<< HEAD
 // Middleware de erro global
 app.use((err, req, res, next) => {
     console.error("❌ Erro não tratado:", err);
-    res.status(500).json({ error: "Erro interno do servidor" });
+    res.status(500).json({ 
+        error: "Erro interno do servidor"
+    });
 });
 
+// Configurar WebSocket
 configurarWebSocket(server);
 
+// Graceful Shutdown
+const fecharServidor = async (sinal) => {
+    console.log(`🛑 Recebido ${sinal}, encerrando...`);
+    await prisma.$disconnect();
+    server.close(() => {
+        console.log('✅ Servidor encerrado');
+        process.exit(0);
+    });
+};
+
+process.on('SIGTERM', () => fecharServidor('SIGTERM'));
+process.on('SIGINT', () => fecharServidor('SIGINT'));
+
+// Iniciar servidor
 server.listen(PORTA, () => {
-    console.log(`🚀 Servidor rodando em: https://schoolconnect-0ud2.onrender.com`);
+    console.log(`🚀 Servidor rodando: https://schoolconnect-0ud2.onrender.com`);
     console.log(`📡 Porta: ${PORTA}`);
     console.log(`🔧 Rotas de debug disponíveis:`);
     console.log(`   POST /api/debug-login - Testar login`);
     console.log(`   POST /api/criar-usuario-teste - Criar usuário de teste`);
 });
+=======
+configurarWebSocket(server);
+
+server.listen(PORTA, () => {
+    console.log(`Servidor rodando em: https://schoolconnect-0ud2.onrender.com`);
+});
+>>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
