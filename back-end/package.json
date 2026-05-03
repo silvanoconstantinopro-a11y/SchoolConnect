@@ -1,11 +1,12 @@
 {
   "name": "back-end",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "SchoolConnect Backend",
+  "main": "servidor.js",
   "scripts": {
+    "start": "node servidor.js",
     "dev": "nodemon servidor.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +25,7 @@
     "@prisma/adapter-better-sqlite3": "^7.5.0",
     "@prisma/client": "^7.5.0",
     "bcrypt": "^6.0.0",
+    "better-sqlite3": "^11.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
