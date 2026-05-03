@@ -9,8 +9,7 @@ generator client {
 // Configuração da Base de Dados
 datasource db {
   provider = "sqlite"
-  // Certifique-se de que a variável DATABASE_URL está configurada no painel do Render
-  url      = env("DATABASE_URL")
+  
 }
 
 // --- ENUMS ---
