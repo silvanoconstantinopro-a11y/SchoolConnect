@@ -4,39 +4,38 @@ export class ServiceAluno {
 
     static async criarAluno(dados) {
     try {
-        const { nome, numero_matricula, turmaId, telefone, classe, encarregadoId, cursoId } = dados;
+        const { nome, matricula, turmaId, telefone, classe, encarregadoId, cursoId } = dados;
 
-        if (!nome || !numero_matricula || !turmaId) {
+        if (!nome || !matricula || !turmaId) {
             throw new Error("Nome, matrícula e turma são obrigatórios.");
         }
 
         const matriculaExistente = await prisma.aluno.findUnique({
-            where: { numero_matricula }
+            where: { matricula }
         });
 
         if (matriculaExistente) {
             throw new Error("Número de matrícula já cadastrado.");
         }
 
-        const telefoneExistente = await prisma.aluno.findUnique({
-            where: { telefone }
-        });
-
-        if (telefoneExistente) {
-            throw new Error("Telefone já cadastrado.");
+        if (telefone) {
+            const telefoneExistente = await prisma.aluno.findUnique({
+                where: { telefone }
+            });
+            if (telefoneExistente) {
+                throw new Error("Telefone já cadastrado.");
+            }
         }
 
         const novoAluno = await prisma.aluno.create({
             data: {
                 nome,
-                numero_matricula,
-                turmaId,
-                telefone,
-                classe,
-                cursoId,
-
-                // 👇 só adiciona se existir
-                ...(encarregadoId && { encarregadoId })
+                matricula,
+                turmaId: Number(turmaId),
+                telefone: telefone || "",
+                classe: classe || "",
+                cursoId: Number(cursoId),
+                ...(encarregadoId && { encarregadoId: Number(encarregadoId) })
             }
         });
 
@@ -65,7 +64,12 @@ export class ServiceAluno {
     static async obterAlunoPorId(id) {
         try {
             const aluno = await prisma.aluno.findUnique({   
-                where: { id: parseInt(id) }
+                where: { id: parseInt(id) },
+                include: {
+                    turma: true,
+                    curso: true,
+                    encarregado: true
+                }
             });
             if (!aluno) {
                 throw new Error("Aluno não encontrado.");
@@ -74,14 +78,13 @@ export class ServiceAluno {
         } catch (error) {
             throw new Error(`Erro ao obter aluno: ${error.message}`);
         }
-
     }
 
     static async atualizarAluno(id, dados) {
     try {
-        const { nome, numero_matricula, turmaId, telefone, classe, encarregadoId, cursoId } = dados;
+        const { nome, matricula, turmaId, telefone, classe, encarregadoId, cursoId } = dados;
 
-        if (!nome || !numero_matricula || !turmaId) {
+        if (!nome || !matricula || !turmaId) {
             throw new Error("Nome, matrícula e turma são obrigatórios.");
         }
 
@@ -97,14 +100,12 @@ export class ServiceAluno {
             where: { id: parseInt(id) },
             data: {
                 nome,
-                numero_matricula,
-                turmaId,
-                telefone,
-                classe,
-                cursoId,
-
-                // opcional
-                encarregadoId: encarregadoId || null
+                matricula,
+                turmaId: Number(turmaId),
+                telefone: telefone || alunoExistente.telefone,
+                classe: classe || alunoExistente.classe,
+                cursoId: Number(cursoId),
+                encarregadoId: encarregadoId ? Number(encarregadoId) : null
             }
         });
 
@@ -134,8 +135,3 @@ export class ServiceAluno {
         }   
     }
 }
-
-
-
-
-                    
