@@ -6,19 +6,6 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
 
-// 🔥 Prisma (Singleton - evita múltiplas conexões em dev)
-import { PrismaClient } from "./generated/prisma/index.js";
-
-const globalForPrisma = globalThis;
-
-export const prisma =
-  globalForPrisma.prisma ||
-  const prisma = new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
-
 // 📦 ROTAS
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
 import { routerAviso } from "./rotas/rotasAviso.js";
@@ -64,90 +51,6 @@ app.use(cors({
 // 📦 Body parser
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
-
-// =========================
-// 🔐 ROTA DEBUG LOGIN
-// =========================
-app.post("/api/debug-login", async (req, res) => {
-  try {
-    const { email, senha } = req.body;
-
-    if (!email || !senha) {
-      return res.status(400).json({
-        success: false,
-        message: "Email e senha são obrigatórios"
-      });
-    }
-
-    const usuario = await prisma.usuario.findUnique({
-      where: { email: email.trim().toLowerCase() }
-    });
-
-    if (!usuario) {
-      return res.json({
-        success: false,
-        message: "Usuário não encontrado"
-      });
-    }
-
-    const { compareSenha } = await import("./bcrypt-jwt/hashSenha.js");
-    const senhaValida = await compareSenha(senha, usuario.senha);
-
-    if (!senhaValida) {
-      return res.json({
-        success: false,
-        message: "Senha incorreta"
-      });
-    }
-
-    const { JWT } = await import("./bcrypt-jwt/jwt.js");
-
-    const token = JWT.gerarToken({
-      id: usuario.id,
-      email: usuario.email,
-      perfil: usuario.perfil
-    });
-
-    return res.json({
-      success: true,
-      token,
-      usuario
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erro interno" });
-  }
-});
-
-// =========================
-// 👤 CRIAR USUÁRIO TESTE
-// =========================
-app.post("/api/criar-usuario-teste", async (_, res) => {
-  try {
-    const { hashSenha } = await import("./bcrypt-jwt/hashSenha.js");
-
-    const usuario = await prisma.usuario.upsert({
-      where: { email: "teste@schoolconnect.com" },
-      update: {},
-      create: {
-        nome: "Usuário Teste",
-        email: "teste@schoolconnect.com",
-        senha: await hashSenha("12345678"),
-        telefone: "+244900000001",
-        perfil: "ENCARREGADO"
-      }
-    });
-
-    res.json({
-      success: true,
-      usuario
-    });
-
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // =========================
 // ❤️ HEALTH CHECK
@@ -217,6 +120,7 @@ configurarWebSocket(server);
 // 🛑 SHUTDOWN LIMPO
 // =========================
 const shutdown = async () => {
+  const { prisma } = await import("./prismaClient/prismaClient.js");
   console.log("Encerrando servidor...");
   await prisma.$disconnect();
   server.close(() => process.exit(0));
