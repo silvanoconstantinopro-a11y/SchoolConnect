@@ -35,12 +35,6 @@ const PORTA = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 
-// 🧾 LOG de requisições
-app.use((req, res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
-
 // 🌍 CORS
 app.use(cors({
   origin: "*",
@@ -48,7 +42,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// 📦 Body parser
+// 📦 Body parsers
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -56,11 +50,7 @@ app.use(express.urlencoded({ extended: true }));
 // ❤️ HEALTH CHECK
 // =========================
 app.get("/api/health", (_, res) => {
-  res.json({
-    status: "online",
-    database: "ok",
-    timestamp: new Date()
-  });
+  res.json({ status: "online", timestamp: new Date() });
 });
 
 // =========================
@@ -71,7 +61,7 @@ app.use("/img", express.static(imgPath));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // =========================
-// 🔗 ROTAS
+// 🔗 ROTAS DA API
 // =========================
 app.use("/api", routerUsuarios);
 app.use("/api", routerAviso);
@@ -89,11 +79,14 @@ app.use("/api", statsRoutes);
 app.use("/api/feedbacks", routerFeedback);
 
 // =========================
-// 🌐 SPA FALLBACK
+// 🌐 SPA FALLBACK (front-end)
 // =========================
 app.use((req, res, next) => {
   if (req.url.startsWith("/api")) return next();
-  res.sendFile(path.join(frontPath, "index.html"));
+  const indexPath = path.join(frontPath, "index.html");
+  res.sendFile(indexPath, (err) => {
+    if (err) next();
+  });
 });
 
 // =========================
@@ -106,8 +99,9 @@ app.use((req, res) => {
 // =========================
 // ⚠️ ERRO GLOBAL
 // =========================
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error("Erro:", err);
+  console.error("Erro global:", err);
   res.status(500).json({ error: "Erro interno do servidor" });
 });
 
@@ -117,13 +111,16 @@ app.use((err, req, res, next) => {
 configurarWebSocket(server);
 
 // =========================
-// 🛑 SHUTDOWN LIMPO
+// 🛑 GRACEFUL SHUTDOWN
 // =========================
 const shutdown = async () => {
-  const { prisma } = await import("./prismaClient/prismaClient.js");
   console.log("Encerrando servidor...");
+  const { prisma } = await import("./prismaClient/prismaClient.js");
   await prisma.$disconnect();
-  server.close(() => process.exit(0));
+  server.close(() => {
+    console.log("Servidor encerrado.");
+    process.exit(0);
+  });
 };
 
 process.on("SIGINT", shutdown);
@@ -132,6 +129,6 @@ process.on("SIGTERM", shutdown);
 // =========================
 // 🚀 START
 // =========================
-server.listen(PORTA, () => {
+server.listen(PORTA, "0.0.0.0", () => {
   console.log(`🚀 Servidor rodando na porta ${PORTA}`);
 });
