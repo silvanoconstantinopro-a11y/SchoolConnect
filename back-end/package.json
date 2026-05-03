@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node servidor.js",
     "dev": "nodemon servidor.js",
+    "migrate": "node migrate.js",
     "postinstall": "prisma generate"
   },
   "keywords": [],
