@@ -6,7 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
 
-// ✅ IMPORTAÇÃO CORRETA PARA PRISMA v7.x
+// ✅ IMPORTAÇÃO E INICIALIZAÇÃO ÚNICA PARA PRISMA v7.x
 import { PrismaClient } from "./generated/prisma-client/index.js";
 const prisma = new PrismaClient({
   datasourceUrl: process.env.DATABASE_URL,
@@ -39,7 +39,6 @@ const imgPath = path.join(pastaProjeto, "img");
 const PORTA = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
-const prisma = new PrismaClient();
 
 // Middleware de LOG para todas as requisições
 app.use((req, res, next) => {
@@ -63,9 +62,6 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.post("/api/debug-login", async (req, res) => {
     try {
         const { email, senha } = req.body;
-        console.log("=== DEBUG LOGIN ===");
-        console.log("Email recebido:", email);
-        console.log("Senha recebida:", senha ? "***" : "vazia");
         
         if (!email || !senha) {
             return res.status(400).json({ 
@@ -76,13 +72,11 @@ app.post("/api/debug-login", async (req, res) => {
         
         const emailFormatado = email.trim().toLowerCase();
         
-        // Buscar usuário
         const usuario = await prisma.usuario.findUnique({
             where: { email: emailFormatado }
         });
         
         if (!usuario) {
-            console.log("❌ Usuário NÃO encontrado");
             return res.json({ 
                 success: false, 
                 message: "Usuário não encontrado",
@@ -90,19 +84,8 @@ app.post("/api/debug-login", async (req, res) => {
             });
         }
         
-        console.log("✅ Usuário encontrado:", {
-            id: usuario.id,
-            email: usuario.email,
-            nome: usuario.nome,
-            perfil: usuario.perfil
-        });
-        
-        // Importar função compareSenha
         const { compareSenha } = await import('./bcrypt-jwt/hashSenha.js');
-        
-        // Testar senha
         const senhaValida = await compareSenha(senha, usuario.senha);
-        console.log("🔐 Senha válida:", senhaValida);
         
         if (!senhaValida) {
             return res.json({
@@ -113,7 +96,6 @@ app.post("/api/debug-login", async (req, res) => {
             });
         }
         
-        // Gerar token
         const { JWT } = await import('./bcrypt-jwt/jwt.js');
         const token = JWT.gerarToken({
             id: usuario.id,
@@ -135,11 +117,9 @@ app.post("/api/debug-login", async (req, res) => {
         });
         
     } catch (error) {
-        console.error("❌ Erro no debug:", error);
         res.status(500).json({ 
             success: false, 
-            error: error.message,
-            stack: error.stack 
+            error: error.message
         });
     }
 });
@@ -152,9 +132,7 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
         
         const usuario = await prisma.usuario.upsert({
             where: { email: "teste@schoolconnect.com" },
-            update: {
-                senha: senhaHash
-            },
+            update: { senha: senhaHash },
             create: {
                 nome: "Usuário Teste",
                 email: "teste@schoolconnect.com",
@@ -164,8 +142,6 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
             }
         });
         
-        console.log("✅ Usuário de teste criado/atualizado:", usuario.email);
-        
         res.json({
             success: true,
             message: "Usuário de teste criado com sucesso",
@@ -174,7 +150,6 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
         });
         
     } catch (error) {
-        console.error("❌ Erro ao criar usuário de teste:", error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -217,7 +192,6 @@ app.get("/api", (_, res) => res.json({
 
 // --- NAVEGAÇÃO SPA ---
 app.use((req, res, next) => {
-    // Ignorar requisições de API e arquivos estáticos
     if (req.url.startsWith('/api')) return next();
     if (req.url.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|json|xml|txt)$/)) return next();
     
@@ -244,10 +218,8 @@ app.use((req, res) => {
 // Middleware de erro global
 app.use((err, req, res, next) => {
     console.error("❌ Erro não tratado:", err);
-    console.error("Stack:", err.stack);
     res.status(500).json({ 
-        error: "Erro interno do servidor",
-        message: process.env.NODE_ENV === "development" ? err.message : undefined
+        error: "Erro interno do servidor"
     });
 });
 
@@ -255,32 +227,20 @@ app.use((err, req, res, next) => {
 configurarWebSocket(server);
 
 // Graceful Shutdown
-process.on('SIGTERM', async () => {
-    console.log('🛑 Recebido SIGTERM, encerrando servidor...');
+const fecharServidor = async (sinal) => {
+    console.log(`🛑 Recebido ${sinal}, encerrando...`);
     await prisma.$disconnect();
     server.close(() => {
         console.log('✅ Servidor encerrado');
         process.exit(0);
     });
-});
+};
 
-process.on('SIGINT', async () => {
-    console.log('🛑 Recebido SIGINT, encerrando servidor...');
-    await prisma.$disconnect();
-    server.close(() => {
-        console.log('✅ Servidor encerrado');
-        process.exit(0);
-    });
-});
+process.on('SIGTERM', () => fecharServidor('SIGTERM'));
+process.on('SIGINT', () => fecharServidor('SIGINT'));
 
 // Iniciar servidor
 server.listen(PORTA, () => {
-    console.log(`🚀 Servidor rodando em: https://schoolconnect-0ud2.onrender.com`);
+    console.log(`🚀 Servidor rodando: https://schoolconnect-0ud2.onrender.com`);
     console.log(`📡 Porta: ${PORTA}`);
-    console.log(`🔧 Rotas de debug disponíveis:`);
-    console.log(`   POST /api/debug-login - Testar login`);
-    console.log(`   POST /api/criar-usuario-teste - Criar usuário de teste`);
-    console.log(`   GET  /api/health - Verificar status do servidor`);
-    console.log(`📁 Front-end: ${frontPath}`);
-    console.log(`🖼️  Imagens: ${imgPath}`);
 });
