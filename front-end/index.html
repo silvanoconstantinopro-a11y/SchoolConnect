@@ -436,10 +436,9 @@
     </div>
   </footer>
 
-  <script src="utils.js"></script>
-
   <script>
-    const API = "http://localhost:3002";
+    // ALTERADO: Servidor remoto em vez de localhost
+    const API = "https://schoolconnect-0ud2.onrender.com";
     let eventosExpandidos = false;
     let eventosTodos = [];
     let eventosVisiveis = 3;
@@ -791,29 +790,24 @@ function renderEventos() {
     initSessao();
 
     function terminarSessao() {
-      abrirModalConfirmacao("Terminar Sessão", "Tem a certeza que deseja terminar a sessão?", () => {
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("adminLogado");
-        localStorage.removeItem("token");
-        localStorage.removeItem("usuario");
-        window.location.reload();
-      });
-    }
-
-    //  FORMULÁRIO DE CONTACTO 
-    function enviarContacto(e) {
-      e.preventDefault();
-      const nome     = document.getElementById("ctNome").value.trim();
-      const email    = document.getElementById("ctEmail").value.trim();
-      const assunto  = document.getElementById("ctAssunto").value.trim();
-      const mensagem = document.getElementById("ctMensagem").value.trim();
-      if (!nome || !email || !mensagem) {
-        abrirModalNotificacao("Campos Obrigatórios", "Por favor preencha todos os campos.");
-        return;
+      if (typeof abrirModalConfirmacao === 'function') {
+        abrirModalConfirmacao("Terminar Sessão", "Tem a certeza que deseja terminar a sessão?", () => {
+          localStorage.removeItem("adminToken");
+          localStorage.removeItem("adminLogado");
+          localStorage.removeItem("token");
+          localStorage.removeItem("usuario");
+          window.location.reload();
+        });
+      } else {
+        // Fallback se a função não existir
+        if (confirm("Tem a certeza que deseja terminar a sessão?")) {
+          localStorage.removeItem("adminToken");
+          localStorage.removeItem("adminLogado");
+          localStorage.removeItem("token");
+          localStorage.removeItem("usuario");
+          window.location.reload();
+        }
       }
-      // Aqui poderia enviar para uma API de contacto
-      abrirModalNotificacao("Mensagem Enviada", `Obrigado, ${nome}! A sua mensagem foi recebida. Responderemos em breve.`);
-      e.target.reset();
     }
 
     // FORMULÁRIO DE FEEDBACK
@@ -825,7 +819,11 @@ function renderEventos() {
       const mensagem = document.getElementById("fbMensagem").value.trim();
 
       if (!nome || !email || !assunto || !mensagem) {
-        abrirModalNotificacao("Campos Obrigatórios", "Por favor preencha todos os campos.");
+        if (typeof abrirModalNotificacao === 'function') {
+          abrirModalNotificacao("Campos Obrigatórios", "Por favor preencha todos os campos.");
+        } else {
+          alert("Por favor preencha todos os campos.");
+        }
         return;
       }
 
@@ -839,14 +837,26 @@ function renderEventos() {
         });
 
         if (response.ok) {
-          abrirModalNotificacao("Feedback Enviado", `Obrigado, ${nome}! O seu feedback foi enviado com sucesso.`);
+          if (typeof abrirModalNotificacao === 'function') {
+            abrirModalNotificacao("Feedback Enviado", `Obrigado, ${nome}! O seu feedback foi enviado com sucesso.`);
+          } else {
+            alert(`Obrigado, ${nome}! O seu feedback foi enviado com sucesso.`);
+          }
           e.target.reset();
         } else {
           const error = await response.json();
-          abrirModalNotificacao("Erro", error.error || "Erro ao enviar feedback.");
+          if (typeof abrirModalNotificacao === 'function') {
+            abrirModalNotificacao("Erro", error.error || "Erro ao enviar feedback.");
+          } else {
+            alert(error.error || "Erro ao enviar feedback.");
+          }
         }
       } catch (error) {
-        abrirModalNotificacao("Erro", "Erro de conexão. Tente novamente.");
+        if (typeof abrirModalNotificacao === 'function') {
+          abrirModalNotificacao("Erro", "Erro de conexão. Tente novamente.");
+        } else {
+          alert("Erro de conexão. Tente novamente.");
+        }
       }
     }
 

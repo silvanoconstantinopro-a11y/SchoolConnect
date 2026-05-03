@@ -47,7 +47,6 @@
       class="relative bg-white/80 backdrop-blur border border-white/40 p-8 rounded-2xl shadow-2xl w-[90%] max-w-md fade-up"
     >
       <div class="text-center mb-10">
-        <!-- LOGO -->
         <div class="flex justify-center mb-4">
           <div
             class="w-20 h-20 bg-white shadow-md rounded-2xl flex items-center justify-center"
@@ -56,16 +55,13 @@
           </div>
         </div>
 
-        <!-- TÍTULO -->
         <h2 class="text-3xl font-bold text-primary tracking-wide">
           Bem-vindo 
         </h2>
 
-        <!-- SUBTÍTULO -->
         <p class="text-gray-500 text-sm mt-2">Inicie sessão na sua conta</p>
       </div>
 
-      <!-- ERRO -->
       <div
         id="errorBox"
         class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2"
@@ -84,7 +80,6 @@
         <p class="text-sm text-red-700" id="errorMsg"></p>
       </div>
 
-      <!-- FORM -->
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-1"
@@ -148,7 +143,6 @@
         </button>
       </div>
 
-      <!-- LINK REGISTO -->
       <p class="text-center text-sm mt-6 text-gray-600">
         Não tem conta?
         <a
@@ -158,7 +152,6 @@
         >
       </p>
 
-      <!-- LINK ADMIN -->
       <div class="mt-4 pt-4 border-t border-gray-200 text-center">
         <a
           href="login-admin.html"
@@ -170,15 +163,13 @@
     </div>
 
     <script>
-      const API = "http://localhost:3002";
-
-      // Toggle password
+      const API = "https://schoolconnect-0ud2.onrender.com";
+      
       document.getElementById("toggleSenha").addEventListener("click", () => {
         const input = document.getElementById("loginSenha");
         input.type = input.type === "password" ? "text" : "password";
       });
 
-      // Enter key
       document.getElementById("loginSenha").addEventListener("keydown", (e) => {
         if (e.key === "Enter") fazerLogin();
       });
@@ -202,6 +193,8 @@
         const email = document.getElementById("loginEmail").value.trim();
         const senha = document.getElementById("loginSenha").value;
 
+        console.log("Tentando login com:", email); // DEBUG
+
         if (!email || !senha) {
           mostrarErro("Por favor preencha o email e a palavra-passe.");
           return;
@@ -213,46 +206,63 @@
         text.textContent = "A entrar...";
 
         try {
+          console.log("A enviar requisição para:", API + "/api/login");
+          
           const res = await fetch(API + "/api/login", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
             body: JSON.stringify({ email, senha }),
           });
 
+          console.log("Status da resposta:", res.status);
+          
           const texto = await res.text();
           console.log("Resposta raw:", texto);
 
           let data;
           try {
             data = JSON.parse(texto);
-          } catch {
-            throw new Error(
-              "Servidor não respondeu com JSON. Verifique se o backend está a correr em " +
-                API +
-                " e se a rota POST /api/login existe.",
-            );
+          } catch (e) {
+            console.error("Erro ao parsear JSON:", e);
+            throw new Error("Resposta inválida do servidor: " + texto.substring(0, 100));
           }
 
-          if (!res.ok) throw new Error(data.error || "Credenciais inválidas");
+          if (!res.ok) {
+            throw new Error(data.error || `Erro ${res.status}: Credenciais inválidas`);
+          }
 
-          // Guardar token e dados do utilizador
+          // Verificar se data.token e data.usuario existem
+          if (!data.token || !data.usuario) {
+            throw new Error("Resposta do servidor incompleta");
+          }
+
           localStorage.setItem("token", data.token);
           localStorage.setItem("usuario", JSON.stringify(data.usuario));
           
-          // Limpar adminToken para evitar conflitos
           localStorage.removeItem("adminToken");
           localStorage.removeItem("adminLogado");
 
-          // Redirecionar conforme o perfil
-          toast("Login realizado com sucesso");
+          console.log("Login bem sucedido! Perfil:", data.usuario.perfil);
+          
+          if (typeof toast === 'function') {
+            toast("Login realizado com sucesso");
+          }
+
           const perfil = data.usuario.perfil;
           if (perfil === "PROFESSOR")
             window.location.href = "dashboard-professor.html";
           else if (perfil === "ENCARREGADO")
             window.location.href = "dashboard-encarregado.html";
-          else if (perfil === "ADMIN") window.location.href = "admin.html";
-          else mostrarErro("Perfil desconhecido: " + perfil);
+          else if (perfil === "ADMIN") 
+            window.location.href = "admin.html";
+          else 
+            mostrarErro("Perfil desconhecido: " + perfil);
+            
         } catch (err) {
+          console.error("Erro no login:", err);
           mostrarErro(err.message);
         } finally {
           btn.disabled = false;

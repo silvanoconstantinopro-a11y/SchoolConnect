@@ -271,12 +271,12 @@
                 <th class="p-3 text-left font-semibold text-gray-600">Tipo</th>
                 <th class="p-3 text-center font-semibold text-gray-600">Nota</th>
                 <th class="p-3 text-left font-semibold text-gray-600">Data</th>
-              </tr>
+               </tr>
             </thead>
             <tbody id="tabelaNotas" class="divide-y divide-gray-100">
               <tr><td colspan="6" class="p-8 text-center text-gray-400">Nenhuma nota registada</td></tr>
             </tbody>
-          </table>
+           </table>
         </div>
       </div>
     </section>
@@ -543,8 +543,11 @@
 </div>
 
 <script>
-  const API = "http://localhost:3002";
-  const WS  = "ws://localhost:3002";
+  // ALTERADO: Servidor remoto em vez de localhost
+  const API = "https://schoolconnect-0ud2.onrender.com";
+
+  // Configura o WebSocket para wss:// (seguro) no servidor remoto
+  const WS = (window.location.protocol === "https:" ? "wss://" : "ws://") + "schoolconnect-0ud2.onrender.com";
 
   if (window.location.protocol === 'file:') {
     console.warn('Página carregada via file://. Abra a aplicação por um servidor local, por exemplo http://localhost:3002/front-end/dashboard-professor.html, para evitar problemas de origem e fetch.');
@@ -833,7 +836,7 @@
         <td class="p-3"><span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-semibold">${n.tipo}</span></td>
         <td class="p-3 text-center ${cor}">${n.nota}</td>
         <td class="p-3 text-gray-400 text-sm">${n.data}</td>
-      </tr>`;
+       </tr>`;
     }).join("");
   }
 
