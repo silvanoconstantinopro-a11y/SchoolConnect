@@ -1,16 +1,19 @@
 import "dotenv/config";
+import Database from "better-sqlite3";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "../generated/prisma/client.js";
 
-// DATABASE_URL deve ser no formato: file:./dev.db
-const databaseUrl = process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL ?? "file:./dev.db";
 
 if (!databaseUrl) {
-  throw new Error("DATABASE_URL não está definida nas variáveis de ambiente.");
+  throw new Error("❌ DATABASE_URL não está definida.");
 }
 
-// O adaptador BetterSqlite3 aceita a URL no formato "file:./caminho.db"
-const adapter = new PrismaBetterSqlite3({ url: databaseUrl });
+// Extrai o caminho do ficheiro: "file:./dev.db" → "./dev.db"
+const dbPath = databaseUrl.replace(/^file:/, "");
+
+const sqlite = new Database(dbPath);
+const adapter = new PrismaBetterSqlite3(sqlite);
 const prisma = new PrismaClient({ adapter });
 
 export { prisma };
