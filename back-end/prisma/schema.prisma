@@ -225,10 +225,11 @@ model Evento {
 // =========================
 
 model Reuniao {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   titulo      String
   local       String
   linkMeeting String?
+  dataHora    DateTime?
 
   criadoPorId Int?
 
