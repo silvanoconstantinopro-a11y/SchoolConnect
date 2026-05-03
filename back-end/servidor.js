@@ -9,7 +9,13 @@ import { configurarWebSocket } from "./websocket.js";
 // ✅ IMPORTAÇÃO E INICIALIZAÇÃO ÚNICA PARA PRISMA v7.x
 import { PrismaClient } from "./generated/prisma/index.js";
 // ✅ Forma correta para a versão v7.8.0
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL
+    }
+  }
+});
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
