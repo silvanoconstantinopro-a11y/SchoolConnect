@@ -7,8 +7,8 @@ import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
 
 // ✅ IMPORTAÇÃO CORRETA PARA PRISMA v7.x
-import pkg from "@prisma/client";
-const { PrismaClient } = pkg;
+import { PrismaClient } from "./generated/prisma-client/index.js";
+const prisma = new PrismaClient();
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
