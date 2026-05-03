@@ -4,12 +4,6 @@ import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import { PrismaClient } from "../generated/prisma/client.js";
 
 const databaseUrl = process.env.DATABASE_URL ?? "file:./dev.db";
-
-if (!databaseUrl) {
-  throw new Error("❌ DATABASE_URL não está definida.");
-}
-
-// Remove o prefixo "file:" para obter o caminho real
 const dbPath = databaseUrl.replace(/^file:/, "");
 
 const sqlite = new Database(dbPath);
