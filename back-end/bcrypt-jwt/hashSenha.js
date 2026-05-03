@@ -1,23 +1,19 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 
-const SALT_ROUNDS = 10; // Número de rounds para o salt
+const SALT_ROUNDS = 10;
 
-// Função para hash da senha
 export async function hashSenha(senha) {
-    try {
-        const hash = await bcrypt.hash(senha, SALT_ROUNDS);
-        return hash;
-    } catch (error) {
-        throw new Error(`Erro ao hash da senha: ${error.message}`);
-    }
+  try {
+    return await bcrypt.hash(senha, SALT_ROUNDS);
+  } catch (error) {
+    throw new Error(`Erro ao encriptar senha: ${error.message}`);
+  }
 }
 
-// Função para comparar senhas
 export async function compareSenha(senha, hash) {
-    try {
-        const isMatch = await bcrypt.compare(senha, hash);
-        return isMatch;
-    } catch (error) {
-        throw new Error(`Erro ao comparar senhas: ${error.message}`);
-    }
+  try {
+    return await bcrypt.compare(senha, hash);
+  } catch (error) {
+    throw new Error(`Erro ao comparar senhas: ${error.message}`);
+  }
 }
