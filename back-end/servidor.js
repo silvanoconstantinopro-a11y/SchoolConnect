@@ -5,10 +5,11 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
-<<<<<<< HEAD
 import { PrismaClient } from "@prisma/client";
-=======
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
+
+// IMPORT CORRETO PARA O PRISMA (CommonJS)
+
+const { PrismaClient } = pkg;
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
@@ -29,24 +30,16 @@ import routerFeedback from "./rotas/rotasFeedback.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-<<<<<<< HEAD
 // CAMINHOS
 const pastaProjeto = path.resolve(__dirname, ".."); 
 const frontPath = path.join(pastaProjeto, "front-end");
 const imgPath = path.join(pastaProjeto, "img");
-=======
-// CAMINHOS CORRIGIDOS PARA A TUA ESTRUTURA
-const pastaProjeto = path.resolve(__dirname, ".."); 
-const frontPath = path.join(pastaProjeto, "front-end");
-const imgPath = path.join(pastaProjeto, "img"); // A pasta img que está fora do front-end
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
 
 const PORTA = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 const prisma = new PrismaClient();
 
-<<<<<<< HEAD
 // Middleware de LOG para todas as requisições
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
@@ -185,21 +178,6 @@ app.post("/api/criar-usuario-teste", async (req, res) => {
 // --- SERVIR ARQUIVOS ESTÁTICOS ---
 app.use(express.static(frontPath));
 app.use("/img", express.static(imgPath));
-=======
-app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE", "PATCH"], allowedHeaders: ["Content-Type", "Authorization"] }));
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
-
-// --- SERVIR ARQUIVOS ESTÁTICOS (A MÁGICA ESTÁ AQUI) ---
-
-// 1. Serve a pasta front-end
-app.use(express.static(frontPath));
-
-// 2. Serve a pasta img separadamente (como ela está fora do front-end)
-app.use("/img", express.static(imgPath));
-
-// 3. Serve a pasta de uploads do back-end
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // --- ROTAS DA API ---
@@ -220,32 +198,19 @@ app.use("/api/feedbacks", routerFeedback);
 
 app.get("/api", (_, res) => res.json({ mensagem: "SchoolConnect API Online!" }));
 
-<<<<<<< HEAD
 // --- NAVEGAÇÃO ---
 app.use((req, res, next) => {
     if (req.url.startsWith('/api')) return next();
     
-=======
-// --- NAVEGAÇÃO (ABRIR INDEX.HTML) ---
-app.use((req, res, next) => {
-    if (req.url.startsWith('/api')) return next();
-
-    // Tenta encontrar no front-end
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
     const ficheiro = path.join(frontPath, req.path);
     
     res.sendFile(ficheiro, (err) => {
         if (err) {
-<<<<<<< HEAD
-=======
-            // Se não for um ficheiro real, abre o index principal
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
             res.sendFile(path.join(frontPath, "index.html"));
         }
     });
 });
 
-<<<<<<< HEAD
 // Middleware de erro global
 app.use((err, req, res, next) => {
     console.error("❌ Erro não tratado:", err);
@@ -261,10 +226,3 @@ server.listen(PORTA, () => {
     console.log(`   POST /api/debug-login - Testar login`);
     console.log(`   POST /api/criar-usuario-teste - Criar usuário de teste`);
 });
-=======
-configurarWebSocket(server);
-
-server.listen(PORTA, () => {
-    console.log(`Servidor rodando em: https://schoolconnect-0ud2.onrender.com`);
-});
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
