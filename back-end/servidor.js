@@ -5,10 +5,12 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
-<<<<<<< HEAD
-import { PrismaClient } from "@prisma/client";
-=======
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
+
+// ✅ IMPORTAÇÃO E INICIALIZAÇÃO ÚNICA PARA PRISMA v7.x
+import { PrismaClient } from "./generated/prisma-client/index.js";
+const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+});
 
 // Importando as rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
@@ -188,18 +190,11 @@ app.get("/api", (_, res) => res.json({
     versao: "1.0.0"
 }));
 
-<<<<<<< HEAD
-// --- NAVEGAÇÃO ---
+// --- NAVEGAÇÃO SPA ---
 app.use((req, res, next) => {
     if (req.url.startsWith('/api')) return next();
+    if (req.url.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|json|xml|txt)$/)) return next();
     
-=======
-// --- NAVEGAÇÃO (ABRIR INDEX.HTML) ---
-app.use((req, res, next) => {
-    if (req.url.startsWith('/api')) return next();
-
-    // Tenta encontrar no front-end
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
     const ficheiro = path.join(frontPath, req.path);
     
     res.sendFile(ficheiro, (err) => {
@@ -209,7 +204,17 @@ app.use((req, res, next) => {
     });
 });
 
-<<<<<<< HEAD
+// Middleware para rotas não encontradas (404)
+app.use((req, res) => {
+    if (req.url.startsWith('/api')) {
+        res.status(404).json({ error: "Rota não encontrada" });
+    } else {
+        res.status(404).sendFile(path.join(frontPath, "404.html"), (err) => {
+            if (err) res.status(404).send("Página não encontrada");
+        });
+    }
+});
+
 // Middleware de erro global
 app.use((err, req, res, next) => {
     console.error("❌ Erro não tratado:", err);
@@ -238,14 +243,4 @@ process.on('SIGINT', () => fecharServidor('SIGINT'));
 server.listen(PORTA, () => {
     console.log(`🚀 Servidor rodando: https://schoolconnect-0ud2.onrender.com`);
     console.log(`📡 Porta: ${PORTA}`);
-    console.log(`🔧 Rotas de debug disponíveis:`);
-    console.log(`   POST /api/debug-login - Testar login`);
-    console.log(`   POST /api/criar-usuario-teste - Criar usuário de teste`);
 });
-=======
-configurarWebSocket(server);
-
-server.listen(PORTA, () => {
-    console.log(`Servidor rodando em: https://schoolconnect-0ud2.onrender.com`);
-});
->>>>>>> f956138fa3279d1471cefe17de9ec12b2ca6e859
