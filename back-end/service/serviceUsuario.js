@@ -58,7 +58,7 @@ static async criarUsuario(dados) {
     // Se for encarregado, verificar se o número de matrícula existe
     if (perfil === "ENCARREGADO") {
       const alunoExiste = await prisma.aluno.findUnique({
-        where: { numero_matricula: numeroMatricula }
+        where: { matricula: numeroMatricula }
       });
       if (!alunoExiste) throw new Error("Aluno com esse número de matrícula não encontrado.");
     }
@@ -129,7 +129,7 @@ static async criarUsuario(dados) {
     // Se for encarregado, ligar ao aluno
     if (perfil === "ENCARREGADO") {
       await prisma.aluno.update({
-        where: { numero_matricula: numeroMatricula },
+        where: { matricula: numeroMatricula },
         data: { encarregadoId: usuarioCriado.id }
       });
     }
@@ -329,7 +329,7 @@ static async loginUsuario(email, senha) {
         if (perfilFinal === "ENCARREGADO") {
             if (numeroMatricula) {
                 const alunoExiste = await prisma.aluno.findUnique({
-                    where: { numero_matricula: numeroMatricula }
+                    where: { matricula: numeroMatricula }
                 });
                 if (!alunoExiste) {
                     throw new Error("Aluno com esse número de matrícula não encontrado.");
@@ -419,7 +419,7 @@ static async loginUsuario(email, senha) {
         // Se for encarregado e enviou novo número de matrícula, atualizar ligação ao aluno
         if (perfilFinal === "ENCARREGADO" && numeroMatricula) {
             await prisma.aluno.update({
-                where: { numero_matricula: numeroMatricula },
+                where: { matricula: numeroMatricula },
                 data: { encarregadoId: usuarioAtualizado.id }
             });
         }
