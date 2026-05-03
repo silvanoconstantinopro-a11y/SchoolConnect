@@ -9,7 +9,7 @@ if (!databaseUrl) {
   throw new Error("❌ DATABASE_URL não está definida.");
 }
 
-// Extrai o caminho do ficheiro: "file:./dev.db" → "./dev.db"
+// Remove o prefixo "file:" para obter o caminho real
 const dbPath = databaseUrl.replace(/^file:/, "");
 
 const sqlite = new Database(dbPath);

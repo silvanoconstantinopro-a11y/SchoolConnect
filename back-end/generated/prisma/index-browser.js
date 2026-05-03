@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.5.0
- * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 Prisma.prismaVersion = {
-  client: "7.5.0",
-  engine: "280c870be64f457428992c43c1f6d557fab6e29e"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -126,7 +126,7 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   perfil: 'perfil',
   imagem: 'imagem',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao',
+  atualizadoEm: 'atualizadoEm',
   relacaoEducando: 'relacaoEducando',
   codigoVerificacao: 'codigoVerificacao'
 };
@@ -134,7 +134,7 @@ exports.Prisma.UsuarioScalarFieldEnum = {
 exports.Prisma.AlunoScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
-  numero_matricula: 'numero_matricula',
+  matricula: 'matricula',
   telefone: 'telefone',
   imagem: 'imagem',
   classe: 'classe',
@@ -142,24 +142,24 @@ exports.Prisma.AlunoScalarFieldEnum = {
   encarregadoId: 'encarregadoId',
   cursoId: 'cursoId',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.TurmaScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
-  usuarioId: 'usuarioId',
+  professorId: 'professorId',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.DisciplinaScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   descricao: 'descricao',
+  cursoId: 'cursoId',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao',
-  cursoId: 'cursoId'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.NotaScalarFieldEnum = {
@@ -169,7 +169,7 @@ exports.Prisma.NotaScalarFieldEnum = {
   alunoId: 'alunoId',
   disciplinaId: 'disciplinaId',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.MensagemScalarFieldEnum = {
@@ -178,7 +178,7 @@ exports.Prisma.MensagemScalarFieldEnum = {
   remetenteId: 'remetenteId',
   destinatarioId: 'destinatarioId',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao',
+  atualizadoEm: 'atualizadoEm',
   editadoEm: 'editadoEm',
   deletadoParaRemetente: 'deletadoParaRemetente',
   deletadoParaDestinatario: 'deletadoParaDestinatario',
@@ -194,7 +194,7 @@ exports.Prisma.AvisoScalarFieldEnum = {
   conteudo: 'conteudo',
   imagem: 'imagem',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.RelatorioScalarFieldEnum = {
@@ -202,7 +202,7 @@ exports.Prisma.RelatorioScalarFieldEnum = {
   titulo: 'titulo',
   conteudo: 'conteudo',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.EventoScalarFieldEnum = {
@@ -211,17 +211,18 @@ exports.Prisma.EventoScalarFieldEnum = {
   descricao: 'descricao',
   imagem: 'imagem',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.ReuniaoScalarFieldEnum = {
   id: 'id',
-  linkMeeting: 'linkMeeting',
-  local: 'local',
   titulo: 'titulo',
+  local: 'local',
+  linkMeeting: 'linkMeeting',
+  dataHora: 'dataHora',
   criadoPorId: 'criadoPorId',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.CursoScalarFieldEnum = {
@@ -229,7 +230,7 @@ exports.Prisma.CursoScalarFieldEnum = {
   nome: 'nome',
   descricao: 'descricao',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.ReuniaoParticipanteScalarFieldEnum = {
@@ -251,9 +252,9 @@ exports.Prisma.CodigoProfessorScalarFieldEnum = {
   id: 'id',
   codigo: 'codigo',
   usado: 'usado',
+  professorId: 'professorId',
   criadoEm: 'criadoEm',
-  dataactualizacao: 'dataactualizacao',
-  professorId: 'professorId'
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.SortOrder = {

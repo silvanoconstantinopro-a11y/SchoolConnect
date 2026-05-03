@@ -228,7 +228,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
@@ -425,8 +425,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.5.0
-   * Query Engine version: 280c870be64f457428992c43c1f6d557fab6e29e
+   * Prisma Client JS version: 7.8.0
+   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
    */
   export type PrismaVersion = {
     client: string
@@ -2384,7 +2384,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil | null
     imagem: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
     relacaoEducando: $Enums.Relacao | null
     codigoVerificacao: string | null
   }
@@ -2398,7 +2398,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil | null
     imagem: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
     relacaoEducando: $Enums.Relacao | null
     codigoVerificacao: string | null
   }
@@ -2412,7 +2412,7 @@ export namespace Prisma {
     perfil: number
     imagem: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     relacaoEducando: number
     codigoVerificacao: number
     _all: number
@@ -2436,7 +2436,7 @@ export namespace Prisma {
     perfil?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     relacaoEducando?: true
     codigoVerificacao?: true
   }
@@ -2450,7 +2450,7 @@ export namespace Prisma {
     perfil?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     relacaoEducando?: true
     codigoVerificacao?: true
   }
@@ -2464,7 +2464,7 @@ export namespace Prisma {
     perfil?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     relacaoEducando?: true
     codigoVerificacao?: true
     _all?: true
@@ -2565,7 +2565,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem: string | null
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     relacaoEducando: $Enums.Relacao | null
     codigoVerificacao: string | null
     _count: UsuarioCountAggregateOutputType | null
@@ -2598,7 +2598,7 @@ export namespace Prisma {
     perfil?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
     alunos?: boolean | Usuario$alunosArgs<ExtArgs>
@@ -2622,7 +2622,7 @@ export namespace Prisma {
     perfil?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
   }, ExtArgs["result"]["usuario"]>
@@ -2636,7 +2636,7 @@ export namespace Prisma {
     perfil?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
   }, ExtArgs["result"]["usuario"]>
@@ -2650,12 +2650,12 @@ export namespace Prisma {
     perfil?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
   }
 
-  export type UsuarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "senha" | "telefone" | "perfil" | "imagem" | "criadoEm" | "dataactualizacao" | "relacaoEducando" | "codigoVerificacao", ExtArgs["result"]["usuario"]>
+  export type UsuarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "senha" | "telefone" | "perfil" | "imagem" | "criadoEm" | "atualizadoEm" | "relacaoEducando" | "codigoVerificacao", ExtArgs["result"]["usuario"]>
   export type UsuarioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     alunos?: boolean | Usuario$alunosArgs<ExtArgs>
     turmas?: boolean | Usuario$turmasArgs<ExtArgs>
@@ -2693,7 +2693,7 @@ export namespace Prisma {
       perfil: $Enums.Perfil
       imagem: string | null
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
       relacaoEducando: $Enums.Relacao | null
       codigoVerificacao: string | null
     }, ExtArgs["result"]["usuario"]>
@@ -3136,7 +3136,7 @@ export namespace Prisma {
     readonly perfil: FieldRef<"Usuario", 'Perfil'>
     readonly imagem: FieldRef<"Usuario", 'String'>
     readonly criadoEm: FieldRef<"Usuario", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Usuario", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Usuario", 'DateTime'>
     readonly relacaoEducando: FieldRef<"Usuario", 'Relacao'>
     readonly codigoVerificacao: FieldRef<"Usuario", 'String'>
   }
@@ -3788,7 +3788,7 @@ export namespace Prisma {
   export type AlunoMinAggregateOutputType = {
     id: number | null
     nome: string | null
-    numero_matricula: string | null
+    matricula: string | null
     telefone: string | null
     imagem: string | null
     classe: string | null
@@ -3796,13 +3796,13 @@ export namespace Prisma {
     encarregadoId: number | null
     cursoId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type AlunoMaxAggregateOutputType = {
     id: number | null
     nome: string | null
-    numero_matricula: string | null
+    matricula: string | null
     telefone: string | null
     imagem: string | null
     classe: string | null
@@ -3810,13 +3810,13 @@ export namespace Prisma {
     encarregadoId: number | null
     cursoId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type AlunoCountAggregateOutputType = {
     id: number
     nome: number
-    numero_matricula: number
+    matricula: number
     telefone: number
     imagem: number
     classe: number
@@ -3824,7 +3824,7 @@ export namespace Prisma {
     encarregadoId: number
     cursoId: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -3846,7 +3846,7 @@ export namespace Prisma {
   export type AlunoMinAggregateInputType = {
     id?: true
     nome?: true
-    numero_matricula?: true
+    matricula?: true
     telefone?: true
     imagem?: true
     classe?: true
@@ -3854,13 +3854,13 @@ export namespace Prisma {
     encarregadoId?: true
     cursoId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type AlunoMaxAggregateInputType = {
     id?: true
     nome?: true
-    numero_matricula?: true
+    matricula?: true
     telefone?: true
     imagem?: true
     classe?: true
@@ -3868,13 +3868,13 @@ export namespace Prisma {
     encarregadoId?: true
     cursoId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type AlunoCountAggregateInputType = {
     id?: true
     nome?: true
-    numero_matricula?: true
+    matricula?: true
     telefone?: true
     imagem?: true
     classe?: true
@@ -3882,7 +3882,7 @@ export namespace Prisma {
     encarregadoId?: true
     cursoId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -3975,7 +3975,7 @@ export namespace Prisma {
   export type AlunoGroupByOutputType = {
     id: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem: string | null
     classe: string
@@ -3983,7 +3983,7 @@ export namespace Prisma {
     encarregadoId: number | null
     cursoId: number
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: AlunoCountAggregateOutputType | null
     _avg: AlunoAvgAggregateOutputType | null
     _sum: AlunoSumAggregateOutputType | null
@@ -4008,7 +4008,7 @@ export namespace Prisma {
   export type AlunoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    numero_matricula?: boolean
+    matricula?: boolean
     telefone?: boolean
     imagem?: boolean
     classe?: boolean
@@ -4016,7 +4016,7 @@ export namespace Prisma {
     encarregadoId?: boolean
     cursoId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     turma?: boolean | TurmaDefaultArgs<ExtArgs>
     encarregado?: boolean | Aluno$encarregadoArgs<ExtArgs>
     curso?: boolean | CursoDefaultArgs<ExtArgs>
@@ -4027,7 +4027,7 @@ export namespace Prisma {
   export type AlunoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    numero_matricula?: boolean
+    matricula?: boolean
     telefone?: boolean
     imagem?: boolean
     classe?: boolean
@@ -4035,7 +4035,7 @@ export namespace Prisma {
     encarregadoId?: boolean
     cursoId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     turma?: boolean | TurmaDefaultArgs<ExtArgs>
     encarregado?: boolean | Aluno$encarregadoArgs<ExtArgs>
     curso?: boolean | CursoDefaultArgs<ExtArgs>
@@ -4044,7 +4044,7 @@ export namespace Prisma {
   export type AlunoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    numero_matricula?: boolean
+    matricula?: boolean
     telefone?: boolean
     imagem?: boolean
     classe?: boolean
@@ -4052,7 +4052,7 @@ export namespace Prisma {
     encarregadoId?: boolean
     cursoId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     turma?: boolean | TurmaDefaultArgs<ExtArgs>
     encarregado?: boolean | Aluno$encarregadoArgs<ExtArgs>
     curso?: boolean | CursoDefaultArgs<ExtArgs>
@@ -4061,7 +4061,7 @@ export namespace Prisma {
   export type AlunoSelectScalar = {
     id?: boolean
     nome?: boolean
-    numero_matricula?: boolean
+    matricula?: boolean
     telefone?: boolean
     imagem?: boolean
     classe?: boolean
@@ -4069,10 +4069,10 @@ export namespace Prisma {
     encarregadoId?: boolean
     cursoId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type AlunoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "numero_matricula" | "telefone" | "imagem" | "classe" | "turmaId" | "encarregadoId" | "cursoId" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["aluno"]>
+  export type AlunoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "matricula" | "telefone" | "imagem" | "classe" | "turmaId" | "encarregadoId" | "cursoId" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["aluno"]>
   export type AlunoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     turma?: boolean | TurmaDefaultArgs<ExtArgs>
     encarregado?: boolean | Aluno$encarregadoArgs<ExtArgs>
@@ -4102,7 +4102,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       nome: string
-      numero_matricula: string
+      matricula: string
       telefone: string
       imagem: string | null
       classe: string
@@ -4110,7 +4110,7 @@ export namespace Prisma {
       encarregadoId: number | null
       cursoId: number
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["aluno"]>
     composites: {}
   }
@@ -4540,7 +4540,7 @@ export namespace Prisma {
   interface AlunoFieldRefs {
     readonly id: FieldRef<"Aluno", 'Int'>
     readonly nome: FieldRef<"Aluno", 'String'>
-    readonly numero_matricula: FieldRef<"Aluno", 'String'>
+    readonly matricula: FieldRef<"Aluno", 'String'>
     readonly telefone: FieldRef<"Aluno", 'String'>
     readonly imagem: FieldRef<"Aluno", 'String'>
     readonly classe: FieldRef<"Aluno", 'String'>
@@ -4548,7 +4548,7 @@ export namespace Prisma {
     readonly encarregadoId: FieldRef<"Aluno", 'Int'>
     readonly cursoId: FieldRef<"Aluno", 'Int'>
     readonly criadoEm: FieldRef<"Aluno", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Aluno", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Aluno", 'DateTime'>
   }
     
 
@@ -5023,72 +5023,72 @@ export namespace Prisma {
 
   export type TurmaAvgAggregateOutputType = {
     id: number | null
-    usuarioId: number | null
+    professorId: number | null
   }
 
   export type TurmaSumAggregateOutputType = {
     id: number | null
-    usuarioId: number | null
+    professorId: number | null
   }
 
   export type TurmaMinAggregateOutputType = {
     id: number | null
     nome: string | null
-    usuarioId: number | null
+    professorId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type TurmaMaxAggregateOutputType = {
     id: number | null
     nome: string | null
-    usuarioId: number | null
+    professorId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type TurmaCountAggregateOutputType = {
     id: number
     nome: number
-    usuarioId: number
+    professorId: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
 
   export type TurmaAvgAggregateInputType = {
     id?: true
-    usuarioId?: true
+    professorId?: true
   }
 
   export type TurmaSumAggregateInputType = {
     id?: true
-    usuarioId?: true
+    professorId?: true
   }
 
   export type TurmaMinAggregateInputType = {
     id?: true
     nome?: true
-    usuarioId?: true
+    professorId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type TurmaMaxAggregateInputType = {
     id?: true
     nome?: true
-    usuarioId?: true
+    professorId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type TurmaCountAggregateInputType = {
     id?: true
     nome?: true
-    usuarioId?: true
+    professorId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -5181,9 +5181,9 @@ export namespace Prisma {
   export type TurmaGroupByOutputType = {
     id: number
     nome: string
-    usuarioId: number | null
+    professorId: number | null
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: TurmaCountAggregateOutputType | null
     _avg: TurmaAvgAggregateOutputType | null
     _sum: TurmaSumAggregateOutputType | null
@@ -5208,9 +5208,9 @@ export namespace Prisma {
   export type TurmaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    usuarioId?: boolean
+    professorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     professor?: boolean | Turma$professorArgs<ExtArgs>
     alunos?: boolean | Turma$alunosArgs<ExtArgs>
     _count?: boolean | TurmaCountOutputTypeDefaultArgs<ExtArgs>
@@ -5219,30 +5219,30 @@ export namespace Prisma {
   export type TurmaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    usuarioId?: boolean
+    professorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     professor?: boolean | Turma$professorArgs<ExtArgs>
   }, ExtArgs["result"]["turma"]>
 
   export type TurmaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nome?: boolean
-    usuarioId?: boolean
+    professorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     professor?: boolean | Turma$professorArgs<ExtArgs>
   }, ExtArgs["result"]["turma"]>
 
   export type TurmaSelectScalar = {
     id?: boolean
     nome?: boolean
-    usuarioId?: boolean
+    professorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type TurmaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "usuarioId" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["turma"]>
+  export type TurmaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "professorId" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["turma"]>
   export type TurmaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     professor?: boolean | Turma$professorArgs<ExtArgs>
     alunos?: boolean | Turma$alunosArgs<ExtArgs>
@@ -5264,9 +5264,9 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       nome: string
-      usuarioId: number | null
+      professorId: number | null
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["turma"]>
     composites: {}
   }
@@ -5694,9 +5694,9 @@ export namespace Prisma {
   interface TurmaFieldRefs {
     readonly id: FieldRef<"Turma", 'Int'>
     readonly nome: FieldRef<"Turma", 'String'>
-    readonly usuarioId: FieldRef<"Turma", 'Int'>
+    readonly professorId: FieldRef<"Turma", 'Int'>
     readonly criadoEm: FieldRef<"Turma", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Turma", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Turma", 'DateTime'>
   }
     
 
@@ -6183,27 +6183,27 @@ export namespace Prisma {
     id: number | null
     nome: string | null
     descricao: string | null
-    criadoEm: Date | null
-    dataactualizacao: Date | null
     cursoId: number | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
   export type DisciplinaMaxAggregateOutputType = {
     id: number | null
     nome: string | null
     descricao: string | null
-    criadoEm: Date | null
-    dataactualizacao: Date | null
     cursoId: number | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
   export type DisciplinaCountAggregateOutputType = {
     id: number
     nome: number
     descricao: number
-    criadoEm: number
-    dataactualizacao: number
     cursoId: number
+    criadoEm: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -6222,27 +6222,27 @@ export namespace Prisma {
     id?: true
     nome?: true
     descricao?: true
-    criadoEm?: true
-    dataactualizacao?: true
     cursoId?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
   export type DisciplinaMaxAggregateInputType = {
     id?: true
     nome?: true
     descricao?: true
-    criadoEm?: true
-    dataactualizacao?: true
     cursoId?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
   export type DisciplinaCountAggregateInputType = {
     id?: true
     nome?: true
     descricao?: true
-    criadoEm?: true
-    dataactualizacao?: true
     cursoId?: true
+    criadoEm?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -6336,9 +6336,9 @@ export namespace Prisma {
     id: number
     nome: string
     descricao: string
-    criadoEm: Date
-    dataactualizacao: Date
     cursoId: number
+    criadoEm: Date
+    atualizadoEm: Date
     _count: DisciplinaCountAggregateOutputType | null
     _avg: DisciplinaAvgAggregateOutputType | null
     _sum: DisciplinaSumAggregateOutputType | null
@@ -6364,9 +6364,9 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     descricao?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     cursoId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
     curso?: boolean | CursoDefaultArgs<ExtArgs>
     professores?: boolean | Disciplina$professoresArgs<ExtArgs>
     notas?: boolean | Disciplina$notasArgs<ExtArgs>
@@ -6377,9 +6377,9 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     descricao?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     cursoId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
     curso?: boolean | CursoDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["disciplina"]>
 
@@ -6387,9 +6387,9 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     descricao?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     cursoId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
     curso?: boolean | CursoDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["disciplina"]>
 
@@ -6397,12 +6397,12 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     descricao?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     cursoId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type DisciplinaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "descricao" | "criadoEm" | "dataactualizacao" | "cursoId", ExtArgs["result"]["disciplina"]>
+  export type DisciplinaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "descricao" | "cursoId" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["disciplina"]>
   export type DisciplinaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     curso?: boolean | CursoDefaultArgs<ExtArgs>
     professores?: boolean | Disciplina$professoresArgs<ExtArgs>
@@ -6427,9 +6427,9 @@ export namespace Prisma {
       id: number
       nome: string
       descricao: string
-      criadoEm: Date
-      dataactualizacao: Date
       cursoId: number
+      criadoEm: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["disciplina"]>
     composites: {}
   }
@@ -6859,9 +6859,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Disciplina", 'Int'>
     readonly nome: FieldRef<"Disciplina", 'String'>
     readonly descricao: FieldRef<"Disciplina", 'String'>
-    readonly criadoEm: FieldRef<"Disciplina", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Disciplina", 'DateTime'>
     readonly cursoId: FieldRef<"Disciplina", 'Int'>
+    readonly criadoEm: FieldRef<"Disciplina", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Disciplina", 'DateTime'>
   }
     
 
@@ -7360,7 +7360,7 @@ export namespace Prisma {
     alunoId: number | null
     disciplinaId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type NotaMaxAggregateOutputType = {
@@ -7370,7 +7370,7 @@ export namespace Prisma {
     alunoId: number | null
     disciplinaId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type NotaCountAggregateOutputType = {
@@ -7380,7 +7380,7 @@ export namespace Prisma {
     alunoId: number
     disciplinaId: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -7406,7 +7406,7 @@ export namespace Prisma {
     alunoId?: true
     disciplinaId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type NotaMaxAggregateInputType = {
@@ -7416,7 +7416,7 @@ export namespace Prisma {
     alunoId?: true
     disciplinaId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type NotaCountAggregateInputType = {
@@ -7426,7 +7426,7 @@ export namespace Prisma {
     alunoId?: true
     disciplinaId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -7523,7 +7523,7 @@ export namespace Prisma {
     alunoId: number
     disciplinaId: number
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: NotaCountAggregateOutputType | null
     _avg: NotaAvgAggregateOutputType | null
     _sum: NotaSumAggregateOutputType | null
@@ -7552,7 +7552,7 @@ export namespace Prisma {
     alunoId?: boolean
     disciplinaId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     aluno?: boolean | AlunoDefaultArgs<ExtArgs>
     disciplina?: boolean | DisciplinaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["nota"]>
@@ -7564,7 +7564,7 @@ export namespace Prisma {
     alunoId?: boolean
     disciplinaId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     aluno?: boolean | AlunoDefaultArgs<ExtArgs>
     disciplina?: boolean | DisciplinaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["nota"]>
@@ -7576,7 +7576,7 @@ export namespace Prisma {
     alunoId?: boolean
     disciplinaId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     aluno?: boolean | AlunoDefaultArgs<ExtArgs>
     disciplina?: boolean | DisciplinaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["nota"]>
@@ -7588,10 +7588,10 @@ export namespace Prisma {
     alunoId?: boolean
     disciplinaId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type NotaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "valor" | "tipo" | "alunoId" | "disciplinaId" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["nota"]>
+  export type NotaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "valor" | "tipo" | "alunoId" | "disciplinaId" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["nota"]>
   export type NotaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     aluno?: boolean | AlunoDefaultArgs<ExtArgs>
     disciplina?: boolean | DisciplinaDefaultArgs<ExtArgs>
@@ -7618,7 +7618,7 @@ export namespace Prisma {
       alunoId: number
       disciplinaId: number
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["nota"]>
     composites: {}
   }
@@ -8050,7 +8050,7 @@ export namespace Prisma {
     readonly alunoId: FieldRef<"Nota", 'Int'>
     readonly disciplinaId: FieldRef<"Nota", 'Int'>
     readonly criadoEm: FieldRef<"Nota", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Nota", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Nota", 'DateTime'>
   }
     
 
@@ -8500,7 +8500,7 @@ export namespace Prisma {
     remetenteId: number | null
     destinatarioId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
     editadoEm: Date | null
     deletadoParaRemetente: boolean | null
     deletadoParaDestinatario: boolean | null
@@ -8516,7 +8516,7 @@ export namespace Prisma {
     remetenteId: number | null
     destinatarioId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
     editadoEm: Date | null
     deletadoParaRemetente: boolean | null
     deletadoParaDestinatario: boolean | null
@@ -8532,7 +8532,7 @@ export namespace Prisma {
     remetenteId: number
     destinatarioId: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     editadoEm: number
     deletadoParaRemetente: number
     deletadoParaDestinatario: number
@@ -8564,7 +8564,7 @@ export namespace Prisma {
     remetenteId?: true
     destinatarioId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     editadoEm?: true
     deletadoParaRemetente?: true
     deletadoParaDestinatario?: true
@@ -8580,7 +8580,7 @@ export namespace Prisma {
     remetenteId?: true
     destinatarioId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     editadoEm?: true
     deletadoParaRemetente?: true
     deletadoParaDestinatario?: true
@@ -8596,7 +8596,7 @@ export namespace Prisma {
     remetenteId?: true
     destinatarioId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     editadoEm?: true
     deletadoParaRemetente?: true
     deletadoParaDestinatario?: true
@@ -8699,7 +8699,7 @@ export namespace Prisma {
     remetenteId: number
     destinatarioId: number
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     editadoEm: Date | null
     deletadoParaRemetente: boolean
     deletadoParaDestinatario: boolean
@@ -8734,7 +8734,7 @@ export namespace Prisma {
     remetenteId?: boolean
     destinatarioId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -8752,7 +8752,7 @@ export namespace Prisma {
     remetenteId?: boolean
     destinatarioId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -8770,7 +8770,7 @@ export namespace Prisma {
     remetenteId?: boolean
     destinatarioId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -8788,7 +8788,7 @@ export namespace Prisma {
     remetenteId?: boolean
     destinatarioId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -8798,7 +8798,7 @@ export namespace Prisma {
     arquivoTamanho?: boolean
   }
 
-  export type MensagemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "conteudo" | "remetenteId" | "destinatarioId" | "criadoEm" | "dataactualizacao" | "editadoEm" | "deletadoParaRemetente" | "deletadoParaDestinatario" | "arquivoUrl" | "arquivoNome" | "arquivoTipo" | "arquivoTamanho", ExtArgs["result"]["mensagem"]>
+  export type MensagemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "conteudo" | "remetenteId" | "destinatarioId" | "criadoEm" | "atualizadoEm" | "editadoEm" | "deletadoParaRemetente" | "deletadoParaDestinatario" | "arquivoUrl" | "arquivoNome" | "arquivoTipo" | "arquivoTamanho", ExtArgs["result"]["mensagem"]>
   export type MensagemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     remetente?: boolean | UsuarioDefaultArgs<ExtArgs>
     destinatario?: boolean | UsuarioDefaultArgs<ExtArgs>
@@ -8824,7 +8824,7 @@ export namespace Prisma {
       remetenteId: number
       destinatarioId: number
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
       editadoEm: Date | null
       deletadoParaRemetente: boolean
       deletadoParaDestinatario: boolean
@@ -9262,7 +9262,7 @@ export namespace Prisma {
     readonly remetenteId: FieldRef<"Mensagem", 'Int'>
     readonly destinatarioId: FieldRef<"Mensagem", 'Int'>
     readonly criadoEm: FieldRef<"Mensagem", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Mensagem", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Mensagem", 'DateTime'>
     readonly editadoEm: FieldRef<"Mensagem", 'DateTime'>
     readonly deletadoParaRemetente: FieldRef<"Mensagem", 'Boolean'>
     readonly deletadoParaDestinatario: FieldRef<"Mensagem", 'Boolean'>
@@ -9713,7 +9713,7 @@ export namespace Prisma {
     conteudo: string | null
     imagem: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type AvisoMaxAggregateOutputType = {
@@ -9722,7 +9722,7 @@ export namespace Prisma {
     conteudo: string | null
     imagem: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type AvisoCountAggregateOutputType = {
@@ -9731,7 +9731,7 @@ export namespace Prisma {
     conteudo: number
     imagem: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -9750,7 +9750,7 @@ export namespace Prisma {
     conteudo?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type AvisoMaxAggregateInputType = {
@@ -9759,7 +9759,7 @@ export namespace Prisma {
     conteudo?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type AvisoCountAggregateInputType = {
@@ -9768,7 +9768,7 @@ export namespace Prisma {
     conteudo?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -9864,7 +9864,7 @@ export namespace Prisma {
     conteudo: string
     imagem: string | null
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: AvisoCountAggregateOutputType | null
     _avg: AvisoAvgAggregateOutputType | null
     _sum: AvisoSumAggregateOutputType | null
@@ -9892,7 +9892,7 @@ export namespace Prisma {
     conteudo?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["aviso"]>
 
   export type AvisoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9901,7 +9901,7 @@ export namespace Prisma {
     conteudo?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["aviso"]>
 
   export type AvisoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9910,7 +9910,7 @@ export namespace Prisma {
     conteudo?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["aviso"]>
 
   export type AvisoSelectScalar = {
@@ -9919,10 +9919,10 @@ export namespace Prisma {
     conteudo?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type AvisoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "conteudo" | "imagem" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["aviso"]>
+  export type AvisoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "conteudo" | "imagem" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["aviso"]>
 
   export type $AvisoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Aviso"
@@ -9933,7 +9933,7 @@ export namespace Prisma {
       conteudo: string
       imagem: string | null
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["aviso"]>
     composites: {}
   }
@@ -10362,7 +10362,7 @@ export namespace Prisma {
     readonly conteudo: FieldRef<"Aviso", 'String'>
     readonly imagem: FieldRef<"Aviso", 'String'>
     readonly criadoEm: FieldRef<"Aviso", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Aviso", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Aviso", 'DateTime'>
   }
     
 
@@ -10757,7 +10757,7 @@ export namespace Prisma {
     titulo: string | null
     conteudo: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type RelatorioMaxAggregateOutputType = {
@@ -10765,7 +10765,7 @@ export namespace Prisma {
     titulo: string | null
     conteudo: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type RelatorioCountAggregateOutputType = {
@@ -10773,7 +10773,7 @@ export namespace Prisma {
     titulo: number
     conteudo: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -10791,7 +10791,7 @@ export namespace Prisma {
     titulo?: true
     conteudo?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type RelatorioMaxAggregateInputType = {
@@ -10799,7 +10799,7 @@ export namespace Prisma {
     titulo?: true
     conteudo?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type RelatorioCountAggregateInputType = {
@@ -10807,7 +10807,7 @@ export namespace Prisma {
     titulo?: true
     conteudo?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -10902,7 +10902,7 @@ export namespace Prisma {
     titulo: string
     conteudo: string
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: RelatorioCountAggregateOutputType | null
     _avg: RelatorioAvgAggregateOutputType | null
     _sum: RelatorioSumAggregateOutputType | null
@@ -10929,7 +10929,7 @@ export namespace Prisma {
     titulo?: boolean
     conteudo?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["relatorio"]>
 
   export type RelatorioSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10937,7 +10937,7 @@ export namespace Prisma {
     titulo?: boolean
     conteudo?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["relatorio"]>
 
   export type RelatorioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10945,7 +10945,7 @@ export namespace Prisma {
     titulo?: boolean
     conteudo?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["relatorio"]>
 
   export type RelatorioSelectScalar = {
@@ -10953,10 +10953,10 @@ export namespace Prisma {
     titulo?: boolean
     conteudo?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type RelatorioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "conteudo" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["relatorio"]>
+  export type RelatorioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "conteudo" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["relatorio"]>
 
   export type $RelatorioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Relatorio"
@@ -10966,7 +10966,7 @@ export namespace Prisma {
       titulo: string
       conteudo: string
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["relatorio"]>
     composites: {}
   }
@@ -11394,7 +11394,7 @@ export namespace Prisma {
     readonly titulo: FieldRef<"Relatorio", 'String'>
     readonly conteudo: FieldRef<"Relatorio", 'String'>
     readonly criadoEm: FieldRef<"Relatorio", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Relatorio", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Relatorio", 'DateTime'>
   }
     
 
@@ -11790,7 +11790,7 @@ export namespace Prisma {
     descricao: string | null
     imagem: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type EventoMaxAggregateOutputType = {
@@ -11799,7 +11799,7 @@ export namespace Prisma {
     descricao: string | null
     imagem: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type EventoCountAggregateOutputType = {
@@ -11808,7 +11808,7 @@ export namespace Prisma {
     descricao: number
     imagem: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -11827,7 +11827,7 @@ export namespace Prisma {
     descricao?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type EventoMaxAggregateInputType = {
@@ -11836,7 +11836,7 @@ export namespace Prisma {
     descricao?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type EventoCountAggregateInputType = {
@@ -11845,7 +11845,7 @@ export namespace Prisma {
     descricao?: true
     imagem?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -11941,7 +11941,7 @@ export namespace Prisma {
     descricao: string
     imagem: string | null
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: EventoCountAggregateOutputType | null
     _avg: EventoAvgAggregateOutputType | null
     _sum: EventoSumAggregateOutputType | null
@@ -11969,7 +11969,7 @@ export namespace Prisma {
     descricao?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["evento"]>
 
   export type EventoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11978,7 +11978,7 @@ export namespace Prisma {
     descricao?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["evento"]>
 
   export type EventoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -11987,7 +11987,7 @@ export namespace Prisma {
     descricao?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["evento"]>
 
   export type EventoSelectScalar = {
@@ -11996,10 +11996,10 @@ export namespace Prisma {
     descricao?: boolean
     imagem?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type EventoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "descricao" | "imagem" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["evento"]>
+  export type EventoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "descricao" | "imagem" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["evento"]>
 
   export type $EventoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Evento"
@@ -12010,7 +12010,7 @@ export namespace Prisma {
       descricao: string
       imagem: string | null
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["evento"]>
     composites: {}
   }
@@ -12439,7 +12439,7 @@ export namespace Prisma {
     readonly descricao: FieldRef<"Evento", 'String'>
     readonly imagem: FieldRef<"Evento", 'String'>
     readonly criadoEm: FieldRef<"Evento", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Evento", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Evento", 'DateTime'>
   }
     
 
@@ -12833,32 +12833,35 @@ export namespace Prisma {
 
   export type ReuniaoMinAggregateOutputType = {
     id: number | null
-    linkMeeting: string | null
-    local: string | null
     titulo: string | null
+    local: string | null
+    linkMeeting: string | null
+    dataHora: Date | null
     criadoPorId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type ReuniaoMaxAggregateOutputType = {
     id: number | null
-    linkMeeting: string | null
-    local: string | null
     titulo: string | null
+    local: string | null
+    linkMeeting: string | null
+    dataHora: Date | null
     criadoPorId: number | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type ReuniaoCountAggregateOutputType = {
     id: number
-    linkMeeting: number
-    local: number
     titulo: number
+    local: number
+    linkMeeting: number
+    dataHora: number
     criadoPorId: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -12875,32 +12878,35 @@ export namespace Prisma {
 
   export type ReuniaoMinAggregateInputType = {
     id?: true
-    linkMeeting?: true
-    local?: true
     titulo?: true
+    local?: true
+    linkMeeting?: true
+    dataHora?: true
     criadoPorId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type ReuniaoMaxAggregateInputType = {
     id?: true
-    linkMeeting?: true
-    local?: true
     titulo?: true
+    local?: true
+    linkMeeting?: true
+    dataHora?: true
     criadoPorId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type ReuniaoCountAggregateInputType = {
     id?: true
-    linkMeeting?: true
-    local?: true
     titulo?: true
+    local?: true
+    linkMeeting?: true
+    dataHora?: true
     criadoPorId?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -12992,12 +12998,13 @@ export namespace Prisma {
 
   export type ReuniaoGroupByOutputType = {
     id: number
-    linkMeeting: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting: string | null
+    dataHora: Date | null
     criadoPorId: number | null
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: ReuniaoCountAggregateOutputType | null
     _avg: ReuniaoAvgAggregateOutputType | null
     _sum: ReuniaoSumAggregateOutputType | null
@@ -13021,12 +13028,13 @@ export namespace Prisma {
 
   export type ReuniaoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    linkMeeting?: boolean
-    local?: boolean
     titulo?: boolean
+    local?: boolean
+    linkMeeting?: boolean
+    dataHora?: boolean
     criadoPorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     criadoPor?: boolean | Reuniao$criadoPorArgs<ExtArgs>
     participantes?: boolean | Reuniao$participantesArgs<ExtArgs>
     _count?: boolean | ReuniaoCountOutputTypeDefaultArgs<ExtArgs>
@@ -13034,37 +13042,40 @@ export namespace Prisma {
 
   export type ReuniaoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    linkMeeting?: boolean
-    local?: boolean
     titulo?: boolean
+    local?: boolean
+    linkMeeting?: boolean
+    dataHora?: boolean
     criadoPorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     criadoPor?: boolean | Reuniao$criadoPorArgs<ExtArgs>
   }, ExtArgs["result"]["reuniao"]>
 
   export type ReuniaoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    linkMeeting?: boolean
-    local?: boolean
     titulo?: boolean
+    local?: boolean
+    linkMeeting?: boolean
+    dataHora?: boolean
     criadoPorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     criadoPor?: boolean | Reuniao$criadoPorArgs<ExtArgs>
   }, ExtArgs["result"]["reuniao"]>
 
   export type ReuniaoSelectScalar = {
     id?: boolean
-    linkMeeting?: boolean
-    local?: boolean
     titulo?: boolean
+    local?: boolean
+    linkMeeting?: boolean
+    dataHora?: boolean
     criadoPorId?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type ReuniaoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "linkMeeting" | "local" | "titulo" | "criadoPorId" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["reuniao"]>
+  export type ReuniaoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "local" | "linkMeeting" | "dataHora" | "criadoPorId" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["reuniao"]>
   export type ReuniaoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     criadoPor?: boolean | Reuniao$criadoPorArgs<ExtArgs>
     participantes?: boolean | Reuniao$participantesArgs<ExtArgs>
@@ -13085,12 +13096,13 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      linkMeeting: string | null
-      local: string
       titulo: string
+      local: string
+      linkMeeting: string | null
+      dataHora: Date | null
       criadoPorId: number | null
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["reuniao"]>
     composites: {}
   }
@@ -13517,12 +13529,13 @@ export namespace Prisma {
    */
   interface ReuniaoFieldRefs {
     readonly id: FieldRef<"Reuniao", 'Int'>
-    readonly linkMeeting: FieldRef<"Reuniao", 'String'>
-    readonly local: FieldRef<"Reuniao", 'String'>
     readonly titulo: FieldRef<"Reuniao", 'String'>
+    readonly local: FieldRef<"Reuniao", 'String'>
+    readonly linkMeeting: FieldRef<"Reuniao", 'String'>
+    readonly dataHora: FieldRef<"Reuniao", 'DateTime'>
     readonly criadoPorId: FieldRef<"Reuniao", 'Int'>
     readonly criadoEm: FieldRef<"Reuniao", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Reuniao", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Reuniao", 'DateTime'>
   }
     
 
@@ -14008,7 +14021,7 @@ export namespace Prisma {
     nome: string | null
     descricao: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type CursoMaxAggregateOutputType = {
@@ -14016,7 +14029,7 @@ export namespace Prisma {
     nome: string | null
     descricao: string | null
     criadoEm: Date | null
-    dataactualizacao: Date | null
+    atualizadoEm: Date | null
   }
 
   export type CursoCountAggregateOutputType = {
@@ -14024,7 +14037,7 @@ export namespace Prisma {
     nome: number
     descricao: number
     criadoEm: number
-    dataactualizacao: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -14042,7 +14055,7 @@ export namespace Prisma {
     nome?: true
     descricao?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type CursoMaxAggregateInputType = {
@@ -14050,7 +14063,7 @@ export namespace Prisma {
     nome?: true
     descricao?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
   }
 
   export type CursoCountAggregateInputType = {
@@ -14058,7 +14071,7 @@ export namespace Prisma {
     nome?: true
     descricao?: true
     criadoEm?: true
-    dataactualizacao?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -14153,7 +14166,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm: Date
-    dataactualizacao: Date
+    atualizadoEm: Date
     _count: CursoCountAggregateOutputType | null
     _avg: CursoAvgAggregateOutputType | null
     _sum: CursoSumAggregateOutputType | null
@@ -14180,7 +14193,7 @@ export namespace Prisma {
     nome?: boolean
     descricao?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
     disciplinas?: boolean | Curso$disciplinasArgs<ExtArgs>
     alunos?: boolean | Curso$alunosArgs<ExtArgs>
     professores?: boolean | Curso$professoresArgs<ExtArgs>
@@ -14192,7 +14205,7 @@ export namespace Prisma {
     nome?: boolean
     descricao?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["curso"]>
 
   export type CursoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -14200,7 +14213,7 @@ export namespace Prisma {
     nome?: boolean
     descricao?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["curso"]>
 
   export type CursoSelectScalar = {
@@ -14208,10 +14221,10 @@ export namespace Prisma {
     nome?: boolean
     descricao?: boolean
     criadoEm?: boolean
-    dataactualizacao?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type CursoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "descricao" | "criadoEm" | "dataactualizacao", ExtArgs["result"]["curso"]>
+  export type CursoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "descricao" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["curso"]>
   export type CursoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     disciplinas?: boolean | Curso$disciplinasArgs<ExtArgs>
     alunos?: boolean | Curso$alunosArgs<ExtArgs>
@@ -14233,7 +14246,7 @@ export namespace Prisma {
       nome: string
       descricao: string
       criadoEm: Date
-      dataactualizacao: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["curso"]>
     composites: {}
   }
@@ -14664,7 +14677,7 @@ export namespace Prisma {
     readonly nome: FieldRef<"Curso", 'String'>
     readonly descricao: FieldRef<"Curso", 'String'>
     readonly criadoEm: FieldRef<"Curso", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"Curso", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Curso", 'DateTime'>
   }
     
 
@@ -17302,27 +17315,27 @@ export namespace Prisma {
     id: number | null
     codigo: string | null
     usado: boolean | null
-    criadoEm: Date | null
-    dataactualizacao: Date | null
     professorId: number | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
   export type CodigoProfessorMaxAggregateOutputType = {
     id: number | null
     codigo: string | null
     usado: boolean | null
-    criadoEm: Date | null
-    dataactualizacao: Date | null
     professorId: number | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
   export type CodigoProfessorCountAggregateOutputType = {
     id: number
     codigo: number
     usado: number
-    criadoEm: number
-    dataactualizacao: number
     professorId: number
+    criadoEm: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -17341,27 +17354,27 @@ export namespace Prisma {
     id?: true
     codigo?: true
     usado?: true
-    criadoEm?: true
-    dataactualizacao?: true
     professorId?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
   export type CodigoProfessorMaxAggregateInputType = {
     id?: true
     codigo?: true
     usado?: true
-    criadoEm?: true
-    dataactualizacao?: true
     professorId?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
   export type CodigoProfessorCountAggregateInputType = {
     id?: true
     codigo?: true
     usado?: true
-    criadoEm?: true
-    dataactualizacao?: true
     professorId?: true
+    criadoEm?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -17455,9 +17468,9 @@ export namespace Prisma {
     id: number
     codigo: string
     usado: boolean
-    criadoEm: Date
-    dataactualizacao: Date
     professorId: number | null
+    criadoEm: Date
+    atualizadoEm: Date
     _count: CodigoProfessorCountAggregateOutputType | null
     _avg: CodigoProfessorAvgAggregateOutputType | null
     _sum: CodigoProfessorSumAggregateOutputType | null
@@ -17483,9 +17496,9 @@ export namespace Prisma {
     id?: boolean
     codigo?: boolean
     usado?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     professorId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
     professor?: boolean | CodigoProfessor$professorArgs<ExtArgs>
   }, ExtArgs["result"]["codigoProfessor"]>
 
@@ -17493,9 +17506,9 @@ export namespace Prisma {
     id?: boolean
     codigo?: boolean
     usado?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     professorId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
     professor?: boolean | CodigoProfessor$professorArgs<ExtArgs>
   }, ExtArgs["result"]["codigoProfessor"]>
 
@@ -17503,9 +17516,9 @@ export namespace Prisma {
     id?: boolean
     codigo?: boolean
     usado?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     professorId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
     professor?: boolean | CodigoProfessor$professorArgs<ExtArgs>
   }, ExtArgs["result"]["codigoProfessor"]>
 
@@ -17513,12 +17526,12 @@ export namespace Prisma {
     id?: boolean
     codigo?: boolean
     usado?: boolean
-    criadoEm?: boolean
-    dataactualizacao?: boolean
     professorId?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type CodigoProfessorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "codigo" | "usado" | "criadoEm" | "dataactualizacao" | "professorId", ExtArgs["result"]["codigoProfessor"]>
+  export type CodigoProfessorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "codigo" | "usado" | "professorId" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["codigoProfessor"]>
   export type CodigoProfessorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     professor?: boolean | CodigoProfessor$professorArgs<ExtArgs>
   }
@@ -17538,9 +17551,9 @@ export namespace Prisma {
       id: number
       codigo: string
       usado: boolean
-      criadoEm: Date
-      dataactualizacao: Date
       professorId: number | null
+      criadoEm: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["codigoProfessor"]>
     composites: {}
   }
@@ -17968,9 +17981,9 @@ export namespace Prisma {
     readonly id: FieldRef<"CodigoProfessor", 'Int'>
     readonly codigo: FieldRef<"CodigoProfessor", 'String'>
     readonly usado: FieldRef<"CodigoProfessor", 'Boolean'>
-    readonly criadoEm: FieldRef<"CodigoProfessor", 'DateTime'>
-    readonly dataactualizacao: FieldRef<"CodigoProfessor", 'DateTime'>
     readonly professorId: FieldRef<"CodigoProfessor", 'Int'>
+    readonly criadoEm: FieldRef<"CodigoProfessor", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"CodigoProfessor", 'DateTime'>
   }
     
 
@@ -18427,7 +18440,7 @@ export namespace Prisma {
     perfil: 'perfil',
     imagem: 'imagem',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao',
+    atualizadoEm: 'atualizadoEm',
     relacaoEducando: 'relacaoEducando',
     codigoVerificacao: 'codigoVerificacao'
   };
@@ -18438,7 +18451,7 @@ export namespace Prisma {
   export const AlunoScalarFieldEnum: {
     id: 'id',
     nome: 'nome',
-    numero_matricula: 'numero_matricula',
+    matricula: 'matricula',
     telefone: 'telefone',
     imagem: 'imagem',
     classe: 'classe',
@@ -18446,7 +18459,7 @@ export namespace Prisma {
     encarregadoId: 'encarregadoId',
     cursoId: 'cursoId',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type AlunoScalarFieldEnum = (typeof AlunoScalarFieldEnum)[keyof typeof AlunoScalarFieldEnum]
@@ -18455,9 +18468,9 @@ export namespace Prisma {
   export const TurmaScalarFieldEnum: {
     id: 'id',
     nome: 'nome',
-    usuarioId: 'usuarioId',
+    professorId: 'professorId',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type TurmaScalarFieldEnum = (typeof TurmaScalarFieldEnum)[keyof typeof TurmaScalarFieldEnum]
@@ -18467,9 +18480,9 @@ export namespace Prisma {
     id: 'id',
     nome: 'nome',
     descricao: 'descricao',
+    cursoId: 'cursoId',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao',
-    cursoId: 'cursoId'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type DisciplinaScalarFieldEnum = (typeof DisciplinaScalarFieldEnum)[keyof typeof DisciplinaScalarFieldEnum]
@@ -18482,7 +18495,7 @@ export namespace Prisma {
     alunoId: 'alunoId',
     disciplinaId: 'disciplinaId',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type NotaScalarFieldEnum = (typeof NotaScalarFieldEnum)[keyof typeof NotaScalarFieldEnum]
@@ -18494,7 +18507,7 @@ export namespace Prisma {
     remetenteId: 'remetenteId',
     destinatarioId: 'destinatarioId',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao',
+    atualizadoEm: 'atualizadoEm',
     editadoEm: 'editadoEm',
     deletadoParaRemetente: 'deletadoParaRemetente',
     deletadoParaDestinatario: 'deletadoParaDestinatario',
@@ -18513,7 +18526,7 @@ export namespace Prisma {
     conteudo: 'conteudo',
     imagem: 'imagem',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type AvisoScalarFieldEnum = (typeof AvisoScalarFieldEnum)[keyof typeof AvisoScalarFieldEnum]
@@ -18524,7 +18537,7 @@ export namespace Prisma {
     titulo: 'titulo',
     conteudo: 'conteudo',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type RelatorioScalarFieldEnum = (typeof RelatorioScalarFieldEnum)[keyof typeof RelatorioScalarFieldEnum]
@@ -18536,7 +18549,7 @@ export namespace Prisma {
     descricao: 'descricao',
     imagem: 'imagem',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type EventoScalarFieldEnum = (typeof EventoScalarFieldEnum)[keyof typeof EventoScalarFieldEnum]
@@ -18544,12 +18557,13 @@ export namespace Prisma {
 
   export const ReuniaoScalarFieldEnum: {
     id: 'id',
-    linkMeeting: 'linkMeeting',
-    local: 'local',
     titulo: 'titulo',
+    local: 'local',
+    linkMeeting: 'linkMeeting',
+    dataHora: 'dataHora',
     criadoPorId: 'criadoPorId',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type ReuniaoScalarFieldEnum = (typeof ReuniaoScalarFieldEnum)[keyof typeof ReuniaoScalarFieldEnum]
@@ -18560,7 +18574,7 @@ export namespace Prisma {
     nome: 'nome',
     descricao: 'descricao',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type CursoScalarFieldEnum = (typeof CursoScalarFieldEnum)[keyof typeof CursoScalarFieldEnum]
@@ -18591,9 +18605,9 @@ export namespace Prisma {
     id: 'id',
     codigo: 'codigo',
     usado: 'usado',
+    professorId: 'professorId',
     criadoEm: 'criadoEm',
-    dataactualizacao: 'dataactualizacao',
-    professorId: 'professorId'
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type CodigoProfessorScalarFieldEnum = (typeof CodigoProfessorScalarFieldEnum)[keyof typeof CodigoProfessorScalarFieldEnum]
@@ -18684,7 +18698,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableFilter<"Usuario"> | string | null
     criadoEm?: DateTimeFilter<"Usuario"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableFilter<"Usuario"> | string | null
     alunos?: AlunoListRelationFilter
@@ -18707,7 +18721,7 @@ export namespace Prisma {
     perfil?: SortOrder
     imagem?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrderInput | SortOrder
     codigoVerificacao?: SortOrderInput | SortOrder
     alunos?: AlunoOrderByRelationAggregateInput
@@ -18733,7 +18747,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableFilter<"Usuario"> | string | null
     criadoEm?: DateTimeFilter<"Usuario"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableFilter<"Usuario"> | string | null
     alunos?: AlunoListRelationFilter
@@ -18756,7 +18770,7 @@ export namespace Prisma {
     perfil?: SortOrder
     imagem?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrderInput | SortOrder
     codigoVerificacao?: SortOrderInput | SortOrder
     _count?: UsuarioCountOrderByAggregateInput
@@ -18778,7 +18792,7 @@ export namespace Prisma {
     perfil?: EnumPerfilWithAggregatesFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableWithAggregatesFilter<"Usuario"> | string | null
     criadoEm?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableWithAggregatesFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableWithAggregatesFilter<"Usuario"> | string | null
   }
@@ -18789,7 +18803,7 @@ export namespace Prisma {
     NOT?: AlunoWhereInput | AlunoWhereInput[]
     id?: IntFilter<"Aluno"> | number
     nome?: StringFilter<"Aluno"> | string
-    numero_matricula?: StringFilter<"Aluno"> | string
+    matricula?: StringFilter<"Aluno"> | string
     telefone?: StringFilter<"Aluno"> | string
     imagem?: StringNullableFilter<"Aluno"> | string | null
     classe?: StringFilter<"Aluno"> | string
@@ -18797,7 +18811,7 @@ export namespace Prisma {
     encarregadoId?: IntNullableFilter<"Aluno"> | number | null
     cursoId?: IntFilter<"Aluno"> | number
     criadoEm?: DateTimeFilter<"Aluno"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Aluno"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Aluno"> | Date | string
     turma?: XOR<TurmaScalarRelationFilter, TurmaWhereInput>
     encarregado?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
     curso?: XOR<CursoScalarRelationFilter, CursoWhereInput>
@@ -18807,7 +18821,7 @@ export namespace Prisma {
   export type AlunoOrderByWithRelationInput = {
     id?: SortOrder
     nome?: SortOrder
-    numero_matricula?: SortOrder
+    matricula?: SortOrder
     telefone?: SortOrder
     imagem?: SortOrderInput | SortOrder
     classe?: SortOrder
@@ -18815,7 +18829,7 @@ export namespace Prisma {
     encarregadoId?: SortOrderInput | SortOrder
     cursoId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     turma?: TurmaOrderByWithRelationInput
     encarregado?: UsuarioOrderByWithRelationInput
     curso?: CursoOrderByWithRelationInput
@@ -18824,7 +18838,7 @@ export namespace Prisma {
 
   export type AlunoWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    numero_matricula?: string
+    matricula?: string
     telefone?: string
     AND?: AlunoWhereInput | AlunoWhereInput[]
     OR?: AlunoWhereInput[]
@@ -18836,17 +18850,17 @@ export namespace Prisma {
     encarregadoId?: IntNullableFilter<"Aluno"> | number | null
     cursoId?: IntFilter<"Aluno"> | number
     criadoEm?: DateTimeFilter<"Aluno"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Aluno"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Aluno"> | Date | string
     turma?: XOR<TurmaScalarRelationFilter, TurmaWhereInput>
     encarregado?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
     curso?: XOR<CursoScalarRelationFilter, CursoWhereInput>
     notas?: NotaListRelationFilter
-  }, "id" | "numero_matricula" | "telefone">
+  }, "id" | "matricula" | "telefone">
 
   export type AlunoOrderByWithAggregationInput = {
     id?: SortOrder
     nome?: SortOrder
-    numero_matricula?: SortOrder
+    matricula?: SortOrder
     telefone?: SortOrder
     imagem?: SortOrderInput | SortOrder
     classe?: SortOrder
@@ -18854,7 +18868,7 @@ export namespace Prisma {
     encarregadoId?: SortOrderInput | SortOrder
     cursoId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: AlunoCountOrderByAggregateInput
     _avg?: AlunoAvgOrderByAggregateInput
     _max?: AlunoMaxOrderByAggregateInput
@@ -18868,7 +18882,7 @@ export namespace Prisma {
     NOT?: AlunoScalarWhereWithAggregatesInput | AlunoScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Aluno"> | number
     nome?: StringWithAggregatesFilter<"Aluno"> | string
-    numero_matricula?: StringWithAggregatesFilter<"Aluno"> | string
+    matricula?: StringWithAggregatesFilter<"Aluno"> | string
     telefone?: StringWithAggregatesFilter<"Aluno"> | string
     imagem?: StringNullableWithAggregatesFilter<"Aluno"> | string | null
     classe?: StringWithAggregatesFilter<"Aluno"> | string
@@ -18876,7 +18890,7 @@ export namespace Prisma {
     encarregadoId?: IntNullableWithAggregatesFilter<"Aluno"> | number | null
     cursoId?: IntWithAggregatesFilter<"Aluno"> | number
     criadoEm?: DateTimeWithAggregatesFilter<"Aluno"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Aluno"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Aluno"> | Date | string
   }
 
   export type TurmaWhereInput = {
@@ -18885,9 +18899,9 @@ export namespace Prisma {
     NOT?: TurmaWhereInput | TurmaWhereInput[]
     id?: IntFilter<"Turma"> | number
     nome?: StringFilter<"Turma"> | string
-    usuarioId?: IntNullableFilter<"Turma"> | number | null
+    professorId?: IntNullableFilter<"Turma"> | number | null
     criadoEm?: DateTimeFilter<"Turma"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Turma"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Turma"> | Date | string
     professor?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
     alunos?: AlunoListRelationFilter
   }
@@ -18895,9 +18909,9 @@ export namespace Prisma {
   export type TurmaOrderByWithRelationInput = {
     id?: SortOrder
     nome?: SortOrder
-    usuarioId?: SortOrderInput | SortOrder
+    professorId?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     professor?: UsuarioOrderByWithRelationInput
     alunos?: AlunoOrderByRelationAggregateInput
   }
@@ -18908,9 +18922,9 @@ export namespace Prisma {
     OR?: TurmaWhereInput[]
     NOT?: TurmaWhereInput | TurmaWhereInput[]
     nome?: StringFilter<"Turma"> | string
-    usuarioId?: IntNullableFilter<"Turma"> | number | null
+    professorId?: IntNullableFilter<"Turma"> | number | null
     criadoEm?: DateTimeFilter<"Turma"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Turma"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Turma"> | Date | string
     professor?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
     alunos?: AlunoListRelationFilter
   }, "id">
@@ -18918,9 +18932,9 @@ export namespace Prisma {
   export type TurmaOrderByWithAggregationInput = {
     id?: SortOrder
     nome?: SortOrder
-    usuarioId?: SortOrderInput | SortOrder
+    professorId?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: TurmaCountOrderByAggregateInput
     _avg?: TurmaAvgOrderByAggregateInput
     _max?: TurmaMaxOrderByAggregateInput
@@ -18934,9 +18948,9 @@ export namespace Prisma {
     NOT?: TurmaScalarWhereWithAggregatesInput | TurmaScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Turma"> | number
     nome?: StringWithAggregatesFilter<"Turma"> | string
-    usuarioId?: IntNullableWithAggregatesFilter<"Turma"> | number | null
+    professorId?: IntNullableWithAggregatesFilter<"Turma"> | number | null
     criadoEm?: DateTimeWithAggregatesFilter<"Turma"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Turma"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Turma"> | Date | string
   }
 
   export type DisciplinaWhereInput = {
@@ -18946,9 +18960,9 @@ export namespace Prisma {
     id?: IntFilter<"Disciplina"> | number
     nome?: StringFilter<"Disciplina"> | string
     descricao?: StringFilter<"Disciplina"> | string
-    criadoEm?: DateTimeFilter<"Disciplina"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Disciplina"> | Date | string
     cursoId?: IntFilter<"Disciplina"> | number
+    criadoEm?: DateTimeFilter<"Disciplina"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Disciplina"> | Date | string
     curso?: XOR<CursoScalarRelationFilter, CursoWhereInput>
     professores?: UsuarioListRelationFilter
     notas?: NotaListRelationFilter
@@ -18958,9 +18972,9 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     descricao?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     cursoId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
     curso?: CursoOrderByWithRelationInput
     professores?: UsuarioOrderByRelationAggregateInput
     notas?: NotaOrderByRelationAggregateInput
@@ -18973,9 +18987,9 @@ export namespace Prisma {
     NOT?: DisciplinaWhereInput | DisciplinaWhereInput[]
     nome?: StringFilter<"Disciplina"> | string
     descricao?: StringFilter<"Disciplina"> | string
-    criadoEm?: DateTimeFilter<"Disciplina"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Disciplina"> | Date | string
     cursoId?: IntFilter<"Disciplina"> | number
+    criadoEm?: DateTimeFilter<"Disciplina"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Disciplina"> | Date | string
     curso?: XOR<CursoScalarRelationFilter, CursoWhereInput>
     professores?: UsuarioListRelationFilter
     notas?: NotaListRelationFilter
@@ -18985,9 +18999,9 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     descricao?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     cursoId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: DisciplinaCountOrderByAggregateInput
     _avg?: DisciplinaAvgOrderByAggregateInput
     _max?: DisciplinaMaxOrderByAggregateInput
@@ -19002,9 +19016,9 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Disciplina"> | number
     nome?: StringWithAggregatesFilter<"Disciplina"> | string
     descricao?: StringWithAggregatesFilter<"Disciplina"> | string
-    criadoEm?: DateTimeWithAggregatesFilter<"Disciplina"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Disciplina"> | Date | string
     cursoId?: IntWithAggregatesFilter<"Disciplina"> | number
+    criadoEm?: DateTimeWithAggregatesFilter<"Disciplina"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Disciplina"> | Date | string
   }
 
   export type NotaWhereInput = {
@@ -19017,7 +19031,7 @@ export namespace Prisma {
     alunoId?: IntFilter<"Nota"> | number
     disciplinaId?: IntFilter<"Nota"> | number
     criadoEm?: DateTimeFilter<"Nota"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Nota"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Nota"> | Date | string
     aluno?: XOR<AlunoScalarRelationFilter, AlunoWhereInput>
     disciplina?: XOR<DisciplinaScalarRelationFilter, DisciplinaWhereInput>
   }
@@ -19029,7 +19043,7 @@ export namespace Prisma {
     alunoId?: SortOrder
     disciplinaId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     aluno?: AlunoOrderByWithRelationInput
     disciplina?: DisciplinaOrderByWithRelationInput
   }
@@ -19044,7 +19058,7 @@ export namespace Prisma {
     alunoId?: IntFilter<"Nota"> | number
     disciplinaId?: IntFilter<"Nota"> | number
     criadoEm?: DateTimeFilter<"Nota"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Nota"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Nota"> | Date | string
     aluno?: XOR<AlunoScalarRelationFilter, AlunoWhereInput>
     disciplina?: XOR<DisciplinaScalarRelationFilter, DisciplinaWhereInput>
   }, "id">
@@ -19056,7 +19070,7 @@ export namespace Prisma {
     alunoId?: SortOrder
     disciplinaId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: NotaCountOrderByAggregateInput
     _avg?: NotaAvgOrderByAggregateInput
     _max?: NotaMaxOrderByAggregateInput
@@ -19074,7 +19088,7 @@ export namespace Prisma {
     alunoId?: IntWithAggregatesFilter<"Nota"> | number
     disciplinaId?: IntWithAggregatesFilter<"Nota"> | number
     criadoEm?: DateTimeWithAggregatesFilter<"Nota"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Nota"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Nota"> | Date | string
   }
 
   export type MensagemWhereInput = {
@@ -19086,7 +19100,7 @@ export namespace Prisma {
     remetenteId?: IntFilter<"Mensagem"> | number
     destinatarioId?: IntFilter<"Mensagem"> | number
     criadoEm?: DateTimeFilter<"Mensagem"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Mensagem"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Mensagem"> | Date | string
     editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolFilter<"Mensagem"> | boolean
@@ -19104,7 +19118,7 @@ export namespace Prisma {
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     editadoEm?: SortOrderInput | SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
@@ -19125,7 +19139,7 @@ export namespace Prisma {
     remetenteId?: IntFilter<"Mensagem"> | number
     destinatarioId?: IntFilter<"Mensagem"> | number
     criadoEm?: DateTimeFilter<"Mensagem"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Mensagem"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Mensagem"> | Date | string
     editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolFilter<"Mensagem"> | boolean
@@ -19143,7 +19157,7 @@ export namespace Prisma {
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     editadoEm?: SortOrderInput | SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
@@ -19167,7 +19181,7 @@ export namespace Prisma {
     remetenteId?: IntWithAggregatesFilter<"Mensagem"> | number
     destinatarioId?: IntWithAggregatesFilter<"Mensagem"> | number
     criadoEm?: DateTimeWithAggregatesFilter<"Mensagem"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Mensagem"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Mensagem"> | Date | string
     editadoEm?: DateTimeNullableWithAggregatesFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolWithAggregatesFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolWithAggregatesFilter<"Mensagem"> | boolean
@@ -19186,7 +19200,7 @@ export namespace Prisma {
     conteudo?: StringFilter<"Aviso"> | string
     imagem?: StringNullableFilter<"Aviso"> | string | null
     criadoEm?: DateTimeFilter<"Aviso"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Aviso"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Aviso"> | Date | string
   }
 
   export type AvisoOrderByWithRelationInput = {
@@ -19195,7 +19209,7 @@ export namespace Prisma {
     conteudo?: SortOrder
     imagem?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type AvisoWhereUniqueInput = Prisma.AtLeast<{
@@ -19207,7 +19221,7 @@ export namespace Prisma {
     conteudo?: StringFilter<"Aviso"> | string
     imagem?: StringNullableFilter<"Aviso"> | string | null
     criadoEm?: DateTimeFilter<"Aviso"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Aviso"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Aviso"> | Date | string
   }, "id">
 
   export type AvisoOrderByWithAggregationInput = {
@@ -19216,7 +19230,7 @@ export namespace Prisma {
     conteudo?: SortOrder
     imagem?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: AvisoCountOrderByAggregateInput
     _avg?: AvisoAvgOrderByAggregateInput
     _max?: AvisoMaxOrderByAggregateInput
@@ -19233,7 +19247,7 @@ export namespace Prisma {
     conteudo?: StringWithAggregatesFilter<"Aviso"> | string
     imagem?: StringNullableWithAggregatesFilter<"Aviso"> | string | null
     criadoEm?: DateTimeWithAggregatesFilter<"Aviso"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Aviso"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Aviso"> | Date | string
   }
 
   export type RelatorioWhereInput = {
@@ -19244,7 +19258,7 @@ export namespace Prisma {
     titulo?: StringFilter<"Relatorio"> | string
     conteudo?: StringFilter<"Relatorio"> | string
     criadoEm?: DateTimeFilter<"Relatorio"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Relatorio"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Relatorio"> | Date | string
   }
 
   export type RelatorioOrderByWithRelationInput = {
@@ -19252,7 +19266,7 @@ export namespace Prisma {
     titulo?: SortOrder
     conteudo?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type RelatorioWhereUniqueInput = Prisma.AtLeast<{
@@ -19263,7 +19277,7 @@ export namespace Prisma {
     titulo?: StringFilter<"Relatorio"> | string
     conteudo?: StringFilter<"Relatorio"> | string
     criadoEm?: DateTimeFilter<"Relatorio"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Relatorio"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Relatorio"> | Date | string
   }, "id">
 
   export type RelatorioOrderByWithAggregationInput = {
@@ -19271,7 +19285,7 @@ export namespace Prisma {
     titulo?: SortOrder
     conteudo?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: RelatorioCountOrderByAggregateInput
     _avg?: RelatorioAvgOrderByAggregateInput
     _max?: RelatorioMaxOrderByAggregateInput
@@ -19287,7 +19301,7 @@ export namespace Prisma {
     titulo?: StringWithAggregatesFilter<"Relatorio"> | string
     conteudo?: StringWithAggregatesFilter<"Relatorio"> | string
     criadoEm?: DateTimeWithAggregatesFilter<"Relatorio"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Relatorio"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Relatorio"> | Date | string
   }
 
   export type EventoWhereInput = {
@@ -19299,7 +19313,7 @@ export namespace Prisma {
     descricao?: StringFilter<"Evento"> | string
     imagem?: StringNullableFilter<"Evento"> | string | null
     criadoEm?: DateTimeFilter<"Evento"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Evento"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Evento"> | Date | string
   }
 
   export type EventoOrderByWithRelationInput = {
@@ -19308,7 +19322,7 @@ export namespace Prisma {
     descricao?: SortOrder
     imagem?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type EventoWhereUniqueInput = Prisma.AtLeast<{
@@ -19320,7 +19334,7 @@ export namespace Prisma {
     descricao?: StringFilter<"Evento"> | string
     imagem?: StringNullableFilter<"Evento"> | string | null
     criadoEm?: DateTimeFilter<"Evento"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Evento"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Evento"> | Date | string
   }, "id">
 
   export type EventoOrderByWithAggregationInput = {
@@ -19329,7 +19343,7 @@ export namespace Prisma {
     descricao?: SortOrder
     imagem?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: EventoCountOrderByAggregateInput
     _avg?: EventoAvgOrderByAggregateInput
     _max?: EventoMaxOrderByAggregateInput
@@ -19346,7 +19360,7 @@ export namespace Prisma {
     descricao?: StringWithAggregatesFilter<"Evento"> | string
     imagem?: StringNullableWithAggregatesFilter<"Evento"> | string | null
     criadoEm?: DateTimeWithAggregatesFilter<"Evento"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Evento"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Evento"> | Date | string
   }
 
   export type ReuniaoWhereInput = {
@@ -19354,24 +19368,26 @@ export namespace Prisma {
     OR?: ReuniaoWhereInput[]
     NOT?: ReuniaoWhereInput | ReuniaoWhereInput[]
     id?: IntFilter<"Reuniao"> | number
-    linkMeeting?: StringNullableFilter<"Reuniao"> | string | null
-    local?: StringFilter<"Reuniao"> | string
     titulo?: StringFilter<"Reuniao"> | string
+    local?: StringFilter<"Reuniao"> | string
+    linkMeeting?: StringNullableFilter<"Reuniao"> | string | null
+    dataHora?: DateTimeNullableFilter<"Reuniao"> | Date | string | null
     criadoPorId?: IntNullableFilter<"Reuniao"> | number | null
     criadoEm?: DateTimeFilter<"Reuniao"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Reuniao"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Reuniao"> | Date | string
     criadoPor?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
     participantes?: ReuniaoParticipanteListRelationFilter
   }
 
   export type ReuniaoOrderByWithRelationInput = {
     id?: SortOrder
-    linkMeeting?: SortOrderInput | SortOrder
-    local?: SortOrder
     titulo?: SortOrder
+    local?: SortOrder
+    linkMeeting?: SortOrderInput | SortOrder
+    dataHora?: SortOrderInput | SortOrder
     criadoPorId?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     criadoPor?: UsuarioOrderByWithRelationInput
     participantes?: ReuniaoParticipanteOrderByRelationAggregateInput
   }
@@ -19381,24 +19397,26 @@ export namespace Prisma {
     AND?: ReuniaoWhereInput | ReuniaoWhereInput[]
     OR?: ReuniaoWhereInput[]
     NOT?: ReuniaoWhereInput | ReuniaoWhereInput[]
-    linkMeeting?: StringNullableFilter<"Reuniao"> | string | null
-    local?: StringFilter<"Reuniao"> | string
     titulo?: StringFilter<"Reuniao"> | string
+    local?: StringFilter<"Reuniao"> | string
+    linkMeeting?: StringNullableFilter<"Reuniao"> | string | null
+    dataHora?: DateTimeNullableFilter<"Reuniao"> | Date | string | null
     criadoPorId?: IntNullableFilter<"Reuniao"> | number | null
     criadoEm?: DateTimeFilter<"Reuniao"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Reuniao"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Reuniao"> | Date | string
     criadoPor?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
     participantes?: ReuniaoParticipanteListRelationFilter
   }, "id">
 
   export type ReuniaoOrderByWithAggregationInput = {
     id?: SortOrder
-    linkMeeting?: SortOrderInput | SortOrder
-    local?: SortOrder
     titulo?: SortOrder
+    local?: SortOrder
+    linkMeeting?: SortOrderInput | SortOrder
+    dataHora?: SortOrderInput | SortOrder
     criadoPorId?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: ReuniaoCountOrderByAggregateInput
     _avg?: ReuniaoAvgOrderByAggregateInput
     _max?: ReuniaoMaxOrderByAggregateInput
@@ -19411,12 +19429,13 @@ export namespace Prisma {
     OR?: ReuniaoScalarWhereWithAggregatesInput[]
     NOT?: ReuniaoScalarWhereWithAggregatesInput | ReuniaoScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Reuniao"> | number
-    linkMeeting?: StringNullableWithAggregatesFilter<"Reuniao"> | string | null
-    local?: StringWithAggregatesFilter<"Reuniao"> | string
     titulo?: StringWithAggregatesFilter<"Reuniao"> | string
+    local?: StringWithAggregatesFilter<"Reuniao"> | string
+    linkMeeting?: StringNullableWithAggregatesFilter<"Reuniao"> | string | null
+    dataHora?: DateTimeNullableWithAggregatesFilter<"Reuniao"> | Date | string | null
     criadoPorId?: IntNullableWithAggregatesFilter<"Reuniao"> | number | null
     criadoEm?: DateTimeWithAggregatesFilter<"Reuniao"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Reuniao"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Reuniao"> | Date | string
   }
 
   export type CursoWhereInput = {
@@ -19427,7 +19446,7 @@ export namespace Prisma {
     nome?: StringFilter<"Curso"> | string
     descricao?: StringFilter<"Curso"> | string
     criadoEm?: DateTimeFilter<"Curso"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Curso"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Curso"> | Date | string
     disciplinas?: DisciplinaListRelationFilter
     alunos?: AlunoListRelationFilter
     professores?: UsuarioListRelationFilter
@@ -19438,7 +19457,7 @@ export namespace Prisma {
     nome?: SortOrder
     descricao?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     disciplinas?: DisciplinaOrderByRelationAggregateInput
     alunos?: AlunoOrderByRelationAggregateInput
     professores?: UsuarioOrderByRelationAggregateInput
@@ -19452,7 +19471,7 @@ export namespace Prisma {
     nome?: StringFilter<"Curso"> | string
     descricao?: StringFilter<"Curso"> | string
     criadoEm?: DateTimeFilter<"Curso"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Curso"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Curso"> | Date | string
     disciplinas?: DisciplinaListRelationFilter
     alunos?: AlunoListRelationFilter
     professores?: UsuarioListRelationFilter
@@ -19463,7 +19482,7 @@ export namespace Prisma {
     nome?: SortOrder
     descricao?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: CursoCountOrderByAggregateInput
     _avg?: CursoAvgOrderByAggregateInput
     _max?: CursoMaxOrderByAggregateInput
@@ -19479,7 +19498,7 @@ export namespace Prisma {
     nome?: StringWithAggregatesFilter<"Curso"> | string
     descricao?: StringWithAggregatesFilter<"Curso"> | string
     criadoEm?: DateTimeWithAggregatesFilter<"Curso"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"Curso"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Curso"> | Date | string
   }
 
   export type ReuniaoParticipanteWhereInput = {
@@ -19599,9 +19618,9 @@ export namespace Prisma {
     id?: IntFilter<"CodigoProfessor"> | number
     codigo?: StringFilter<"CodigoProfessor"> | string
     usado?: BoolFilter<"CodigoProfessor"> | boolean
-    criadoEm?: DateTimeFilter<"CodigoProfessor"> | Date | string
-    dataactualizacao?: DateTimeFilter<"CodigoProfessor"> | Date | string
     professorId?: IntNullableFilter<"CodigoProfessor"> | number | null
+    criadoEm?: DateTimeFilter<"CodigoProfessor"> | Date | string
+    atualizadoEm?: DateTimeFilter<"CodigoProfessor"> | Date | string
     professor?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
   }
 
@@ -19609,9 +19628,9 @@ export namespace Prisma {
     id?: SortOrder
     codigo?: SortOrder
     usado?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     professorId?: SortOrderInput | SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
     professor?: UsuarioOrderByWithRelationInput
   }
 
@@ -19624,7 +19643,7 @@ export namespace Prisma {
     NOT?: CodigoProfessorWhereInput | CodigoProfessorWhereInput[]
     usado?: BoolFilter<"CodigoProfessor"> | boolean
     criadoEm?: DateTimeFilter<"CodigoProfessor"> | Date | string
-    dataactualizacao?: DateTimeFilter<"CodigoProfessor"> | Date | string
+    atualizadoEm?: DateTimeFilter<"CodigoProfessor"> | Date | string
     professor?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
   }, "id" | "codigo" | "professorId">
 
@@ -19632,9 +19651,9 @@ export namespace Prisma {
     id?: SortOrder
     codigo?: SortOrder
     usado?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     professorId?: SortOrderInput | SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: CodigoProfessorCountOrderByAggregateInput
     _avg?: CodigoProfessorAvgOrderByAggregateInput
     _max?: CodigoProfessorMaxOrderByAggregateInput
@@ -19649,9 +19668,9 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"CodigoProfessor"> | number
     codigo?: StringWithAggregatesFilter<"CodigoProfessor"> | string
     usado?: BoolWithAggregatesFilter<"CodigoProfessor"> | boolean
-    criadoEm?: DateTimeWithAggregatesFilter<"CodigoProfessor"> | Date | string
-    dataactualizacao?: DateTimeWithAggregatesFilter<"CodigoProfessor"> | Date | string
     professorId?: IntNullableWithAggregatesFilter<"CodigoProfessor"> | number | null
+    criadoEm?: DateTimeWithAggregatesFilter<"CodigoProfessor"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"CodigoProfessor"> | Date | string
   }
 
   export type UsuarioCreateInput = {
@@ -19662,7 +19681,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -19685,7 +19704,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -19707,7 +19726,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -19730,7 +19749,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -19753,7 +19772,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
   }
@@ -19766,7 +19785,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -19780,19 +19799,19 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AlunoCreateInput = {
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     turma: TurmaCreateNestedOneWithoutAlunosInput
     encarregado?: UsuarioCreateNestedOneWithoutAlunosInput
     curso: CursoCreateNestedOneWithoutAlunosInput
@@ -19802,7 +19821,7 @@ export namespace Prisma {
   export type AlunoUncheckedCreateInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
@@ -19810,18 +19829,18 @@ export namespace Prisma {
     encarregadoId?: number | null
     cursoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     notas?: NotaUncheckedCreateNestedManyWithoutAlunoInput
   }
 
   export type AlunoUpdateInput = {
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     turma?: TurmaUpdateOneRequiredWithoutAlunosNestedInput
     encarregado?: UsuarioUpdateOneWithoutAlunosNestedInput
     curso?: CursoUpdateOneRequiredWithoutAlunosNestedInput
@@ -19831,7 +19850,7 @@ export namespace Prisma {
   export type AlunoUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
@@ -19839,14 +19858,14 @@ export namespace Prisma {
     encarregadoId?: NullableIntFieldUpdateOperationsInput | number | null
     cursoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     notas?: NotaUncheckedUpdateManyWithoutAlunoNestedInput
   }
 
   export type AlunoCreateManyInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
@@ -19854,23 +19873,23 @@ export namespace Prisma {
     encarregadoId?: number | null
     cursoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AlunoUpdateManyMutationInput = {
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlunoUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
@@ -19878,13 +19897,13 @@ export namespace Prisma {
     encarregadoId?: NullableIntFieldUpdateOperationsInput | number | null
     cursoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TurmaCreateInput = {
     nome: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     professor?: UsuarioCreateNestedOneWithoutTurmasInput
     alunos?: AlunoCreateNestedManyWithoutTurmaInput
   }
@@ -19892,16 +19911,16 @@ export namespace Prisma {
   export type TurmaUncheckedCreateInput = {
     id?: number
     nome: string
-    usuarioId?: number | null
+    professorId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutTurmaInput
   }
 
   export type TurmaUpdateInput = {
     nome?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     professor?: UsuarioUpdateOneWithoutTurmasNestedInput
     alunos?: AlunoUpdateManyWithoutTurmaNestedInput
   }
@@ -19909,39 +19928,39 @@ export namespace Prisma {
   export type TurmaUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
+    professorId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutTurmaNestedInput
   }
 
   export type TurmaCreateManyInput = {
     id?: number
     nome: string
-    usuarioId?: number | null
+    professorId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type TurmaUpdateManyMutationInput = {
     nome?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TurmaUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
+    professorId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DisciplinaCreateInput = {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     curso: CursoCreateNestedOneWithoutDisciplinasInput
     professores?: UsuarioCreateNestedManyWithoutDisciplinasInput
     notas?: NotaCreateNestedManyWithoutDisciplinaInput
@@ -19951,9 +19970,9 @@ export namespace Prisma {
     id?: number
     nome: string
     descricao: string
-    criadoEm?: Date | string
-    dataactualizacao?: Date | string
     cursoId: number
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     professores?: UsuarioUncheckedCreateNestedManyWithoutDisciplinasInput
     notas?: NotaUncheckedCreateNestedManyWithoutDisciplinaInput
   }
@@ -19962,7 +19981,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     curso?: CursoUpdateOneRequiredWithoutDisciplinasNestedInput
     professores?: UsuarioUpdateManyWithoutDisciplinasNestedInput
     notas?: NotaUpdateManyWithoutDisciplinaNestedInput
@@ -19972,9 +19991,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
     cursoId?: IntFieldUpdateOperationsInput | number
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     professores?: UsuarioUncheckedUpdateManyWithoutDisciplinasNestedInput
     notas?: NotaUncheckedUpdateManyWithoutDisciplinaNestedInput
   }
@@ -19983,32 +20002,32 @@ export namespace Prisma {
     id?: number
     nome: string
     descricao: string
-    criadoEm?: Date | string
-    dataactualizacao?: Date | string
     cursoId: number
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type DisciplinaUpdateManyMutationInput = {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DisciplinaUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
     cursoId?: IntFieldUpdateOperationsInput | number
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaCreateInput = {
     valor: number
     tipo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     aluno: AlunoCreateNestedOneWithoutNotasInput
     disciplina: DisciplinaCreateNestedOneWithoutNotasInput
   }
@@ -20020,14 +20039,14 @@ export namespace Prisma {
     alunoId: number
     disciplinaId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type NotaUpdateInput = {
     valor?: FloatFieldUpdateOperationsInput | number
     tipo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     aluno?: AlunoUpdateOneRequiredWithoutNotasNestedInput
     disciplina?: DisciplinaUpdateOneRequiredWithoutNotasNestedInput
   }
@@ -20039,7 +20058,7 @@ export namespace Prisma {
     alunoId?: IntFieldUpdateOperationsInput | number
     disciplinaId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaCreateManyInput = {
@@ -20049,14 +20068,14 @@ export namespace Prisma {
     alunoId: number
     disciplinaId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type NotaUpdateManyMutationInput = {
     valor?: FloatFieldUpdateOperationsInput | number
     tipo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaUncheckedUpdateManyInput = {
@@ -20066,13 +20085,13 @@ export namespace Prisma {
     alunoId?: IntFieldUpdateOperationsInput | number
     disciplinaId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MensagemCreateInput = {
     conteudo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -20090,7 +20109,7 @@ export namespace Prisma {
     remetenteId: number
     destinatarioId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -20103,7 +20122,7 @@ export namespace Prisma {
   export type MensagemUpdateInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -20121,7 +20140,7 @@ export namespace Prisma {
     remetenteId?: IntFieldUpdateOperationsInput | number
     destinatarioId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -20137,7 +20156,7 @@ export namespace Prisma {
     remetenteId: number
     destinatarioId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -20150,7 +20169,7 @@ export namespace Prisma {
   export type MensagemUpdateManyMutationInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -20166,7 +20185,7 @@ export namespace Prisma {
     remetenteId?: IntFieldUpdateOperationsInput | number
     destinatarioId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -20181,7 +20200,7 @@ export namespace Prisma {
     conteudo: string
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AvisoUncheckedCreateInput = {
@@ -20190,7 +20209,7 @@ export namespace Prisma {
     conteudo: string
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AvisoUpdateInput = {
@@ -20198,7 +20217,7 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AvisoUncheckedUpdateInput = {
@@ -20207,7 +20226,7 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AvisoCreateManyInput = {
@@ -20216,7 +20235,7 @@ export namespace Prisma {
     conteudo: string
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AvisoUpdateManyMutationInput = {
@@ -20224,7 +20243,7 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AvisoUncheckedUpdateManyInput = {
@@ -20233,14 +20252,14 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RelatorioCreateInput = {
     titulo: string
     conteudo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type RelatorioUncheckedCreateInput = {
@@ -20248,14 +20267,14 @@ export namespace Prisma {
     titulo: string
     conteudo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type RelatorioUpdateInput = {
     titulo?: StringFieldUpdateOperationsInput | string
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RelatorioUncheckedUpdateInput = {
@@ -20263,7 +20282,7 @@ export namespace Prisma {
     titulo?: StringFieldUpdateOperationsInput | string
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RelatorioCreateManyInput = {
@@ -20271,14 +20290,14 @@ export namespace Prisma {
     titulo: string
     conteudo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type RelatorioUpdateManyMutationInput = {
     titulo?: StringFieldUpdateOperationsInput | string
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type RelatorioUncheckedUpdateManyInput = {
@@ -20286,7 +20305,7 @@ export namespace Prisma {
     titulo?: StringFieldUpdateOperationsInput | string
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EventoCreateInput = {
@@ -20294,7 +20313,7 @@ export namespace Prisma {
     descricao: string
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type EventoUncheckedCreateInput = {
@@ -20303,7 +20322,7 @@ export namespace Prisma {
     descricao: string
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type EventoUpdateInput = {
@@ -20311,7 +20330,7 @@ export namespace Prisma {
     descricao?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EventoUncheckedUpdateInput = {
@@ -20320,7 +20339,7 @@ export namespace Prisma {
     descricao?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EventoCreateManyInput = {
@@ -20329,7 +20348,7 @@ export namespace Prisma {
     descricao: string
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type EventoUpdateManyMutationInput = {
@@ -20337,7 +20356,7 @@ export namespace Prisma {
     descricao?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EventoUncheckedUpdateManyInput = {
@@ -20346,84 +20365,91 @@ export namespace Prisma {
     descricao?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReuniaoCreateInput = {
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     criadoPor?: UsuarioCreateNestedOneWithoutReunioesAgendadasInput
     participantes?: ReuniaoParticipanteCreateNestedManyWithoutReuniaoInput
   }
 
   export type ReuniaoUncheckedCreateInput = {
     id?: number
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoPorId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     participantes?: ReuniaoParticipanteUncheckedCreateNestedManyWithoutReuniaoInput
   }
 
   export type ReuniaoUpdateInput = {
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     criadoPor?: UsuarioUpdateOneWithoutReunioesAgendadasNestedInput
     participantes?: ReuniaoParticipanteUpdateManyWithoutReuniaoNestedInput
   }
 
   export type ReuniaoUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     participantes?: ReuniaoParticipanteUncheckedUpdateManyWithoutReuniaoNestedInput
   }
 
   export type ReuniaoCreateManyInput = {
     id?: number
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoPorId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type ReuniaoUpdateManyMutationInput = {
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReuniaoUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CursoCreateInput = {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     disciplinas?: DisciplinaCreateNestedManyWithoutCursoInput
     alunos?: AlunoCreateNestedManyWithoutCursoInput
     professores?: UsuarioCreateNestedManyWithoutCursosInput
@@ -20434,7 +20460,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutCursoInput
     alunos?: AlunoUncheckedCreateNestedManyWithoutCursoInput
     professores?: UsuarioUncheckedCreateNestedManyWithoutCursosInput
@@ -20444,7 +20470,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     disciplinas?: DisciplinaUpdateManyWithoutCursoNestedInput
     alunos?: AlunoUpdateManyWithoutCursoNestedInput
     professores?: UsuarioUpdateManyWithoutCursosNestedInput
@@ -20455,7 +20481,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutCursoNestedInput
     alunos?: AlunoUncheckedUpdateManyWithoutCursoNestedInput
     professores?: UsuarioUncheckedUpdateManyWithoutCursosNestedInput
@@ -20466,14 +20492,14 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type CursoUpdateManyMutationInput = {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CursoUncheckedUpdateManyInput = {
@@ -20481,7 +20507,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReuniaoParticipanteCreateInput = {
@@ -20586,7 +20612,7 @@ export namespace Prisma {
     codigo: string
     usado?: boolean
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     professor?: UsuarioCreateNestedOneWithoutCodigoProfessorInput
   }
 
@@ -20594,16 +20620,16 @@ export namespace Prisma {
     id?: number
     codigo: string
     usado?: boolean
-    criadoEm?: Date | string
-    dataactualizacao?: Date | string
     professorId?: number | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type CodigoProfessorUpdateInput = {
     codigo?: StringFieldUpdateOperationsInput | string
     usado?: BoolFieldUpdateOperationsInput | boolean
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     professor?: UsuarioUpdateOneWithoutCodigoProfessorNestedInput
   }
 
@@ -20611,34 +20637,34 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     codigo?: StringFieldUpdateOperationsInput | string
     usado?: BoolFieldUpdateOperationsInput | boolean
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
     professorId?: NullableIntFieldUpdateOperationsInput | number | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CodigoProfessorCreateManyInput = {
     id?: number
     codigo: string
     usado?: boolean
-    criadoEm?: Date | string
-    dataactualizacao?: Date | string
     professorId?: number | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type CodigoProfessorUpdateManyMutationInput = {
     codigo?: StringFieldUpdateOperationsInput | string
     usado?: BoolFieldUpdateOperationsInput | boolean
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CodigoProfessorUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     codigo?: StringFieldUpdateOperationsInput | string
     usado?: BoolFieldUpdateOperationsInput | boolean
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
     professorId?: NullableIntFieldUpdateOperationsInput | number | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -20794,7 +20820,7 @@ export namespace Prisma {
     perfil?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrder
     codigoVerificacao?: SortOrder
   }
@@ -20812,7 +20838,7 @@ export namespace Prisma {
     perfil?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrder
     codigoVerificacao?: SortOrder
   }
@@ -20826,7 +20852,7 @@ export namespace Prisma {
     perfil?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrder
     codigoVerificacao?: SortOrder
   }
@@ -20958,7 +20984,7 @@ export namespace Prisma {
   export type AlunoCountOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    numero_matricula?: SortOrder
+    matricula?: SortOrder
     telefone?: SortOrder
     imagem?: SortOrder
     classe?: SortOrder
@@ -20966,7 +20992,7 @@ export namespace Prisma {
     encarregadoId?: SortOrder
     cursoId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type AlunoAvgOrderByAggregateInput = {
@@ -20979,7 +21005,7 @@ export namespace Prisma {
   export type AlunoMaxOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    numero_matricula?: SortOrder
+    matricula?: SortOrder
     telefone?: SortOrder
     imagem?: SortOrder
     classe?: SortOrder
@@ -20987,13 +21013,13 @@ export namespace Prisma {
     encarregadoId?: SortOrder
     cursoId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type AlunoMinOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    numero_matricula?: SortOrder
+    matricula?: SortOrder
     telefone?: SortOrder
     imagem?: SortOrder
     classe?: SortOrder
@@ -21001,7 +21027,7 @@ export namespace Prisma {
     encarregadoId?: SortOrder
     cursoId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type AlunoSumOrderByAggregateInput = {
@@ -21030,35 +21056,35 @@ export namespace Prisma {
   export type TurmaCountOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    usuarioId?: SortOrder
+    professorId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type TurmaAvgOrderByAggregateInput = {
     id?: SortOrder
-    usuarioId?: SortOrder
+    professorId?: SortOrder
   }
 
   export type TurmaMaxOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    usuarioId?: SortOrder
+    professorId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type TurmaMinOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
-    usuarioId?: SortOrder
+    professorId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type TurmaSumOrderByAggregateInput = {
     id?: SortOrder
-    usuarioId?: SortOrder
+    professorId?: SortOrder
   }
 
   export type UsuarioListRelationFilter = {
@@ -21075,9 +21101,9 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     descricao?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     cursoId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type DisciplinaAvgOrderByAggregateInput = {
@@ -21089,18 +21115,18 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     descricao?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     cursoId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type DisciplinaMinOrderByAggregateInput = {
     id?: SortOrder
     nome?: SortOrder
     descricao?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     cursoId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type DisciplinaSumOrderByAggregateInput = {
@@ -21136,7 +21162,7 @@ export namespace Prisma {
     alunoId?: SortOrder
     disciplinaId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type NotaAvgOrderByAggregateInput = {
@@ -21153,7 +21179,7 @@ export namespace Prisma {
     alunoId?: SortOrder
     disciplinaId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type NotaMinOrderByAggregateInput = {
@@ -21163,7 +21189,7 @@ export namespace Prisma {
     alunoId?: SortOrder
     disciplinaId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type NotaSumOrderByAggregateInput = {
@@ -21216,7 +21242,7 @@ export namespace Prisma {
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     editadoEm?: SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
@@ -21239,7 +21265,7 @@ export namespace Prisma {
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     editadoEm?: SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
@@ -21255,7 +21281,7 @@ export namespace Prisma {
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
     editadoEm?: SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
@@ -21300,7 +21326,7 @@ export namespace Prisma {
     conteudo?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type AvisoAvgOrderByAggregateInput = {
@@ -21313,7 +21339,7 @@ export namespace Prisma {
     conteudo?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type AvisoMinOrderByAggregateInput = {
@@ -21322,7 +21348,7 @@ export namespace Prisma {
     conteudo?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type AvisoSumOrderByAggregateInput = {
@@ -21334,7 +21360,7 @@ export namespace Prisma {
     titulo?: SortOrder
     conteudo?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type RelatorioAvgOrderByAggregateInput = {
@@ -21346,7 +21372,7 @@ export namespace Prisma {
     titulo?: SortOrder
     conteudo?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type RelatorioMinOrderByAggregateInput = {
@@ -21354,7 +21380,7 @@ export namespace Prisma {
     titulo?: SortOrder
     conteudo?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type RelatorioSumOrderByAggregateInput = {
@@ -21367,7 +21393,7 @@ export namespace Prisma {
     descricao?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type EventoAvgOrderByAggregateInput = {
@@ -21380,7 +21406,7 @@ export namespace Prisma {
     descricao?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type EventoMinOrderByAggregateInput = {
@@ -21389,7 +21415,7 @@ export namespace Prisma {
     descricao?: SortOrder
     imagem?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type EventoSumOrderByAggregateInput = {
@@ -21398,12 +21424,13 @@ export namespace Prisma {
 
   export type ReuniaoCountOrderByAggregateInput = {
     id?: SortOrder
-    linkMeeting?: SortOrder
-    local?: SortOrder
     titulo?: SortOrder
+    local?: SortOrder
+    linkMeeting?: SortOrder
+    dataHora?: SortOrder
     criadoPorId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type ReuniaoAvgOrderByAggregateInput = {
@@ -21413,22 +21440,24 @@ export namespace Prisma {
 
   export type ReuniaoMaxOrderByAggregateInput = {
     id?: SortOrder
-    linkMeeting?: SortOrder
-    local?: SortOrder
     titulo?: SortOrder
+    local?: SortOrder
+    linkMeeting?: SortOrder
+    dataHora?: SortOrder
     criadoPorId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type ReuniaoMinOrderByAggregateInput = {
     id?: SortOrder
-    linkMeeting?: SortOrder
-    local?: SortOrder
     titulo?: SortOrder
+    local?: SortOrder
+    linkMeeting?: SortOrder
+    dataHora?: SortOrder
     criadoPorId?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type ReuniaoSumOrderByAggregateInput = {
@@ -21441,7 +21470,7 @@ export namespace Prisma {
     nome?: SortOrder
     descricao?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type CursoAvgOrderByAggregateInput = {
@@ -21453,7 +21482,7 @@ export namespace Prisma {
     nome?: SortOrder
     descricao?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type CursoMinOrderByAggregateInput = {
@@ -21461,7 +21490,7 @@ export namespace Prisma {
     nome?: SortOrder
     descricao?: SortOrder
     criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type CursoSumOrderByAggregateInput = {
@@ -21547,9 +21576,9 @@ export namespace Prisma {
     id?: SortOrder
     codigo?: SortOrder
     usado?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     professorId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type CodigoProfessorAvgOrderByAggregateInput = {
@@ -21561,18 +21590,18 @@ export namespace Prisma {
     id?: SortOrder
     codigo?: SortOrder
     usado?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     professorId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type CodigoProfessorMinOrderByAggregateInput = {
     id?: SortOrder
     codigo?: SortOrder
     usado?: SortOrder
-    criadoEm?: SortOrder
-    dataactualizacao?: SortOrder
     professorId?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type CodigoProfessorSumOrderByAggregateInput = {
@@ -22763,12 +22792,12 @@ export namespace Prisma {
 
   export type AlunoCreateWithoutEncarregadoInput = {
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     turma: TurmaCreateNestedOneWithoutAlunosInput
     curso: CursoCreateNestedOneWithoutAlunosInput
     notas?: NotaCreateNestedManyWithoutAlunoInput
@@ -22777,14 +22806,14 @@ export namespace Prisma {
   export type AlunoUncheckedCreateWithoutEncarregadoInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     turmaId: number
     cursoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     notas?: NotaUncheckedCreateNestedManyWithoutAlunoInput
   }
 
@@ -22800,7 +22829,7 @@ export namespace Prisma {
   export type TurmaCreateWithoutProfessorInput = {
     nome: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutTurmaInput
   }
 
@@ -22808,7 +22837,7 @@ export namespace Prisma {
     id?: number
     nome: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutTurmaInput
   }
 
@@ -22825,7 +22854,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     curso: CursoCreateNestedOneWithoutDisciplinasInput
     notas?: NotaCreateNestedManyWithoutDisciplinaInput
   }
@@ -22834,9 +22863,9 @@ export namespace Prisma {
     id?: number
     nome: string
     descricao: string
-    criadoEm?: Date | string
-    dataactualizacao?: Date | string
     cursoId: number
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     notas?: NotaUncheckedCreateNestedManyWithoutDisciplinaInput
   }
 
@@ -22849,7 +22878,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     disciplinas?: DisciplinaCreateNestedManyWithoutCursoInput
     alunos?: AlunoCreateNestedManyWithoutCursoInput
   }
@@ -22859,7 +22888,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutCursoInput
     alunos?: AlunoUncheckedCreateNestedManyWithoutCursoInput
   }
@@ -22872,7 +22901,7 @@ export namespace Prisma {
   export type MensagemCreateWithoutRemetenteInput = {
     conteudo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -22888,7 +22917,7 @@ export namespace Prisma {
     conteudo: string
     destinatarioId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -22910,7 +22939,7 @@ export namespace Prisma {
   export type MensagemCreateWithoutDestinatarioInput = {
     conteudo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -22926,7 +22955,7 @@ export namespace Prisma {
     conteudo: string
     remetenteId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -22964,21 +22993,23 @@ export namespace Prisma {
   }
 
   export type ReuniaoCreateWithoutCriadoPorInput = {
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     participantes?: ReuniaoParticipanteCreateNestedManyWithoutReuniaoInput
   }
 
   export type ReuniaoUncheckedCreateWithoutCriadoPorInput = {
     id?: number
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     participantes?: ReuniaoParticipanteUncheckedCreateNestedManyWithoutReuniaoInput
   }
 
@@ -22995,7 +23026,7 @@ export namespace Prisma {
     codigo: string
     usado?: boolean
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type CodigoProfessorUncheckedCreateWithoutProfessorInput = {
@@ -23003,7 +23034,7 @@ export namespace Prisma {
     codigo: string
     usado?: boolean
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type CodigoProfessorCreateOrConnectWithoutProfessorInput = {
@@ -23033,7 +23064,7 @@ export namespace Prisma {
     NOT?: AlunoScalarWhereInput | AlunoScalarWhereInput[]
     id?: IntFilter<"Aluno"> | number
     nome?: StringFilter<"Aluno"> | string
-    numero_matricula?: StringFilter<"Aluno"> | string
+    matricula?: StringFilter<"Aluno"> | string
     telefone?: StringFilter<"Aluno"> | string
     imagem?: StringNullableFilter<"Aluno"> | string | null
     classe?: StringFilter<"Aluno"> | string
@@ -23041,7 +23072,7 @@ export namespace Prisma {
     encarregadoId?: IntNullableFilter<"Aluno"> | number | null
     cursoId?: IntFilter<"Aluno"> | number
     criadoEm?: DateTimeFilter<"Aluno"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Aluno"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Aluno"> | Date | string
   }
 
   export type TurmaUpsertWithWhereUniqueWithoutProfessorInput = {
@@ -23066,9 +23097,9 @@ export namespace Prisma {
     NOT?: TurmaScalarWhereInput | TurmaScalarWhereInput[]
     id?: IntFilter<"Turma"> | number
     nome?: StringFilter<"Turma"> | string
-    usuarioId?: IntNullableFilter<"Turma"> | number | null
+    professorId?: IntNullableFilter<"Turma"> | number | null
     criadoEm?: DateTimeFilter<"Turma"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Turma"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Turma"> | Date | string
   }
 
   export type DisciplinaUpsertWithWhereUniqueWithoutProfessoresInput = {
@@ -23094,9 +23125,9 @@ export namespace Prisma {
     id?: IntFilter<"Disciplina"> | number
     nome?: StringFilter<"Disciplina"> | string
     descricao?: StringFilter<"Disciplina"> | string
-    criadoEm?: DateTimeFilter<"Disciplina"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Disciplina"> | Date | string
     cursoId?: IntFilter<"Disciplina"> | number
+    criadoEm?: DateTimeFilter<"Disciplina"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Disciplina"> | Date | string
   }
 
   export type CursoUpsertWithWhereUniqueWithoutProfessoresInput = {
@@ -23123,7 +23154,7 @@ export namespace Prisma {
     nome?: StringFilter<"Curso"> | string
     descricao?: StringFilter<"Curso"> | string
     criadoEm?: DateTimeFilter<"Curso"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Curso"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Curso"> | Date | string
   }
 
   export type MensagemUpsertWithWhereUniqueWithoutRemetenteInput = {
@@ -23151,7 +23182,7 @@ export namespace Prisma {
     remetenteId?: IntFilter<"Mensagem"> | number
     destinatarioId?: IntFilter<"Mensagem"> | number
     criadoEm?: DateTimeFilter<"Mensagem"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Mensagem"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Mensagem"> | Date | string
     editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolFilter<"Mensagem"> | boolean
@@ -23223,12 +23254,13 @@ export namespace Prisma {
     OR?: ReuniaoScalarWhereInput[]
     NOT?: ReuniaoScalarWhereInput | ReuniaoScalarWhereInput[]
     id?: IntFilter<"Reuniao"> | number
-    linkMeeting?: StringNullableFilter<"Reuniao"> | string | null
-    local?: StringFilter<"Reuniao"> | string
     titulo?: StringFilter<"Reuniao"> | string
+    local?: StringFilter<"Reuniao"> | string
+    linkMeeting?: StringNullableFilter<"Reuniao"> | string | null
+    dataHora?: DateTimeNullableFilter<"Reuniao"> | Date | string | null
     criadoPorId?: IntNullableFilter<"Reuniao"> | number | null
     criadoEm?: DateTimeFilter<"Reuniao"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Reuniao"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Reuniao"> | Date | string
   }
 
   export type CodigoProfessorUpsertWithoutProfessorInput = {
@@ -23246,7 +23278,7 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     usado?: BoolFieldUpdateOperationsInput | boolean
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CodigoProfessorUncheckedUpdateWithoutProfessorInput = {
@@ -23254,22 +23286,22 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     usado?: BoolFieldUpdateOperationsInput | boolean
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TurmaCreateWithoutAlunosInput = {
     nome: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     professor?: UsuarioCreateNestedOneWithoutTurmasInput
   }
 
   export type TurmaUncheckedCreateWithoutAlunosInput = {
     id?: number
     nome: string
-    usuarioId?: number | null
+    professorId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type TurmaCreateOrConnectWithoutAlunosInput = {
@@ -23285,7 +23317,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
@@ -23307,7 +23339,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
@@ -23329,7 +23361,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     disciplinas?: DisciplinaCreateNestedManyWithoutCursoInput
     professores?: UsuarioCreateNestedManyWithoutCursosInput
   }
@@ -23339,7 +23371,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutCursoInput
     professores?: UsuarioUncheckedCreateNestedManyWithoutCursosInput
   }
@@ -23353,7 +23385,7 @@ export namespace Prisma {
     valor: number
     tipo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     disciplina: DisciplinaCreateNestedOneWithoutNotasInput
   }
 
@@ -23363,7 +23395,7 @@ export namespace Prisma {
     tipo: string
     disciplinaId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type NotaCreateOrConnectWithoutAlunoInput = {
@@ -23389,16 +23421,16 @@ export namespace Prisma {
   export type TurmaUpdateWithoutAlunosInput = {
     nome?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     professor?: UsuarioUpdateOneWithoutTurmasNestedInput
   }
 
   export type TurmaUncheckedUpdateWithoutAlunosInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
+    professorId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UsuarioUpsertWithoutAlunosInput = {
@@ -23420,7 +23452,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
@@ -23442,7 +23474,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
@@ -23470,7 +23502,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     disciplinas?: DisciplinaUpdateManyWithoutCursoNestedInput
     professores?: UsuarioUpdateManyWithoutCursosNestedInput
   }
@@ -23480,7 +23512,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutCursoNestedInput
     professores?: UsuarioUncheckedUpdateManyWithoutCursosNestedInput
   }
@@ -23511,7 +23543,7 @@ export namespace Prisma {
     alunoId?: IntFilter<"Nota"> | number
     disciplinaId?: IntFilter<"Nota"> | number
     criadoEm?: DateTimeFilter<"Nota"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Nota"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Nota"> | Date | string
   }
 
   export type UsuarioCreateWithoutTurmasInput = {
@@ -23522,7 +23554,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -23544,7 +23576,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -23564,12 +23596,12 @@ export namespace Prisma {
 
   export type AlunoCreateWithoutTurmaInput = {
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     encarregado?: UsuarioCreateNestedOneWithoutAlunosInput
     curso: CursoCreateNestedOneWithoutAlunosInput
     notas?: NotaCreateNestedManyWithoutAlunoInput
@@ -23578,14 +23610,14 @@ export namespace Prisma {
   export type AlunoUncheckedCreateWithoutTurmaInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     encarregadoId?: number | null
     cursoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     notas?: NotaUncheckedCreateNestedManyWithoutAlunoInput
   }
 
@@ -23617,7 +23649,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -23639,7 +23671,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -23672,7 +23704,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutCursoInput
     professores?: UsuarioCreateNestedManyWithoutCursosInput
   }
@@ -23682,7 +23714,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutCursoInput
     professores?: UsuarioUncheckedCreateNestedManyWithoutCursosInput
   }
@@ -23700,7 +23732,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -23722,7 +23754,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -23744,7 +23776,7 @@ export namespace Prisma {
     valor: number
     tipo: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     aluno: AlunoCreateNestedOneWithoutNotasInput
   }
 
@@ -23754,7 +23786,7 @@ export namespace Prisma {
     tipo: string
     alunoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type NotaCreateOrConnectWithoutDisciplinaInput = {
@@ -23781,7 +23813,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutCursoNestedInput
     professores?: UsuarioUpdateManyWithoutCursosNestedInput
   }
@@ -23791,7 +23823,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutCursoNestedInput
     professores?: UsuarioUncheckedUpdateManyWithoutCursosNestedInput
   }
@@ -23824,7 +23856,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableFilter<"Usuario"> | string | null
     criadoEm?: DateTimeFilter<"Usuario"> | Date | string
-    dataactualizacao?: DateTimeFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableFilter<"Usuario"> | string | null
   }
@@ -23847,12 +23879,12 @@ export namespace Prisma {
 
   export type AlunoCreateWithoutNotasInput = {
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     turma: TurmaCreateNestedOneWithoutAlunosInput
     encarregado?: UsuarioCreateNestedOneWithoutAlunosInput
     curso: CursoCreateNestedOneWithoutAlunosInput
@@ -23861,7 +23893,7 @@ export namespace Prisma {
   export type AlunoUncheckedCreateWithoutNotasInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
@@ -23869,7 +23901,7 @@ export namespace Prisma {
     encarregadoId?: number | null
     cursoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AlunoCreateOrConnectWithoutNotasInput = {
@@ -23881,7 +23913,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     curso: CursoCreateNestedOneWithoutDisciplinasInput
     professores?: UsuarioCreateNestedManyWithoutDisciplinasInput
   }
@@ -23890,9 +23922,9 @@ export namespace Prisma {
     id?: number
     nome: string
     descricao: string
-    criadoEm?: Date | string
-    dataactualizacao?: Date | string
     cursoId: number
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     professores?: UsuarioUncheckedCreateNestedManyWithoutDisciplinasInput
   }
 
@@ -23914,12 +23946,12 @@ export namespace Prisma {
 
   export type AlunoUpdateWithoutNotasInput = {
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     turma?: TurmaUpdateOneRequiredWithoutAlunosNestedInput
     encarregado?: UsuarioUpdateOneWithoutAlunosNestedInput
     curso?: CursoUpdateOneRequiredWithoutAlunosNestedInput
@@ -23928,7 +23960,7 @@ export namespace Prisma {
   export type AlunoUncheckedUpdateWithoutNotasInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
@@ -23936,7 +23968,7 @@ export namespace Prisma {
     encarregadoId?: NullableIntFieldUpdateOperationsInput | number | null
     cursoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DisciplinaUpsertWithoutNotasInput = {
@@ -23954,7 +23986,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     curso?: CursoUpdateOneRequiredWithoutDisciplinasNestedInput
     professores?: UsuarioUpdateManyWithoutDisciplinasNestedInput
   }
@@ -23963,9 +23995,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
     cursoId?: IntFieldUpdateOperationsInput | number
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     professores?: UsuarioUncheckedUpdateManyWithoutDisciplinasNestedInput
   }
 
@@ -23977,7 +24009,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -23999,7 +24031,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -24025,7 +24057,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -24047,7 +24079,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -24084,7 +24116,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -24106,7 +24138,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -24138,7 +24170,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -24160,7 +24192,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -24181,7 +24213,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -24203,7 +24235,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -24258,7 +24290,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -24280,7 +24312,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -24313,7 +24345,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     professores?: UsuarioCreateNestedManyWithoutDisciplinasInput
     notas?: NotaCreateNestedManyWithoutDisciplinaInput
   }
@@ -24323,7 +24355,7 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     professores?: UsuarioUncheckedCreateNestedManyWithoutDisciplinasInput
     notas?: NotaUncheckedCreateNestedManyWithoutDisciplinaInput
   }
@@ -24339,12 +24371,12 @@ export namespace Prisma {
 
   export type AlunoCreateWithoutCursoInput = {
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     turma: TurmaCreateNestedOneWithoutAlunosInput
     encarregado?: UsuarioCreateNestedOneWithoutAlunosInput
     notas?: NotaCreateNestedManyWithoutAlunoInput
@@ -24353,14 +24385,14 @@ export namespace Prisma {
   export type AlunoUncheckedCreateWithoutCursoInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     turmaId: number
     encarregadoId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     notas?: NotaUncheckedCreateNestedManyWithoutAlunoInput
   }
 
@@ -24381,7 +24413,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -24403,7 +24435,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -24470,22 +24502,24 @@ export namespace Prisma {
   }
 
   export type ReuniaoCreateWithoutParticipantesInput = {
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     criadoPor?: UsuarioCreateNestedOneWithoutReunioesAgendadasInput
   }
 
   export type ReuniaoUncheckedCreateWithoutParticipantesInput = {
     id?: number
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoPorId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type ReuniaoCreateOrConnectWithoutParticipantesInput = {
@@ -24501,7 +24535,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -24523,7 +24557,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -24553,22 +24587,24 @@ export namespace Prisma {
   }
 
   export type ReuniaoUpdateWithoutParticipantesInput = {
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     criadoPor?: UsuarioUpdateOneWithoutReunioesAgendadasNestedInput
   }
 
   export type ReuniaoUncheckedUpdateWithoutParticipantesInput = {
     id?: IntFieldUpdateOperationsInput | number
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UsuarioUpsertWithoutReunioesInput = {
@@ -24590,7 +24626,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -24612,7 +24648,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -24633,7 +24669,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
@@ -24655,7 +24691,7 @@ export namespace Prisma {
     perfil: $Enums.Perfil
     imagem?: string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
@@ -24692,7 +24728,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -24714,7 +24750,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -24730,21 +24766,21 @@ export namespace Prisma {
   export type AlunoCreateManyEncarregadoInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     turmaId: number
     cursoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type TurmaCreateManyProfessorInput = {
     id?: number
     nome: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type MensagemCreateManyRemetenteInput = {
@@ -24752,7 +24788,7 @@ export namespace Prisma {
     conteudo: string
     destinatarioId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -24767,7 +24803,7 @@ export namespace Prisma {
     conteudo: string
     remetenteId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
     editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
@@ -24784,21 +24820,22 @@ export namespace Prisma {
 
   export type ReuniaoCreateManyCriadoPorInput = {
     id?: number
-    linkMeeting?: string | null
-    local: string
     titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AlunoUpdateWithoutEncarregadoInput = {
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     turma?: TurmaUpdateOneRequiredWithoutAlunosNestedInput
     curso?: CursoUpdateOneRequiredWithoutAlunosNestedInput
     notas?: NotaUpdateManyWithoutAlunoNestedInput
@@ -24807,34 +24844,34 @@ export namespace Prisma {
   export type AlunoUncheckedUpdateWithoutEncarregadoInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     turmaId?: IntFieldUpdateOperationsInput | number
     cursoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     notas?: NotaUncheckedUpdateManyWithoutAlunoNestedInput
   }
 
   export type AlunoUncheckedUpdateManyWithoutEncarregadoInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     turmaId?: IntFieldUpdateOperationsInput | number
     cursoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TurmaUpdateWithoutProfessorInput = {
     nome?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutTurmaNestedInput
   }
 
@@ -24842,7 +24879,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutTurmaNestedInput
   }
 
@@ -24850,14 +24887,14 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type DisciplinaUpdateWithoutProfessoresInput = {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     curso?: CursoUpdateOneRequiredWithoutDisciplinasNestedInput
     notas?: NotaUpdateManyWithoutDisciplinaNestedInput
   }
@@ -24866,9 +24903,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
     cursoId?: IntFieldUpdateOperationsInput | number
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     notas?: NotaUncheckedUpdateManyWithoutDisciplinaNestedInput
   }
 
@@ -24876,16 +24913,16 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
     cursoId?: IntFieldUpdateOperationsInput | number
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type CursoUpdateWithoutProfessoresInput = {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     disciplinas?: DisciplinaUpdateManyWithoutCursoNestedInput
     alunos?: AlunoUpdateManyWithoutCursoNestedInput
   }
@@ -24895,7 +24932,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutCursoNestedInput
     alunos?: AlunoUncheckedUpdateManyWithoutCursoNestedInput
   }
@@ -24905,13 +24942,13 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MensagemUpdateWithoutRemetenteInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -24927,7 +24964,7 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     destinatarioId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -24942,7 +24979,7 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     destinatarioId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -24955,7 +24992,7 @@ export namespace Prisma {
   export type MensagemUpdateWithoutDestinatarioInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -24971,7 +25008,7 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     remetenteId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -24986,7 +25023,7 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     remetenteId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
@@ -25011,31 +25048,34 @@ export namespace Prisma {
   }
 
   export type ReuniaoUpdateWithoutCriadoPorInput = {
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     participantes?: ReuniaoParticipanteUpdateManyWithoutReuniaoNestedInput
   }
 
   export type ReuniaoUncheckedUpdateWithoutCriadoPorInput = {
     id?: IntFieldUpdateOperationsInput | number
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     participantes?: ReuniaoParticipanteUncheckedUpdateManyWithoutReuniaoNestedInput
   }
 
   export type ReuniaoUncheckedUpdateManyWithoutCriadoPorInput = {
     id?: IntFieldUpdateOperationsInput | number
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    local?: StringFieldUpdateOperationsInput | string
     titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaCreateManyAlunoInput = {
@@ -25044,14 +25084,14 @@ export namespace Prisma {
     tipo: string
     disciplinaId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type NotaUpdateWithoutAlunoInput = {
     valor?: FloatFieldUpdateOperationsInput | number
     tipo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     disciplina?: DisciplinaUpdateOneRequiredWithoutNotasNestedInput
   }
 
@@ -25061,7 +25101,7 @@ export namespace Prisma {
     tipo?: StringFieldUpdateOperationsInput | string
     disciplinaId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaUncheckedUpdateManyWithoutAlunoInput = {
@@ -25070,30 +25110,30 @@ export namespace Prisma {
     tipo?: StringFieldUpdateOperationsInput | string
     disciplinaId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlunoCreateManyTurmaInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     encarregadoId?: number | null
     cursoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AlunoUpdateWithoutTurmaInput = {
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     encarregado?: UsuarioUpdateOneWithoutAlunosNestedInput
     curso?: CursoUpdateOneRequiredWithoutAlunosNestedInput
     notas?: NotaUpdateManyWithoutAlunoNestedInput
@@ -25102,28 +25142,28 @@ export namespace Prisma {
   export type AlunoUncheckedUpdateWithoutTurmaInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     encarregadoId?: NullableIntFieldUpdateOperationsInput | number | null
     cursoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     notas?: NotaUncheckedUpdateManyWithoutAlunoNestedInput
   }
 
   export type AlunoUncheckedUpdateManyWithoutTurmaInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     encarregadoId?: NullableIntFieldUpdateOperationsInput | number | null
     cursoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaCreateManyDisciplinaInput = {
@@ -25132,7 +25172,7 @@ export namespace Prisma {
     tipo: string
     alunoId: number
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type UsuarioUpdateWithoutDisciplinasInput = {
@@ -25143,7 +25183,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -25165,7 +25205,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -25187,7 +25227,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
   }
@@ -25196,7 +25236,7 @@ export namespace Prisma {
     valor?: FloatFieldUpdateOperationsInput | number
     tipo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     aluno?: AlunoUpdateOneRequiredWithoutNotasNestedInput
   }
 
@@ -25206,7 +25246,7 @@ export namespace Prisma {
     tipo?: StringFieldUpdateOperationsInput | string
     alunoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaUncheckedUpdateManyWithoutDisciplinaInput = {
@@ -25215,7 +25255,7 @@ export namespace Prisma {
     tipo?: StringFieldUpdateOperationsInput | string
     alunoId?: IntFieldUpdateOperationsInput | number
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ReuniaoParticipanteCreateManyReuniaoInput = {
@@ -25242,27 +25282,27 @@ export namespace Prisma {
     nome: string
     descricao: string
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type AlunoCreateManyCursoInput = {
     id?: number
     nome: string
-    numero_matricula: string
+    matricula: string
     telefone: string
     imagem?: string | null
     classe: string
     turmaId: number
     encarregadoId?: number | null
     criadoEm?: Date | string
-    dataactualizacao?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type DisciplinaUpdateWithoutCursoInput = {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     professores?: UsuarioUpdateManyWithoutDisciplinasNestedInput
     notas?: NotaUpdateManyWithoutDisciplinaNestedInput
   }
@@ -25272,7 +25312,7 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     professores?: UsuarioUncheckedUpdateManyWithoutDisciplinasNestedInput
     notas?: NotaUncheckedUpdateManyWithoutDisciplinaNestedInput
   }
@@ -25282,17 +25322,17 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     descricao?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlunoUpdateWithoutCursoInput = {
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     turma?: TurmaUpdateOneRequiredWithoutAlunosNestedInput
     encarregado?: UsuarioUpdateOneWithoutAlunosNestedInput
     notas?: NotaUpdateManyWithoutAlunoNestedInput
@@ -25301,28 +25341,28 @@ export namespace Prisma {
   export type AlunoUncheckedUpdateWithoutCursoInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     turmaId?: IntFieldUpdateOperationsInput | number
     encarregadoId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     notas?: NotaUncheckedUpdateManyWithoutAlunoNestedInput
   }
 
   export type AlunoUncheckedUpdateManyWithoutCursoInput = {
     id?: IntFieldUpdateOperationsInput | number
     nome?: StringFieldUpdateOperationsInput | string
-    numero_matricula?: StringFieldUpdateOperationsInput | string
+    matricula?: StringFieldUpdateOperationsInput | string
     telefone?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     classe?: StringFieldUpdateOperationsInput | string
     turmaId?: IntFieldUpdateOperationsInput | number
     encarregadoId?: NullableIntFieldUpdateOperationsInput | number | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UsuarioUpdateWithoutCursosInput = {
@@ -25333,7 +25373,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
@@ -25355,7 +25395,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
@@ -25377,7 +25417,7 @@ export namespace Prisma {
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    dataactualizacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
   }

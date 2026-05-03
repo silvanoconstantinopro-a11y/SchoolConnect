@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: SchoolConnect
+    runtime: node
+    rootDir: back-end
+    buildCommand: npm install && npx prisma migrate deploy
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: PORT
+        value: 3002
+      - key: SECRET_KEY
+        sync: false
+      - key: EXPIRATION_TIME
+        value: 1h
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_SENHA
+        sync: false
+    disk:
+      name: schoolconnect-db
+      mountPath: /opt/render/project/src
+      sizeGB: 1
