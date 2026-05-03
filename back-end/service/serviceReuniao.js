@@ -1,7 +1,7 @@
 import { prisma } from "../prismaClient/prismaClient.js";
 
 export class ServiceReuniao {
-    static async criarReuniao(titulo, linkMeeting, local, participantesIds = [], criadoPorId = null) {
+    static async criarReuniao(titulo, linkMeeting, local, participantesIds = [], criadoPorId = null, dataHora = null) {
         try {
             if (!titulo || !local) {
                 throw new Error("O título e o local são obrigatórios.");
@@ -20,6 +20,7 @@ export class ServiceReuniao {
                     titulo,
                     linkMeeting,
                     local,
+                    dataHora: dataHora ? new Date(dataHora) : null,
                     criadoPorId: criadoPorId ? parseInt(criadoPorId, 10) : null,
                     participantes: {
                         create: participantes.map(usuarioId => ({ usuarioId }))
