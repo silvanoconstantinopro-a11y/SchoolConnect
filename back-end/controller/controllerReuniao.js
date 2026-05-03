@@ -3,10 +3,9 @@ import { ServiceReuniao } from "../service/serviceReuniao.js";
 export class ControllerReuniao {
     static async criarReuniao(req, res) {
         try {
-            const { titulo, linkMeeting, local, participantesIds } = req.body;
-            // Admin não tem ID, então usa null ou um valor especial
-            const criadoPorId = req.user?.id || (req.user?.perfil === "ADMIN" ? null : null);
-            const reuniaoCriada = await ServiceReuniao.criarReuniao(titulo, linkMeeting, local, participantesIds, criadoPorId);
+            const { titulo, linkMeeting, local, participantesIds, dataHora } = req.body;
+            const criadoPorId = req.user?.id || null;
+            const reuniaoCriada = await ServiceReuniao.criarReuniao(titulo, linkMeeting, local, participantesIds, criadoPorId, dataHora);
             res.status(201).json(reuniaoCriada);
         } catch (error) {
             res.status(400).json({ error: error.message });
