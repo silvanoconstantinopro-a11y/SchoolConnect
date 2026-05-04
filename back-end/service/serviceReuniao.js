@@ -1,134 +1,71 @@
 import { prisma } from "../prismaClient/prismaClient.js";
 
+const INCLUDE = {
+  criadoPor:     { select: { id:true, nome:true, perfil:true } },
+  participantes: { include: { usuario: { select:{ id:true, nome:true, perfil:true, email:true } } } },
+};
+
 export class ServiceReuniao {
-    static async criarReuniao(titulo, linkMeeting, local, participantesIds = [], criadoPorId = null, dataHora = null) {
-        try {
-            if (!titulo || !local) {
-                throw new Error("O título e o local são obrigatórios.");
-            }
 
-            const participantes = Array.from(new Set((participantesIds || [])
-                .map(id => parseInt(id, 10))
-                .filter(Number.isInteger)));
+  static async criarReuniao(titulo, linkMeeting, local, participantesIds = [], criadoPorId = null, dataHora = null) {
+    if (!titulo || !local) throw new Error("Título e local são obrigatórios.");
 
-            if (!participantes.length) {
-                throw new Error("Selecione pelo menos um destinatário para a reunião.");
-            }
+    const ids = [...new Set((participantesIds || []).map(Number).filter(Number.isFinite))];
+    if (!ids.length) throw new Error("Selecione pelo menos um participante.");
 
-            const novaReuniao = await prisma.reuniao.create({
-                data: {
-                    titulo,
-                    linkMeeting,
-                    local,
-                    dataHora: dataHora ? new Date(dataHora) : null,
-                    criadoPorId: criadoPorId ? parseInt(criadoPorId, 10) : null,
-                    participantes: {
-                        create: participantes.map(usuarioId => ({ usuarioId }))
-                    }
-                },
-                include: {
-                    criadoPor: true,
-                    participantes: { include: { usuario: true } }
-                }
-            });
-            return novaReuniao;
-        } catch (error) {
-            throw new Error(`Erro ao criar reunião: ${error.message}`);
-        }
+    return prisma.reuniao.create({
+      data: {
+        titulo, local,
+        linkMeeting: linkMeeting || null,
+        dataHora:    dataHora    ? new Date(dataHora) : null,
+        criadoPorId: criadoPorId ? Number(criadoPorId) : null,
+        participantes: { create: ids.map(usuarioId => ({ usuarioId })) },
+      },
+      include: INCLUDE,
+    });
+  }
+
+  static async listarReunioes(usuarioId) {
+    const where = usuarioId
+      ? { OR: [
+          { criadoPorId: Number(usuarioId) },
+          { participantes: { some: { usuarioId: Number(usuarioId) } } },
+        ] }
+      : undefined;
+    return prisma.reuniao.findMany({ where, include: INCLUDE, orderBy: { criadoEm: "desc" } });
+  }
+
+  static async obterReuniaoPorId(id) {
+    const r = await prisma.reuniao.findUnique({ where: { id: Number(id) }, include: INCLUDE });
+    if (!r) throw new Error("Reunião não encontrada.");
+    return r;
+  }
+
+  static async atualizarReuniao(id, titulo, linkMeeting, local, participantesIds) {
+    const r = await prisma.reuniao.findUnique({ where: { id: Number(id) } });
+    if (!r) throw new Error("Reunião não encontrada.");
+
+    await prisma.reuniao.update({
+      where: { id: Number(id) },
+      data:  { titulo: titulo ?? r.titulo, local: local ?? r.local, linkMeeting: linkMeeting ?? r.linkMeeting },
+    });
+
+    if (participantesIds?.length) {
+      const ids = [...new Set(participantesIds.map(Number).filter(Number.isFinite))];
+      await prisma.reuniaoParticipante.deleteMany({ where: { reuniaoId: Number(id) } });
+      await prisma.reuniaoParticipante.createMany({
+        data: ids.map(usuarioId => ({ reuniaoId: Number(id), usuarioId })),
+      });
     }
 
-    static async listarReunioes(usuarioId) {
-        try {
-            const where = usuarioId
-                ? {
-                    OR: [
-                        { participantes: { some: { usuarioId: parseInt(usuarioId, 10) } } },
-                        { criadoPorId: parseInt(usuarioId, 10) }
-                    ]
-                }
-                : {};
+    return ServiceReuniao.obterReuniaoPorId(id);
+  }
 
-            const reunioes = await prisma.reuniao.findMany({
-                where,
-                include: { criadoPor: true, participantes: { include: { usuario: true } } }
-            });
-            return reunioes;
-        } catch (error) {
-            throw new Error(`Erro ao listar reuniões: ${error.message}`);
-        }
-    }
-
-    static async obterReuniaoPorId(id) {
-        try {
-            const reuniao = await prisma.reuniao.findUnique({
-                where: { id: parseInt(id) },
-                include: { criadoPor: true, participantes: { include: { usuario: true } } }
-            });
-            if (!reuniao) {
-                throw new Error("Reunião não encontrada.");
-            }
-            return reuniao;
-        } catch (error) {
-            throw new Error(`Erro ao obter reunião: ${error.message}`);
-        }
-    }
-
-    static async atualizarReuniao(id, titulo, linkMeeting, local, participantesIds) {
-        try {
-            if (!titulo || !local) {
-                throw new Error("O título e o local são obrigatórios.");
-            }
-
-            const reuniaoExistente = await prisma.reuniao.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!reuniaoExistente) {
-                throw new Error("Reunião não encontrada.");
-            }
-
-            const data = { titulo, linkMeeting, local };
-            if (Array.isArray(participantesIds)) {
-                const participantes = Array.from(new Set((participantesIds || [])
-                    .map(pid => parseInt(pid, 10))
-                    .filter(Number.isInteger)));
-
-                data.participantes = {
-                    deleteMany: {},
-                    create: participantes.map(usuarioId => ({ usuarioId }))
-                };
-            }
-
-            const reuniaoAtualizada = await prisma.reuniao.update({
-                where: { id: parseInt(id) },
-                data
-            });
-            return reuniaoAtualizada;
-        } catch (error) {
-            throw new Error(`Erro ao atualizar reunião: ${error.message}`);
-        }
-    }
-
-    static async deletarReuniao(id) {
-        try {
-            const reuniaoExistente = await prisma.reuniao.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!reuniaoExistente) {
-                throw new Error("Reunião não encontrada.");
-            }
-
-            // Primeiro deletar todos os participantes
-            await prisma.reuniaoParticipante.deleteMany({
-                where: { reuniaoId: parseInt(id) }
-            });
-
-            // Depois deletar a reunião
-            await prisma.reuniao.delete({
-                where: { id: parseInt(id) }
-            });
-            return { message: "Reunião deletada com sucesso." };
-        } catch (error) {
-            throw new Error(`Erro ao deletar reunião: ${error.message}`);
-        }
-    }
+  static async deletarReuniao(id) {
+    const r = await prisma.reuniao.findUnique({ where: { id: Number(id) } });
+    if (!r) throw new Error("Reunião não encontrada.");
+    await prisma.reuniaoParticipante.deleteMany({ where: { reuniaoId: Number(id) } });
+    await prisma.reuniao.delete({ where: { id: Number(id) } });
+    return { mensagem: "Reunião deletada com sucesso." };
+  }
 }

@@ -1,137 +1,77 @@
-import {prisma} from "../prismaClient/prismaClient.js";
+/**
+ * serviceAluno.js
+ * Gestão completa de alunos (campo correcto: matricula).
+ */
+import { prisma } from "../prismaClient/prismaClient.js";
+
+const INCLUDE = { turma: true, curso: true, encarregado: { select: { id:true, nome:true, email:true } } };
 
 export class ServiceAluno {
 
-    static async criarAluno(dados) {
-    try {
-        const { nome, matricula, turmaId, telefone, classe, encarregadoId, cursoId } = dados;
+  static async criarAluno(dados) {
+    const { nome, matricula, turmaId, telefone, classe, encarregadoId, cursoId, imagem } = dados;
 
-        if (!nome || !matricula || !turmaId) {
-            throw new Error("Nome, matrícula e turma são obrigatórios.");
-        }
+    if (!nome || !matricula || !turmaId || !cursoId)
+      throw new Error("Campos obrigatórios: nome, matricula, turmaId, cursoId.");
 
-        const matriculaExistente = await prisma.aluno.findUnique({
-            where: { matricula }
-        });
+    if (await prisma.aluno.findUnique({ where: { matricula } }))
+      throw new Error("Matrícula já cadastrada.");
 
-        if (matriculaExistente) {
-            throw new Error("Número de matrícula já cadastrado.");
-        }
+    if (telefone && await prisma.aluno.findUnique({ where: { telefone } }))
+      throw new Error("Telefone já cadastrado.");
 
-        if (telefone) {
-            const telefoneExistente = await prisma.aluno.findUnique({
-                where: { telefone }
-            });
-            if (telefoneExistente) {
-                throw new Error("Telefone já cadastrado.");
-            }
-        }
+    return prisma.aluno.create({
+      data: {
+        nome, matricula,
+        telefone:     telefone || "",
+        classe:       classe   || "",
+        turmaId:      Number(turmaId),
+        cursoId:      Number(cursoId),
+        imagem:       imagem || null,
+        encarregadoId: encarregadoId ? Number(encarregadoId) : null,
+      },
+      include: INCLUDE,
+    });
+  }
 
-        const novoAluno = await prisma.aluno.create({
-            data: {
-                nome,
-                matricula,
-                turmaId: Number(turmaId),
-                telefone: telefone || "",
-                classe: classe || "",
-                cursoId: Number(cursoId),
-                ...(encarregadoId && { encarregadoId: Number(encarregadoId) })
-            }
-        });
+  static async listarAlunos() {
+    return prisma.aluno.findMany({ include: INCLUDE, orderBy: { nome: "asc" } });
+  }
 
-        return novoAluno;
+  static async obterAlunoPorId(id) {
+    const a = await prisma.aluno.findUnique({ where: { id: Number(id) }, include: INCLUDE });
+    if (!a) throw new Error("Aluno não encontrado.");
+    return a;
+  }
 
-    } catch (error) {
-        throw new Error(`Erro ao criar aluno: ${error.message}`);
-    }
-}
+  static async atualizarAluno(id, dados) {
+    const { nome, matricula, turmaId, telefone, classe, encarregadoId, cursoId, imagem } = dados;
 
-    static async listarAlunos() {
-    try {
-        const alunos = await prisma.aluno.findMany({
-            include: {
-                turma: true,
-                curso: true,
-                encarregado: true
-            }
-        });   
-        return alunos;
-    } catch (error) {
-        throw new Error(`Erro ao listar alunos: ${error.message}`);
-    }   
-}
+    const a = await prisma.aluno.findUnique({ where: { id: Number(id) } });
+    if (!a) throw new Error("Aluno não encontrado.");
 
-    static async obterAlunoPorId(id) {
-        try {
-            const aluno = await prisma.aluno.findUnique({   
-                where: { id: parseInt(id) },
-                include: {
-                    turma: true,
-                    curso: true,
-                    encarregado: true
-                }
-            });
-            if (!aluno) {
-                throw new Error("Aluno não encontrado.");
-            }
-            return aluno;
-        } catch (error) {
-            throw new Error(`Erro ao obter aluno: ${error.message}`);
-        }
-    }
+    return prisma.aluno.update({
+      where: { id: Number(id) },
+      data: {
+        nome:          nome      ?? a.nome,
+        matricula:     matricula ?? a.matricula,
+        telefone:      telefone  ?? a.telefone,
+        classe:        classe    ?? a.classe,
+        imagem:        imagem    ?? a.imagem,
+        turmaId:       turmaId   ? Number(turmaId)  : a.turmaId,
+        cursoId:       cursoId   ? Number(cursoId)  : a.cursoId,
+        encarregadoId: encarregadoId !== undefined
+          ? (encarregadoId ? Number(encarregadoId) : null)
+          : a.encarregadoId,
+      },
+      include: INCLUDE,
+    });
+  }
 
-    static async atualizarAluno(id, dados) {
-    try {
-        const { nome, matricula, turmaId, telefone, classe, encarregadoId, cursoId } = dados;
-
-        if (!nome || !matricula || !turmaId) {
-            throw new Error("Nome, matrícula e turma são obrigatórios.");
-        }
-
-        const alunoExistente = await prisma.aluno.findUnique({
-            where: { id: parseInt(id) }
-        });
-
-        if (!alunoExistente) {
-            throw new Error("Aluno não encontrado.");
-        }
-
-        const alunoAtualizado = await prisma.aluno.update({
-            where: { id: parseInt(id) },
-            data: {
-                nome,
-                matricula,
-                turmaId: Number(turmaId),
-                telefone: telefone || alunoExistente.telefone,
-                classe: classe || alunoExistente.classe,
-                cursoId: Number(cursoId),
-                encarregadoId: encarregadoId ? Number(encarregadoId) : null
-            }
-        });
-
-        return alunoAtualizado;
-
-    } catch (error) {
-        throw new Error(`Erro ao atualizar aluno: ${error.message}`);
-    }
-}
-
-    static async deletarAluno(id) {
-        try {
-            const alunoExistente = await prisma.aluno.findUnique({      
-                where: { id: parseInt(id) }
-            }); 
-
-            if (!alunoExistente) {
-                throw new Error("Aluno não encontrado.");
-            }
-            await prisma.aluno.delete({
-                where: { id: parseInt(id) }
-            });
-            return { mensagem: "Aluno deletado com sucesso." };
-        }
-        catch (error) {
-            throw new Error(`Erro ao deletar aluno: ${error.message}`);
-        }   
-    }
+  static async deletarAluno(id) {
+    const a = await prisma.aluno.findUnique({ where: { id: Number(id) } });
+    if (!a) throw new Error("Aluno não encontrado.");
+    await prisma.aluno.delete({ where: { id: Number(id) } });
+    return { mensagem: "Aluno deletado com sucesso." };
+  }
 }

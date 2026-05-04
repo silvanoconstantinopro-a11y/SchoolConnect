@@ -1,318 +1,275 @@
+/**
+ * serviceUsuario.js
+ * Versão Corrigida e Blindada
+ */
 import { prisma } from "../prismaClient/prismaClient.js";
 import { hashSenha, compareSenha } from "../bcrypt-jwt/hashSenha.js";
 import { JWT } from "../bcrypt-jwt/jwt.js";
 
+const RELACAO_MAP = {
+  "Pai": "PAI",
+  "Mãe": "MAE",
+  "Mae": "MAE",
+  "Tutor": "TUTOR",
+  "Tutor Legal": "TUTOR",
+};
+
+const toConnect = (val) =>
+  val ? (Array.isArray(val) ? val : [val]).map(id => ({ id: Number(id) })) : undefined;
+
+const semSenha = ({ senha, ...rest }) => rest;
+
 export class ServiceUsuario {
 
-  // ========================
-  // CRIAR USUÁRIO
-  // ========================
+  // ──────────────────────────────────────────────────────────
+  // CRIAR UTILIZADOR (Refatorado)
+  // ──────────────────────────────────────────────────────────
   static async criarUsuario(dados) {
-    try {
-      const {
-        nome, email, senha, telefone, perfil, imagem,
-        relacaoEducando, numeroMatricula,
-        codigoVerificacao, disciplinas, cursos, turmas
-      } = dados;
+    const {
+      nome, email, senha, telefone, perfil, imagem,
+      relacaoEducando, numeroMatricula,
+      codigoVerificacao, disciplinas, cursos, turmas,
+    } = dados;
 
-      if (!nome?.trim() || !email?.trim() || !senha || !telefone || !perfil) {
-        throw new Error("Campos obrigatórios em falta.");
-      }
+    // Proteção contra campos undefined/null antes de usar trim()
+    if (!nome || typeof nome !== 'string' || !nome.trim() ||
+        !email || typeof email !== 'string' || !email.trim() ||
+        !senha || !telefone || !perfil) {
+      throw new Error("Campos obrigatórios: nome, email, senha, telefone, perfil.");
+    }
 
-      const relacaoMap = { "Pai": "PAI", "Mãe": "MAE", "Mae": "MAE", "Tutor Legal": "TUTOR", "Tutor": "TUTOR" };
-      const relacaoConvertida = relacaoEducando ? (relacaoMap[relacaoEducando] || relacaoEducando) : null;
+    const relacao = relacaoEducando
+      ? (RELACAO_MAP[relacaoEducando] || relacaoEducando)
+      : null;
 
-      if (perfil === "ENCARREGADO") {
-        if (!numeroMatricula?.trim()) throw new Error("Número de matrícula do aluno obrigatório.");
-        if (!relacaoConvertida) throw new Error("Relação com o educando obrigatória.");
-        if (!["PAI", "MAE", "TUTOR"].includes(relacaoConvertida)) throw new Error("Relação inválida. Use: Pai, Mãe ou Tutor.");
-      }
+    if (perfil === "ENCARREGADO") {
+      if (!numeroMatricula || typeof numeroMatricula !== 'string' || !numeroMatricula.trim()) 
+        throw new Error("Número de matrícula do aluno obrigatório.");
+      if (!relacao) throw new Error("Relação com o educando obrigatória.");
+      if (!["PAI","MAE","TUTOR"].includes(relacao))
+        throw new Error("Relação inválida. Use: Pai, Mãe ou Tutor.");
+    }
 
-      let codigoProfessorFinal = null;
-      if (perfil === "PROFESSOR") {
-        if (!codigoVerificacao?.trim()) throw new Error("Código de verificação obrigatório.");
-        codigoProfessorFinal = codigoVerificacao.trim().toUpperCase();
-        await this.validarCodigoProfessor(codigoProfessorFinal);
-      }
+    let codigoFinal = null;
+    if (perfil === "PROFESSOR") {
+      if (!codigoVerificacao || typeof codigoVerificacao !== 'string' || !codigoVerificacao.trim()) 
+        throw new Error("Código de verificação obrigatório.");
+      codigoFinal = codigoVerificacao.trim().toUpperCase();
+      await ServiceUsuario._validarCodigo(codigoFinal);
+    }
 
-      const emailFormatado = email.trim().toLowerCase();
+    const emailNorm = email.trim().toLowerCase();
 
-      const emailExistente = await prisma.usuario.findUnique({ where: { email: emailFormatado } });
-      if (emailExistente) throw new Error("Email já cadastrado.");
+    if (await prisma.usuario.findUnique({ where: { email: emailNorm } }))
+      throw new Error("Email já cadastrado.");
+    
+    if (await prisma.usuario.findUnique({ where: { telefone } }))
+      throw new Error("Telefone já cadastrado.");
 
-      const telefoneExistente = await prisma.usuario.findUnique({ where: { telefone } });
-      if (telefoneExistente) throw new Error("Telefone já cadastrado.");
+    if (perfil === "ENCARREGADO") {
+      const aluno = await prisma.aluno.findUnique({ where: { matricula: numeroMatricula.trim() } });
+      if (!aluno) throw new Error("Aluno com esta matrícula não encontrado.");
+    }
 
-      if (perfil === "ENCARREGADO") {
-        const alunoExiste = await prisma.aluno.findUnique({ where: { matricula: numeroMatricula } });
-        if (!alunoExiste) throw new Error("Aluno com esse número de matrícula não encontrado.");
-      }
+    const senhaHash = await hashSenha(senha);
 
-      const senhaHash = await hashSenha(senha);
-
-      const toIds = (val) => val
-        ? (Array.isArray(val) ? val : [val]).map(id => ({ id: Number(id) }))
-        : undefined;
-
-      const usuarioCriado = await prisma.$transaction(async (tx) => {
-        const usuario = await tx.usuario.create({
-          data: {
-            nome,
-            email: emailFormatado,
-            senha: senhaHash,
-            telefone,
-            perfil,
-            imagem: imagem || null,
-            relacaoEducando: perfil === "ENCARREGADO" ? relacaoConvertida : null,
-            codigoVerificacao: perfil === "PROFESSOR" ? codigoProfessorFinal : null,
-            disciplinas: disciplinas ? { connect: toIds(disciplinas) } : undefined,
-            cursos: cursos ? { connect: toIds(cursos) } : undefined,
-          },
-          include: { disciplinas: true, turmas: true, cursos: true }
-        });
-
-        if (perfil === "PROFESSOR") {
-          await tx.codigoProfessor.update({
-            where: { codigo: codigoProfessorFinal },
-            data: { usado: true, professorId: usuario.id }
-          });
-        }
-
-        return usuario;
+    const usuario = await prisma.$transaction(async (tx) => {
+      const u = await tx.usuario.create({
+        data: {
+          nome: nome.trim(),
+          email: emailNorm,
+          senha: senhaHash,
+          telefone,
+          perfil,
+          imagem: imagem || null,
+          relacaoEducando: perfil === "ENCARREGADO" ? relacao : null,
+          codigoVerificacao: perfil === "PROFESSOR" ? codigoFinal : null,
+          disciplinas: disciplinas ? { connect: toConnect(disciplinas) } : undefined,
+          cursos: cursos ? { connect: toConnect(cursos) } : undefined,
+        },
+        include: { disciplinas: true, turmas: true, cursos: true },
       });
 
-      // Associar turmas ao professor (campo correcto é professorId)
-      if (perfil === "PROFESSOR" && turmas) {
-        const turmasArray = Array.isArray(turmas) ? turmas : [turmas];
-        if (turmasArray.length > 0) {
-          await prisma.turma.updateMany({
-            where: { id: { in: turmasArray.map(id => Number(id)) } },
-            data: { professorId: usuarioCriado.id }
-          });
-        }
-      }
-
-      // Ligar encarregado ao aluno
-      if (perfil === "ENCARREGADO") {
-        await prisma.aluno.update({
-          where: { matricula: numeroMatricula },
-          data: { encarregadoId: usuarioCriado.id }
+      if (perfil === "PROFESSOR") {
+        await tx.codigoProfessor.update({
+          where: { codigo: codigoFinal },
+          data: { usado: true, professorId: u.id },
         });
       }
+      return u;
+    });
 
-      const { senha: _, ...usuarioSemSenha } = usuarioCriado;
-      return usuarioSemSenha;
-
-    } catch (error) {
-      throw new Error(`Erro ao criar usuário: ${error.message}`);
+    if (perfil === "PROFESSOR" && turmas) {
+      const ids = (Array.isArray(turmas) ? turmas : [turmas]).map(Number).filter(Boolean);
+      if (ids.length)
+        await prisma.turma.updateMany({ where: { id: { in: ids } }, data: { professorId: usuario.id } });
     }
+
+    if (perfil === "ENCARREGADO") {
+      await prisma.aluno.update({
+        where: { matricula: numeroMatricula.trim() },
+        data: { encarregadoId: usuario.id },
+      });
+    }
+
+    return semSenha(usuario);
   }
 
-  // ========================
-  // VALIDAR CÓDIGO PROFESSOR
-  // ========================
-  static async validarCodigoProfessor(codigo) {
-    const codigoUpper = codigo?.trim().toUpperCase();
-    if (!codigoUpper) throw new Error("Código de verificação obrigatório.");
+  // ──────────────────────────────────────────────────────────
+  // LOGIN (Refatorado - Resolve o erro do .replace/.trim)
+  // ──────────────────────────────────────────────────────────
+  static async loginUsuario(email, senha) {
+    // Validação inicial para impedir erros de undefined
+    if (!email || typeof email !== 'string' || !email.trim()) {
+      throw new Error("O campo email é obrigatório e deve ser um texto.");
+    }
+    if (!senha) {
+      throw new Error("O campo senha é obrigatório.");
+    }
 
-    const registro = await prisma.codigoProfessor.findUnique({ where: { codigo: codigoUpper } });
-    if (!registro) throw new Error("Código de professor não existe.");
-    if (registro.usado) throw new Error("Código já foi utilizado por outro professor.");
+    const emailNorm = email.trim().toLowerCase();
 
-    return registro;
+    const usuario = await prisma.usuario.findUnique({
+      where: { email: emailNorm },
+      include: { disciplinas: true, turmas: true, cursos: true },
+    });
+
+    if (!usuario || !await compareSenha(senha, usuario.senha))
+      throw new Error("Email ou senha inválidos.");
+
+    const token = JWT.gerarToken({ id: usuario.id, email: usuario.email, perfil: usuario.perfil });
+    return { usuario: semSenha(usuario), token };
+  }
+
+  // ──────────────────────────────────────────────────────────
+  // ACTUALIZAR (Refatorado)
+  // ──────────────────────────────────────────────────────────
+  static async atualizarUsuario(id, dados) {
+    const {
+      nome, email, senha, telefone, perfil, imagem,
+      relacaoEducando, numeroMatricula,
+      codigoVerificacao, disciplinas, cursos,
+    } = dados;
+
+    const u = await prisma.usuario.findUnique({ where: { id: Number(id) } });
+    if (!u) throw new Error("Usuário não encontrado.");
+
+    const perfilFinal = perfil ?? u.perfil;
+    const relacao = relacaoEducando
+      ? (RELACAO_MAP[relacaoEducando] || relacaoEducando)
+      : null;
+
+    if (perfilFinal === "ENCARREGADO" && numeroMatricula) {
+      const a = await prisma.aluno.findUnique({ where: { matricula: String(numeroMatricula).trim() } });
+      if (!a) throw new Error("Aluno com esta matrícula não encontrado.");
+    }
+
+    let codigoFinal = u.codigoVerificacao;
+    if (perfilFinal === "PROFESSOR" && codigoVerificacao !== undefined) {
+      if (typeof codigoVerificacao === 'string') {
+        const c = codigoVerificacao.trim().toUpperCase();
+        if (c !== u.codigoVerificacao) {
+          await ServiceUsuario._validarCodigo(c);
+          if (u.codigoVerificacao) await ServiceUsuario._liberarCodigo(u.codigoVerificacao);
+          await ServiceUsuario._associarCodigo(c, u.id);
+          codigoFinal = c;
+        }
+      }
+    } else if (perfilFinal !== "PROFESSOR") {
+      if (u.codigoVerificacao) await ServiceUsuario._liberarCodigo(u.codigoVerificacao);
+      codigoFinal = null;
+    }
+
+    const senhaHash = senha ? await hashSenha(senha) : u.senha;
+
+    const atualizado = await prisma.usuario.update({
+      where: { id: Number(id) },
+      data: {
+        nome: nome ? nome.trim() : u.nome,
+        email: (email && typeof email === 'string') ? email.trim().toLowerCase() : u.email,
+        senha: senhaHash,
+        telefone: telefone ?? u.telefone,
+        perfil: perfilFinal,
+        imagem: imagem ?? u.imagem,
+        relacaoEducando: perfilFinal === "ENCARREGADO" ? (relacao || u.relacaoEducando) : null,
+        codigoVerificacao: perfilFinal === "PROFESSOR" ? codigoFinal : null,
+        disciplinas: disciplinas ? { set: toConnect(disciplinas) } : undefined,
+        cursos: cursos ? { set: toConnect(cursos) } : undefined,
+      },
+      include: { disciplinas: true, turmas: true, cursos: true },
+    });
+
+    if (perfilFinal === "ENCARREGADO" && numeroMatricula) {
+      await prisma.aluno.update({
+        where: { matricula: String(numeroMatricula).trim() },
+        data: { encarregadoId: atualizado.id },
+      });
+    }
+
+    return semSenha(atualizado);
+  }
+
+  // ... (restante dos métodos listar e deletar permanecem iguais)
+  static async listarUsuarios() {
+    const lista = await prisma.usuario.findMany({
+      include: { disciplinas: true, turmas: true, cursos: true },
+    });
+    return lista.map(semSenha);
+  }
+
+  static async listarUsuarioPorId(id) {
+    const u = await prisma.usuario.findUnique({
+      where: { id: Number(id) },
+      include: { disciplinas: true, turmas: true, cursos: true },
+    });
+    if (!u) throw new Error("Usuário não encontrado.");
+    return semSenha(u);
+  }
+
+  static async deletarUsuario(id) {
+    const u = await prisma.usuario.findUnique({ where: { id: Number(id) } });
+    if (!u) throw new Error("Usuário não encontrado.");
+    await prisma.usuario.delete({ where: { id: Number(id) } });
+    return { mensagem: "Usuário deletado com sucesso." };
   }
 
   static async criarCodigoProfessor(codigo) {
-    const codigoUpper = codigo?.trim().toUpperCase();
-    if (!codigoUpper) throw new Error("Código inválido.");
-
-    const existente = await prisma.codigoProfessor.findUnique({ where: { codigo: codigoUpper } });
-    if (existente) throw new Error("Código já existe.");
-
-    return prisma.codigoProfessor.create({ data: { codigo: codigoUpper } });
+    const c = codigo?.trim().toUpperCase();
+    if (!c) throw new Error("Código inválido.");
+    if (await prisma.codigoProfessor.findUnique({ where: { codigo: c } }))
+      throw new Error("Código já existe.");
+    return prisma.codigoProfessor.create({ data: { codigo: c } });
   }
 
   static async listarCodigosProfessor() {
     return prisma.codigoProfessor.findMany({
       include: {
         professor: {
-          select: { id: true, nome: true, email: true, telefone: true, perfil: true, imagem: true, codigoVerificacao: true }
-        }
-      },
-      orderBy: { criadoEm: "desc" }
-    });
-  }
-
-  static async associarCodigoProfessor(codigo, usuarioId) {
-    const codigoUpper = codigo?.trim().toUpperCase();
-    if (!codigoUpper) throw new Error("Código inválido.");
-    return prisma.codigoProfessor.update({
-      where: { codigo: codigoUpper },
-      data: { usado: true, professorId: usuarioId }
-    });
-  }
-
-  static async liberarCodigoProfessor(codigo) {
-    const codigoUpper = codigo?.trim().toUpperCase();
-    if (!codigoUpper) return;
-    await prisma.codigoProfessor.updateMany({
-      where: { codigo: codigoUpper },
-      data: { usado: false, professorId: null }
-    });
-  }
-
-  // ========================
-  // LOGIN
-  // ========================
-  static async loginUsuario(email, senha) {
-    try {
-      if (!email?.trim() || !senha) throw new Error("Email e senha são obrigatórios.");
-
-      const emailFormatado = email.trim().toLowerCase();
-
-      const usuario = await prisma.usuario.findUnique({
-        where: { email: emailFormatado },
-        include: { disciplinas: true, turmas: true, cursos: true }
-      });
-
-      if (!usuario) throw new Error("Email ou senha inválidos.");
-
-      const senhaValida = await compareSenha(senha, usuario.senha);
-      if (!senhaValida) throw new Error("Email ou senha inválidos.");
-
-      const token = JWT.gerarToken({ id: usuario.id, email: usuario.email, perfil: usuario.perfil });
-
-      const { senha: _, ...usuarioSemSenha } = usuario;
-      return { usuario: usuarioSemSenha, token };
-
-    } catch (error) {
-      throw new Error(`Erro no login: ${error.message}`);
-    }
-  }
-
-  // ========================
-  // LISTAR TODOS
-  // ========================
-  static async listarUsuarios() {
-    try {
-      const usuarios = await prisma.usuario.findMany({
-        include: { disciplinas: true, turmas: true, cursos: true }
-      });
-      return usuarios.map(({ senha, ...rest }) => rest);
-    } catch (error) {
-      throw new Error(`Erro ao listar usuários: ${error.message}`);
-    }
-  }
-
-  // ========================
-  // LISTAR POR ID
-  // ========================
-  static async listarUsuarioPorId(id) {
-    try {
-      const usuario = await prisma.usuario.findUnique({
-        where: { id: parseInt(id) },
-        include: { disciplinas: true, turmas: true, cursos: true }
-      });
-      if (!usuario) throw new Error("Usuário não encontrado.");
-      const { senha, ...usuarioSemSenha } = usuario;
-      return usuarioSemSenha;
-    } catch (error) {
-      throw new Error(`Erro ao listar usuário por ID: ${error.message}`);
-    }
-  }
-
-  // ========================
-  // ATUALIZAR
-  // ========================
-  static async atualizarUsuario(id, dados) {
-    try {
-      const {
-        nome, email, senha, telefone, perfil, imagem, disciplinas, cursos,
-        relacaoEducando, numeroMatricula, codigoVerificacao
-      } = dados;
-
-      const usuarioExistente = await prisma.usuario.findUnique({ where: { id: parseInt(id) } });
-      if (!usuarioExistente) throw new Error("Usuário não encontrado.");
-
-      const perfilFinal = perfil ?? usuarioExistente.perfil;
-      const relacaoMap = { "Pai": "PAI", "Mãe": "MAE", "Mae": "MAE", "Tutor Legal": "TUTOR", "Tutor": "TUTOR" };
-
-      if (perfilFinal === "ENCARREGADO" && numeroMatricula) {
-        const alunoExiste = await prisma.aluno.findUnique({ where: { matricula: numeroMatricula } });
-        if (!alunoExiste) throw new Error("Aluno com esse número de matrícula não encontrado.");
-      }
-
-      let codigoVerificacaoFinal = usuarioExistente.codigoVerificacao;
-      const codigoAntigo = usuarioExistente.codigoVerificacao;
-
-      if (perfilFinal === "PROFESSOR" && codigoVerificacao !== undefined) {
-        const codigoUpper = codigoVerificacao.trim().toUpperCase();
-        if (codigoUpper !== codigoAntigo) {
-          await this.validarCodigoProfessor(codigoUpper);
-          await this.liberarCodigoProfessor(codigoAntigo);
-          await this.associarCodigoProfessor(codigoUpper, usuarioExistente.id);
-          codigoVerificacaoFinal = codigoUpper;
-        } else {
-          codigoVerificacaoFinal = codigoUpper;
-        }
-      } else if (perfilFinal !== "PROFESSOR") {
-        if (codigoAntigo) await this.liberarCodigoProfessor(codigoAntigo);
-        codigoVerificacaoFinal = null;
-      }
-
-      const senhaHash = senha ? await hashSenha(senha) : usuarioExistente.senha;
-
-      const toIds = (val) => val
-        ? (Array.isArray(val) ? val : [val]).map(id => ({ id: Number(id) }))
-        : undefined;
-
-      const usuarioAtualizado = await prisma.usuario.update({
-        where: { id: parseInt(id) },
-        data: {
-          nome: nome ?? usuarioExistente.nome,
-          email: email ? email.trim().toLowerCase() : usuarioExistente.email,
-          senha: senhaHash,
-          telefone: telefone ?? usuarioExistente.telefone,
-          perfil: perfilFinal,
-          imagem: imagem ?? usuarioExistente.imagem,
-          relacaoEducando: perfilFinal === "ENCARREGADO"
-            ? (relacaoMap[relacaoEducando] || relacaoEducando || usuarioExistente.relacaoEducando)
-            : null,
-          codigoVerificacao: perfilFinal === "PROFESSOR" ? codigoVerificacaoFinal : null,
-          disciplinas: disciplinas ? { set: toIds(disciplinas) } : undefined,
-          cursos: cursos ? { set: toIds(cursos) } : undefined,
+          select: { id:true, nome:true, email:true, telefone:true, perfil:true, imagem:true, codigoVerificacao:true },
         },
-        include: { disciplinas: true, turmas: true, cursos: true }
-      });
-
-      if (perfilFinal === "ENCARREGADO" && numeroMatricula) {
-        await prisma.aluno.update({
-          where: { matricula: numeroMatricula },
-          data: { encarregadoId: usuarioAtualizado.id }
-        });
-      }
-
-      const { senha: _, ...usuarioSemSenha } = usuarioAtualizado;
-      return usuarioSemSenha;
-
-    } catch (error) {
-      throw new Error(`Erro ao atualizar usuário: ${error.message}`);
-    }
+      },
+      orderBy: { criadoEm: "desc" },
+    });
   }
 
-  // ========================
-  // DELETAR
-  // ========================
-  static async deletarUsuario(id) {
-    try {
-      const usuarioExistente = await prisma.usuario.findUnique({ where: { id: parseInt(id) } });
-      if (!usuarioExistente) throw new Error("Usuário não encontrado.");
+  static async _validarCodigo(codigo) {
+    const reg = await prisma.codigoProfessor.findUnique({ where: { codigo } });
+    if (!reg) throw new Error("Código de professor não existe.");
+    if (reg.usado) throw new Error("Código já foi utilizado.");
+    return reg;
+  }
 
-      await prisma.usuario.delete({ where: { id: parseInt(id) } });
-      return { mensagem: "Usuário deletado com sucesso." };
+  static async _liberarCodigo(codigo) {
+    await prisma.codigoProfessor.updateMany({
+      where: { codigo },
+      data: { usado: false, professorId: null },
+    });
+  }
 
-    } catch (error) {
-      throw new Error(`Erro ao deletar usuário: ${error.message}`);
-    }
+  static async _associarCodigo(codigo, professorId) {
+    await prisma.codigoProfessor.update({
+      where: { codigo },
+      data: { usado: true, professorId },
+    });
   }
 }

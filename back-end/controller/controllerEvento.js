@@ -1,60 +1,38 @@
-import {ServiceEvento} from "../service/serviceEvento.js";
+
+import { ServiceEvento } from "../service/serviceEvento.js";
+import { upload }         from "../middlewares/upload.js";
 
 export class ControllerEvento {
-   static async criarEvento(req, res) {
-    try {
-        const eventoCriado = await ServiceEvento.criarEvento(req.body);
-        res.status(201).json(eventoCriado);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-}
-
-    static async listarEventos(req, res) {
-        try {
-            const eventos = await ServiceEvento.listarEventos();
-            res.status(200).json(eventos);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-
-    static async obterEventoPorId(req, res) {
-        try {
-            const { id } = req.params;
-            const evento = await ServiceEvento.obterEventoPorId(id);
-            res.status(200).json(evento);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-
-    static async atualizarEvento(req, res) {
-    try {
-        const { id } = req.params;
-        const { titulo, descricao, imagem } = req.body;
-
-        const eventoAtualizado = await ServiceEvento.atualizarEvento(id, {
-            titulo,
-            descricao,
-            imagem
-        });
-
-        res.status(200).json(eventoAtualizado);
-
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-}
-
-    static async deletarEvento(req, res) {
-        try {
-            const { id } = req.params;
-            const resultado = await ServiceEvento.deletarEvento(id);
-            res.status(200).json(resultado);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-
+  static criarEvento = [
+    upload.single("imagem"),
+    async (req, res) => {
+      try {
+        const dados = { ...req.body };
+        if (req.file) dados.imagem = `/uploads/arquivos/${req.file.filename}`;
+        return res.status(201).json(await ServiceEvento.criarEvento(dados));
+      } catch (e) { return res.status(400).json({ error: e.message }); }
+    },
+  ];
+  static async listarEventos(req, res) {
+    try { return res.json(await ServiceEvento.listarEventos()); }
+    catch (e) { return res.status(500).json({ error: e.message }); }
+  }
+  static async obterEventoPorId(req, res) {
+    try { return res.json(await ServiceEvento.obterEventoPorId(req.params.id)); }
+    catch (e) { return res.status(404).json({ error: e.message }); }
+  }
+  static atualizarEvento = [
+    upload.single("imagem"),
+    async (req, res) => {
+      try {
+        const dados = { ...req.body };
+        if (req.file) dados.imagem = `/uploads/arquivos/${req.file.filename}`;
+        return res.json(await ServiceEvento.atualizarEvento(req.params.id, dados));
+      } catch (e) { return res.status(400).json({ error: e.message }); }
+    },
+  ];
+  static async deletarEvento(req, res) {
+    try { return res.json(await ServiceEvento.deletarEvento(req.params.id)); }
+    catch (e) { return res.status(400).json({ error: e.message }); }
+  }
 }

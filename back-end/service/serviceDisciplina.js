@@ -1,115 +1,43 @@
 import { prisma } from "../prismaClient/prismaClient.js";
 
 export class ServiceDisciplina {
-    static async criarDisciplina(dados) {
-    try {
-        const { nome, professorId, descricao, cursoId } = dados;
 
-        if (!nome) {
-            throw new Error("O nome da disciplina é obrigatório.");
-        }
+  static async criarDisciplina({ nome, descricao, cursoId }) {
+    if (!nome || !cursoId) throw new Error("Nome e cursoId são obrigatórios.");
+    return prisma.disciplina.create({
+      data: { nome, descricao: descricao || "", cursoId: Number(cursoId) },
+      include: { curso: true },
+    });
+  }
 
-        if (!cursoId) {
-            throw new Error("O curso é obrigatório.");
-        }
+  static async listarDisciplinas() {
+    return prisma.disciplina.findMany({ include: { curso: true }, orderBy: { nome: "asc" } });
+  }
 
-        const novaDisciplina = await prisma.disciplina.create({
-            data: {
-                nome,
-                descricao: descricao || " ",
-                cursoId: Number(cursoId),
+  static async obterDisciplinaPorId(id) {
+    const d = await prisma.disciplina.findUnique({ where: { id: Number(id) }, include: { curso: true } });
+    if (!d) throw new Error("Disciplina não encontrada.");
+    return d;
+  }
 
-                // relação opcional com professor
-                professores: professorId
-                    ? {
-                        connect: [{ id: Number(professorId) }]
-                      }
-                    : undefined
-            }
-        });
+  static async atualizarDisciplina(id, { nome, descricao, cursoId }) {
+    const d = await prisma.disciplina.findUnique({ where: { id: Number(id) } });
+    if (!d) throw new Error("Disciplina não encontrada.");
+    return prisma.disciplina.update({
+      where: { id: Number(id) },
+      data: {
+        nome:      nome      ?? d.nome,
+        descricao: descricao ?? d.descricao,
+        cursoId:   cursoId   ? Number(cursoId) : d.cursoId,
+      },
+      include: { curso: true },
+    });
+  }
 
-        return novaDisciplina;
-
-    } catch (error) {
-        throw new Error(`Erro ao criar disciplina: ${error.message}`);
-    }
+  static async deletarDisciplina(id) {
+    const d = await prisma.disciplina.findUnique({ where: { id: Number(id) } });
+    if (!d) throw new Error("Disciplina não encontrada.");
+    await prisma.disciplina.delete({ where: { id: Number(id) } });
+    return { mensagem: "Disciplina deletada com sucesso." };
+  }
 }
-
-    static async listarDisciplinas() {
-        try {
-            const disciplinas = await prisma.disciplina.findMany({
-                include:
-                 {
-                    curso: true,
-                    professores: true
-                 }
-            });
-            return disciplinas;
-        } catch (error) {
-            throw new Error(`Erro ao listar disciplinas: ${error.message}`);
-        }
-    }
-
-    static async obterDisciplinaPorId(id) {
-        try {
-            const disciplina = await prisma.disciplina.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!disciplina) {
-                throw new Error("Disciplina não encontrada.");
-            }
-            return disciplina;
-        } catch (error) {
-            throw new Error(`Erro ao obter disciplina: ${error.message}`);
-        }
-    }
-
-   static async atualizarDisciplina(id, dados) {
-    try {
-        const { nome, professorId, cursoId, descricao } = dados;
-
-        if (!nome) {
-            throw new Error("O nome da disciplina é obrigatório.");
-        }
-
-        const disciplinaAtualizada = await prisma.disciplina.update({
-            where: { id: parseInt(id) },
-            data: {
-                nome,
-                descricao,
-
-                // RELAÇÃO COM CURSO
-                curso: {
-                    connect: { id: parseInt(cursoId) }
-                },
-
-                // PROFESSOR DEPENDE DO TEU MODEL
-                professores: professorId
-                    ? { set: [{ id: parseInt(professorId) }] }
-                    : { set: [] }
-            }
-        });
-
-        return disciplinaAtualizada;
-
-    } catch (error) {
-        throw new Error(`Erro ao atualizar disciplina: ${error.message}`);
-    }
-}
-    static async deletarDisciplina(id) {
-        try {
-            const disciplinaExistente = await prisma.disciplina.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!disciplinaExistente) {
-                throw new Error("Disciplina não encontrada.");
-            }
-            await prisma.disciplina.delete({
-                where: { id: parseInt(id) }
-            });
-            return { message: "Disciplina deletada com sucesso." };
-        } catch (error) {
-            throw new Error(`Erro ao deletar disciplina: ${error.message}`);
-        }
-    }
- }

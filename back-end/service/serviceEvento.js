@@ -1,90 +1,35 @@
-import {prisma} from '../prismaClient/prismaClient.js';
+import { prisma } from "../prismaClient/prismaClient.js";
 
 export class ServiceEvento {
-    static async criarEvento(dados) {
-        try {
-            const {titulo, descricao, imagem} = dados;
-            if (!titulo || !descricao) {
-                throw new Error("Todos os campos são obrigatórios.");
-            }   
 
-            const novoEvento = await prisma.evento.create({
-                data: {
-                    titulo,
-                    descricao,
-                   imagem: imagem || null
-                }
-            });
-            return novoEvento;
-        } catch (error) {
-            throw new Error(`Erro ao criar evento: ${error.message}`);
-        }
-    }
+  static async criarEvento({ titulo, descricao, imagem }) {
+    if (!titulo || !descricao) throw new Error("Título e descrição são obrigatórios.");
+    return prisma.evento.create({ data: { titulo, descricao, imagem: imagem || null } });
+  }
 
-    static async listarEventos() {
-        try {
-            const eventos = await prisma.evento.findMany();
-            return eventos;
-        } catch (error) {
-            throw new Error(`Erro ao listar eventos: ${error.message}`);
-        }
-    }
+  static async listarEventos() {
+    return prisma.evento.findMany({ orderBy: { criadoEm: "desc" } });
+  }
 
-    static async obterEventoPorId(id) {
-        try {
-            const evento = await prisma.evento.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!evento) {
-                throw new Error("Evento não encontrado.");
-            }
-            return evento;
-        } catch (error) {
-            throw new Error(`Erro ao obter evento: ${error.message}`);
-        }       
-    }
+  static async obterEventoPorId(id) {
+    const e = await prisma.evento.findUnique({ where: { id: Number(id) } });
+    if (!e) throw new Error("Evento não encontrado.");
+    return e;
+  }
 
-    static async atualizarEvento(id, dados) {
-        try {
-            const {titulo, descricao, imagem} = dados;  
-            if (!titulo || !descricao) {
-                throw new Error("O título e a descrição do evento são obrigatórios.");
-            }
-            const eventoExistente = await prisma.evento.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!eventoExistente) {
-                throw new Error("Evento não encontrado.");
-            }
-            const eventoAtualizado = await prisma.evento.update({
-                    where: { id: parseInt(id) },
-                    data: { 
-                        titulo, 
-                        descricao,
-                        imagem: imagem || null
-                    }
-            });
-            return eventoAtualizado;
-        } catch (error) {
-            throw new Error(`Erro ao atualizar evento: ${error.message}`);
-        }
-    }
+  static async atualizarEvento(id, { titulo, descricao, imagem }) {
+    const e = await prisma.evento.findUnique({ where: { id: Number(id) } });
+    if (!e) throw new Error("Evento não encontrado.");
+    return prisma.evento.update({
+      where: { id: Number(id) },
+      data:  { titulo: titulo ?? e.titulo, descricao: descricao ?? e.descricao, imagem: imagem ?? e.imagem },
+    });
+  }
 
-    static async deletarEvento(id) {
-        try {
-            const eventoExistente = await prisma.evento.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!eventoExistente) {
-                throw new Error("Evento não encontrado.");
-            }
-            const eventoDeletado = await prisma.evento.delete({
-                where: { id: parseInt(id) }
-            });
-            return eventoDeletado;
-        } catch (error) {
-            throw new Error(`Erro ao deletar evento: ${error.message}`);
-        }
-    }
- }    
-
+  static async deletarEvento(id) {
+    const e = await prisma.evento.findUnique({ where: { id: Number(id) } });
+    if (!e) throw new Error("Evento não encontrado.");
+    await prisma.evento.delete({ where: { id: Number(id) } });
+    return { mensagem: "Evento deletado com sucesso." };
+  }
+}

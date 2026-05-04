@@ -1,48 +1,21 @@
-import { prisma } from '../prismaClient/prismaClient.js';
+import { prisma } from "../prismaClient/prismaClient.js";
 
-class ServiceFeedback {
-  // Criar um novo feedback
-  async criarFeedback(dados) {
-    try {
-      const feedback = await prisma.feedback.create({
-        data: {
-          nome: dados.nome,
-          email: dados.email,
-          assunto: dados.assunto,
-          mensagem: dados.mensagem,
-        },
-      });
-      return feedback;
-    } catch (error) {
-      throw new Error('Erro ao criar feedback: ' + error.message);
-    }
+export class ServiceFeedback {
+
+  static async criarFeedback({ nome, email, assunto, mensagem }) {
+    if (!nome || !email || !assunto || !mensagem)
+      throw new Error("Todos os campos são obrigatórios.");
+    return prisma.feedback.create({ data: { nome, email, assunto, mensagem } });
   }
 
-  // Listar todos os feedbacks
-  async listarFeedbacks() {
-    try {
-      const feedbacks = await prisma.feedback.findMany({
-        orderBy: {
-          criadoEm: 'desc',
-        },
-      });
-      return feedbacks;
-    } catch (error) {
-      throw new Error('Erro ao listar feedbacks: ' + error.message);
-    }
+  static async listarFeedbacks() {
+    return prisma.feedback.findMany({ orderBy: { criadoEm: "desc" } });
   }
 
-  // Remover um feedback por ID
-  async removerFeedback(id) {
-    try {
-      const feedback = await prisma.feedback.delete({
-        where: { id: parseInt(id) },
-      });
-      return feedback;
-    } catch (error) {
-      throw new Error('Erro ao remover feedback: ' + error.message);
-    }
+  static async removerFeedback(id) {
+    const f = await prisma.feedback.findUnique({ where: { id: Number(id) } });
+    if (!f) throw new Error("Feedback não encontrado.");
+    await prisma.feedback.delete({ where: { id: Number(id) } });
+    return { mensagem: "Feedback removido." };
   }
 }
-
-export default new ServiceFeedback();

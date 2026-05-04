@@ -125,10 +125,10 @@ exports.Prisma.UsuarioScalarFieldEnum = {
   telefone: 'telefone',
   perfil: 'perfil',
   imagem: 'imagem',
-  criadoEm: 'criadoEm',
-  atualizadoEm: 'atualizadoEm',
   relacaoEducando: 'relacaoEducando',
-  codigoVerificacao: 'codigoVerificacao'
+  codigoVerificacao: 'codigoVerificacao',
+  criadoEm: 'criadoEm',
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.AlunoScalarFieldEnum = {
@@ -177,9 +177,9 @@ exports.Prisma.MensagemScalarFieldEnum = {
   conteudo: 'conteudo',
   remetenteId: 'remetenteId',
   destinatarioId: 'destinatarioId',
+  editadoEm: 'editadoEm',
   criadoEm: 'criadoEm',
   atualizadoEm: 'atualizadoEm',
-  editadoEm: 'editadoEm',
   deletadoParaRemetente: 'deletadoParaRemetente',
   deletadoParaDestinatario: 'deletadoParaDestinatario',
   arquivoUrl: 'arquivoUrl',
@@ -193,14 +193,6 @@ exports.Prisma.AvisoScalarFieldEnum = {
   titulo: 'titulo',
   conteudo: 'conteudo',
   imagem: 'imagem',
-  criadoEm: 'criadoEm',
-  atualizadoEm: 'atualizadoEm'
-};
-
-exports.Prisma.RelatorioScalarFieldEnum = {
-  id: 'id',
-  titulo: 'titulo',
-  conteudo: 'conteudo',
   criadoEm: 'criadoEm',
   atualizadoEm: 'atualizadoEm'
 };
@@ -225,6 +217,12 @@ exports.Prisma.ReuniaoScalarFieldEnum = {
   atualizadoEm: 'atualizadoEm'
 };
 
+exports.Prisma.ReuniaoParticipanteScalarFieldEnum = {
+  id: 'id',
+  reuniaoId: 'reuniaoId',
+  usuarioId: 'usuarioId'
+};
+
 exports.Prisma.CursoScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
@@ -233,10 +231,12 @@ exports.Prisma.CursoScalarFieldEnum = {
   atualizadoEm: 'atualizadoEm'
 };
 
-exports.Prisma.ReuniaoParticipanteScalarFieldEnum = {
+exports.Prisma.RelatorioScalarFieldEnum = {
   id: 'id',
-  reuniaoId: 'reuniaoId',
-  usuarioId: 'usuarioId'
+  titulo: 'titulo',
+  conteudo: 'conteudo',
+  criadoEm: 'criadoEm',
+  atualizadoEm: 'atualizadoEm'
 };
 
 exports.Prisma.FeedbackScalarFieldEnum = {
@@ -286,11 +286,11 @@ exports.Prisma.ModelName = {
   Nota: 'Nota',
   Mensagem: 'Mensagem',
   Aviso: 'Aviso',
-  Relatorio: 'Relatorio',
   Evento: 'Evento',
   Reuniao: 'Reuniao',
-  Curso: 'Curso',
   ReuniaoParticipante: 'ReuniaoParticipante',
+  Curso: 'Curso',
+  Relatorio: 'Relatorio',
   Feedback: 'Feedback',
   CodigoProfessor: 'CodigoProfessor'
 };

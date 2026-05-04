@@ -1,91 +1,35 @@
-import {prisma} from '../prismaClient/prismaClient.js';
+import { prisma } from "../prismaClient/prismaClient.js";
 
 export class ServiceRelatorio {
-    static async gerarRelatorioNotas(titulo, conteudo) {    
 
-        try {
-            if (!titulo || !conteudo) {
-                throw new Error("O título e o conteúdo do relatório são obrigatórios.");
-            }   
-            const novoRelatorio = await prisma.relatorio.create({
-                data: {
-                    titulo, 
-                    conteudo
-                }
-            });
-            return novoRelatorio;
-        } catch (error) {
-            throw new Error(`Erro ao criar relatório: ${error.message}`);
-        }   
-    }
+  static async criarRelatorio({ titulo, conteudo }) {
+    if (!titulo || !conteudo) throw new Error("Título e conteúdo são obrigatórios.");
+    return prisma.relatorio.create({ data: { titulo, conteudo } });
+  }
 
-    static async listarRelatorios() {
-        try {
-            const relatorios = await prisma.relatorio.findMany();
-            return relatorios;
-        } catch (error) {
-            throw new Error(`Erro ao listar relatórios: ${error.message}`);
-        }
-    }
+  static async listarRelatorios() {
+    return prisma.relatorio.findMany({ orderBy: { criadoEm: "desc" } });
+  }
 
-    static async obterRelatorioPorId(id) {
-        try {
-            const relatorio = await prisma.relatorio.findUnique({   
+  static async obterRelatorioPorId(id) {
+    const r = await prisma.relatorio.findUnique({ where: { id: Number(id) } });
+    if (!r) throw new Error("Relatório não encontrado.");
+    return r;
+  }
 
-                where: { id: parseInt(id) }
-            });
-            if (!relatorio) {
-                throw new Error("Relatório não encontrado.");
-            }   
+  static async atualizarRelatorio(id, { titulo, conteudo }) {
+    const r = await prisma.relatorio.findUnique({ where: { id: Number(id) } });
+    if (!r) throw new Error("Relatório não encontrado.");
+    return prisma.relatorio.update({
+      where: { id: Number(id) },
+      data:  { titulo: titulo ?? r.titulo, conteudo: conteudo ?? r.conteudo },
+    });
+  }
 
-            return relatorio;
-        } catch (error) {
-            throw new Error(`Erro ao obter relatório: ${error.message}`);
-        }       
-
-    }       
-
-    static async atualizarRelatorio(id, titulo, conteudo) {
-        try {
-            if (!titulo || !conteudo) { 
-
-                throw new Error("O título e o conteúdo do relatório são obrigatórios.");
-            }       
-
-            const relatorioExistente = await prisma.relatorio.findUnique({      
-                where: { id: parseInt(id) }
-            });
-            if (!relatorioExistente) {  
-                throw new Error("Relatório não encontrado.");
-            }   
-            const relatorioAtualizado = await prisma.relatorio.update({ 
-                where: { id: parseInt(id) },
-                data: { titulo, conteudo }
-            });
-            return relatorioAtualizado;
-        }
-        catch (error) {
-            throw new Error(`Erro ao atualizar relatório: ${error.message}`);
-        }           
-
-    }
-
-    static async deletarRelatorio(id) {     
-        try {
-            const relatorioExistente = await prisma.relatorio.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!relatorioExistente) {
-                throw new Error("Relatório não encontrado.");
-            }
-            await prisma.relatorio.delete({
-                where: { id: parseInt(id) }
-            });
-            return { message: "Relatório deletado com sucesso." };
-        }
-        catch (error) {
-            throw new Error(`Erro ao deletar relatório: ${error.message}`);
-        }
-    }
-
- }
+  static async deletarRelatorio(id) {
+    const r = await prisma.relatorio.findUnique({ where: { id: Number(id) } });
+    if (!r) throw new Error("Relatório não encontrado.");
+    await prisma.relatorio.delete({ where: { id: Number(id) } });
+    return { mensagem: "Relatório deletado com sucesso." };
+  }
+}

@@ -49,11 +49,6 @@ export type Mensagem = $Result.DefaultSelection<Prisma.$MensagemPayload>
  */
 export type Aviso = $Result.DefaultSelection<Prisma.$AvisoPayload>
 /**
- * Model Relatorio
- * 
- */
-export type Relatorio = $Result.DefaultSelection<Prisma.$RelatorioPayload>
-/**
  * Model Evento
  * 
  */
@@ -64,15 +59,20 @@ export type Evento = $Result.DefaultSelection<Prisma.$EventoPayload>
  */
 export type Reuniao = $Result.DefaultSelection<Prisma.$ReuniaoPayload>
 /**
+ * Model ReuniaoParticipante
+ * 
+ */
+export type ReuniaoParticipante = $Result.DefaultSelection<Prisma.$ReuniaoParticipantePayload>
+/**
  * Model Curso
  * 
  */
 export type Curso = $Result.DefaultSelection<Prisma.$CursoPayload>
 /**
- * Model ReuniaoParticipante
+ * Model Relatorio
  * 
  */
-export type ReuniaoParticipante = $Result.DefaultSelection<Prisma.$ReuniaoParticipantePayload>
+export type Relatorio = $Result.DefaultSelection<Prisma.$RelatorioPayload>
 /**
  * Model Feedback
  * 
@@ -307,16 +307,6 @@ export class PrismaClient<
   get aviso(): Prisma.AvisoDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.relatorio`: Exposes CRUD operations for the **Relatorio** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Relatorios
-    * const relatorios = await prisma.relatorio.findMany()
-    * ```
-    */
-  get relatorio(): Prisma.RelatorioDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.evento`: Exposes CRUD operations for the **Evento** model.
     * Example usage:
     * ```ts
@@ -337,6 +327,16 @@ export class PrismaClient<
   get reuniao(): Prisma.ReuniaoDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.reuniaoParticipante`: Exposes CRUD operations for the **ReuniaoParticipante** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ReuniaoParticipantes
+    * const reuniaoParticipantes = await prisma.reuniaoParticipante.findMany()
+    * ```
+    */
+  get reuniaoParticipante(): Prisma.ReuniaoParticipanteDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.curso`: Exposes CRUD operations for the **Curso** model.
     * Example usage:
     * ```ts
@@ -347,14 +347,14 @@ export class PrismaClient<
   get curso(): Prisma.CursoDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.reuniaoParticipante`: Exposes CRUD operations for the **ReuniaoParticipante** model.
+   * `prisma.relatorio`: Exposes CRUD operations for the **Relatorio** model.
     * Example usage:
     * ```ts
-    * // Fetch zero or more ReuniaoParticipantes
-    * const reuniaoParticipantes = await prisma.reuniaoParticipante.findMany()
+    * // Fetch zero or more Relatorios
+    * const relatorios = await prisma.relatorio.findMany()
     * ```
     */
-  get reuniaoParticipante(): Prisma.ReuniaoParticipanteDelegate<ExtArgs, ClientOptions>;
+  get relatorio(): Prisma.RelatorioDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.feedback`: Exposes CRUD operations for the **Feedback** model.
@@ -816,11 +816,11 @@ export namespace Prisma {
     Nota: 'Nota',
     Mensagem: 'Mensagem',
     Aviso: 'Aviso',
-    Relatorio: 'Relatorio',
     Evento: 'Evento',
     Reuniao: 'Reuniao',
-    Curso: 'Curso',
     ReuniaoParticipante: 'ReuniaoParticipante',
+    Curso: 'Curso',
+    Relatorio: 'Relatorio',
     Feedback: 'Feedback',
     CodigoProfessor: 'CodigoProfessor'
   };
@@ -838,7 +838,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "usuario" | "aluno" | "turma" | "disciplina" | "nota" | "mensagem" | "aviso" | "relatorio" | "evento" | "reuniao" | "curso" | "reuniaoParticipante" | "feedback" | "codigoProfessor"
+      modelProps: "usuario" | "aluno" | "turma" | "disciplina" | "nota" | "mensagem" | "aviso" | "evento" | "reuniao" | "reuniaoParticipante" | "curso" | "relatorio" | "feedback" | "codigoProfessor"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1360,80 +1360,6 @@ export namespace Prisma {
           }
         }
       }
-      Relatorio: {
-        payload: Prisma.$RelatorioPayload<ExtArgs>
-        fields: Prisma.RelatorioFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.RelatorioFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.RelatorioFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
-          }
-          findFirst: {
-            args: Prisma.RelatorioFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.RelatorioFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
-          }
-          findMany: {
-            args: Prisma.RelatorioFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>[]
-          }
-          create: {
-            args: Prisma.RelatorioCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
-          }
-          createMany: {
-            args: Prisma.RelatorioCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.RelatorioCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>[]
-          }
-          delete: {
-            args: Prisma.RelatorioDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
-          }
-          update: {
-            args: Prisma.RelatorioUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
-          }
-          deleteMany: {
-            args: Prisma.RelatorioDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.RelatorioUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.RelatorioUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>[]
-          }
-          upsert: {
-            args: Prisma.RelatorioUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
-          }
-          aggregate: {
-            args: Prisma.RelatorioAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateRelatorio>
-          }
-          groupBy: {
-            args: Prisma.RelatorioGroupByArgs<ExtArgs>
-            result: $Utils.Optional<RelatorioGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.RelatorioCountArgs<ExtArgs>
-            result: $Utils.Optional<RelatorioCountAggregateOutputType> | number
-          }
-        }
-      }
       Evento: {
         payload: Prisma.$EventoPayload<ExtArgs>
         fields: Prisma.EventoFieldRefs
@@ -1582,6 +1508,80 @@ export namespace Prisma {
           }
         }
       }
+      ReuniaoParticipante: {
+        payload: Prisma.$ReuniaoParticipantePayload<ExtArgs>
+        fields: Prisma.ReuniaoParticipanteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ReuniaoParticipanteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ReuniaoParticipanteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+          }
+          findFirst: {
+            args: Prisma.ReuniaoParticipanteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ReuniaoParticipanteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+          }
+          findMany: {
+            args: Prisma.ReuniaoParticipanteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>[]
+          }
+          create: {
+            args: Prisma.ReuniaoParticipanteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+          }
+          createMany: {
+            args: Prisma.ReuniaoParticipanteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ReuniaoParticipanteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>[]
+          }
+          delete: {
+            args: Prisma.ReuniaoParticipanteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+          }
+          update: {
+            args: Prisma.ReuniaoParticipanteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+          }
+          deleteMany: {
+            args: Prisma.ReuniaoParticipanteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ReuniaoParticipanteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ReuniaoParticipanteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>[]
+          }
+          upsert: {
+            args: Prisma.ReuniaoParticipanteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+          }
+          aggregate: {
+            args: Prisma.ReuniaoParticipanteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateReuniaoParticipante>
+          }
+          groupBy: {
+            args: Prisma.ReuniaoParticipanteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ReuniaoParticipanteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ReuniaoParticipanteCountArgs<ExtArgs>
+            result: $Utils.Optional<ReuniaoParticipanteCountAggregateOutputType> | number
+          }
+        }
+      }
       Curso: {
         payload: Prisma.$CursoPayload<ExtArgs>
         fields: Prisma.CursoFieldRefs
@@ -1656,77 +1656,77 @@ export namespace Prisma {
           }
         }
       }
-      ReuniaoParticipante: {
-        payload: Prisma.$ReuniaoParticipantePayload<ExtArgs>
-        fields: Prisma.ReuniaoParticipanteFieldRefs
+      Relatorio: {
+        payload: Prisma.$RelatorioPayload<ExtArgs>
+        fields: Prisma.RelatorioFieldRefs
         operations: {
           findUnique: {
-            args: Prisma.ReuniaoParticipanteFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload> | null
+            args: Prisma.RelatorioFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload> | null
           }
           findUniqueOrThrow: {
-            args: Prisma.ReuniaoParticipanteFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+            args: Prisma.RelatorioFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
           }
           findFirst: {
-            args: Prisma.ReuniaoParticipanteFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload> | null
+            args: Prisma.RelatorioFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload> | null
           }
           findFirstOrThrow: {
-            args: Prisma.ReuniaoParticipanteFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+            args: Prisma.RelatorioFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
           }
           findMany: {
-            args: Prisma.ReuniaoParticipanteFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>[]
+            args: Prisma.RelatorioFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>[]
           }
           create: {
-            args: Prisma.ReuniaoParticipanteCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+            args: Prisma.RelatorioCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
           }
           createMany: {
-            args: Prisma.ReuniaoParticipanteCreateManyArgs<ExtArgs>
+            args: Prisma.RelatorioCreateManyArgs<ExtArgs>
             result: BatchPayload
           }
           createManyAndReturn: {
-            args: Prisma.ReuniaoParticipanteCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>[]
+            args: Prisma.RelatorioCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>[]
           }
           delete: {
-            args: Prisma.ReuniaoParticipanteDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+            args: Prisma.RelatorioDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
           }
           update: {
-            args: Prisma.ReuniaoParticipanteUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+            args: Prisma.RelatorioUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
           }
           deleteMany: {
-            args: Prisma.ReuniaoParticipanteDeleteManyArgs<ExtArgs>
+            args: Prisma.RelatorioDeleteManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateMany: {
-            args: Prisma.ReuniaoParticipanteUpdateManyArgs<ExtArgs>
+            args: Prisma.RelatorioUpdateManyArgs<ExtArgs>
             result: BatchPayload
           }
           updateManyAndReturn: {
-            args: Prisma.ReuniaoParticipanteUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>[]
+            args: Prisma.RelatorioUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>[]
           }
           upsert: {
-            args: Prisma.ReuniaoParticipanteUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ReuniaoParticipantePayload>
+            args: Prisma.RelatorioUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$RelatorioPayload>
           }
           aggregate: {
-            args: Prisma.ReuniaoParticipanteAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateReuniaoParticipante>
+            args: Prisma.RelatorioAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateRelatorio>
           }
           groupBy: {
-            args: Prisma.ReuniaoParticipanteGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ReuniaoParticipanteGroupByOutputType>[]
+            args: Prisma.RelatorioGroupByArgs<ExtArgs>
+            result: $Utils.Optional<RelatorioGroupByOutputType>[]
           }
           count: {
-            args: Prisma.ReuniaoParticipanteCountArgs<ExtArgs>
-            result: $Utils.Optional<ReuniaoParticipanteCountAggregateOutputType> | number
+            args: Prisma.RelatorioCountArgs<ExtArgs>
+            result: $Utils.Optional<RelatorioCountAggregateOutputType> | number
           }
         }
       }
@@ -1993,11 +1993,11 @@ export namespace Prisma {
     nota?: NotaOmit
     mensagem?: MensagemOmit
     aviso?: AvisoOmit
-    relatorio?: RelatorioOmit
     evento?: EventoOmit
     reuniao?: ReuniaoOmit
-    curso?: CursoOmit
     reuniaoParticipante?: ReuniaoParticipanteOmit
+    curso?: CursoOmit
+    relatorio?: RelatorioOmit
     feedback?: FeedbackOmit
     codigoProfessor?: CodigoProfessorOmit
   }
@@ -2383,10 +2383,10 @@ export namespace Prisma {
     telefone: string | null
     perfil: $Enums.Perfil | null
     imagem: string | null
-    criadoEm: Date | null
-    atualizadoEm: Date | null
     relacaoEducando: $Enums.Relacao | null
     codigoVerificacao: string | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
   export type UsuarioMaxAggregateOutputType = {
@@ -2397,10 +2397,10 @@ export namespace Prisma {
     telefone: string | null
     perfil: $Enums.Perfil | null
     imagem: string | null
-    criadoEm: Date | null
-    atualizadoEm: Date | null
     relacaoEducando: $Enums.Relacao | null
     codigoVerificacao: string | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
   export type UsuarioCountAggregateOutputType = {
@@ -2411,10 +2411,10 @@ export namespace Prisma {
     telefone: number
     perfil: number
     imagem: number
-    criadoEm: number
-    atualizadoEm: number
     relacaoEducando: number
     codigoVerificacao: number
+    criadoEm: number
+    atualizadoEm: number
     _all: number
   }
 
@@ -2435,10 +2435,10 @@ export namespace Prisma {
     telefone?: true
     perfil?: true
     imagem?: true
-    criadoEm?: true
-    atualizadoEm?: true
     relacaoEducando?: true
     codigoVerificacao?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
   export type UsuarioMaxAggregateInputType = {
@@ -2449,10 +2449,10 @@ export namespace Prisma {
     telefone?: true
     perfil?: true
     imagem?: true
-    criadoEm?: true
-    atualizadoEm?: true
     relacaoEducando?: true
     codigoVerificacao?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
   export type UsuarioCountAggregateInputType = {
@@ -2463,10 +2463,10 @@ export namespace Prisma {
     telefone?: true
     perfil?: true
     imagem?: true
-    criadoEm?: true
-    atualizadoEm?: true
     relacaoEducando?: true
     codigoVerificacao?: true
+    criadoEm?: true
+    atualizadoEm?: true
     _all?: true
   }
 
@@ -2564,10 +2564,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem: string | null
-    criadoEm: Date
-    atualizadoEm: Date
     relacaoEducando: $Enums.Relacao | null
     codigoVerificacao: string | null
+    criadoEm: Date
+    atualizadoEm: Date
     _count: UsuarioCountAggregateOutputType | null
     _avg: UsuarioAvgAggregateOutputType | null
     _sum: UsuarioSumAggregateOutputType | null
@@ -2597,10 +2597,10 @@ export namespace Prisma {
     telefone?: boolean
     perfil?: boolean
     imagem?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
     alunos?: boolean | Usuario$alunosArgs<ExtArgs>
     turmas?: boolean | Usuario$turmasArgs<ExtArgs>
     disciplinas?: boolean | Usuario$disciplinasArgs<ExtArgs>
@@ -2621,10 +2621,10 @@ export namespace Prisma {
     telefone?: boolean
     perfil?: boolean
     imagem?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["usuario"]>
 
   export type UsuarioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2635,10 +2635,10 @@ export namespace Prisma {
     telefone?: boolean
     perfil?: boolean
     imagem?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
   }, ExtArgs["result"]["usuario"]>
 
   export type UsuarioSelectScalar = {
@@ -2649,13 +2649,13 @@ export namespace Prisma {
     telefone?: boolean
     perfil?: boolean
     imagem?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
     relacaoEducando?: boolean
     codigoVerificacao?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type UsuarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "senha" | "telefone" | "perfil" | "imagem" | "criadoEm" | "atualizadoEm" | "relacaoEducando" | "codigoVerificacao", ExtArgs["result"]["usuario"]>
+  export type UsuarioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "senha" | "telefone" | "perfil" | "imagem" | "relacaoEducando" | "codigoVerificacao" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["usuario"]>
   export type UsuarioInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     alunos?: boolean | Usuario$alunosArgs<ExtArgs>
     turmas?: boolean | Usuario$turmasArgs<ExtArgs>
@@ -2692,10 +2692,10 @@ export namespace Prisma {
       telefone: string
       perfil: $Enums.Perfil
       imagem: string | null
-      criadoEm: Date
-      atualizadoEm: Date
       relacaoEducando: $Enums.Relacao | null
       codigoVerificacao: string | null
+      criadoEm: Date
+      atualizadoEm: Date
     }, ExtArgs["result"]["usuario"]>
     composites: {}
   }
@@ -3135,10 +3135,10 @@ export namespace Prisma {
     readonly telefone: FieldRef<"Usuario", 'String'>
     readonly perfil: FieldRef<"Usuario", 'Perfil'>
     readonly imagem: FieldRef<"Usuario", 'String'>
-    readonly criadoEm: FieldRef<"Usuario", 'DateTime'>
-    readonly atualizadoEm: FieldRef<"Usuario", 'DateTime'>
     readonly relacaoEducando: FieldRef<"Usuario", 'Relacao'>
     readonly codigoVerificacao: FieldRef<"Usuario", 'String'>
+    readonly criadoEm: FieldRef<"Usuario", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Usuario", 'DateTime'>
   }
     
 
@@ -8499,9 +8499,9 @@ export namespace Prisma {
     conteudo: string | null
     remetenteId: number | null
     destinatarioId: number | null
+    editadoEm: Date | null
     criadoEm: Date | null
     atualizadoEm: Date | null
-    editadoEm: Date | null
     deletadoParaRemetente: boolean | null
     deletadoParaDestinatario: boolean | null
     arquivoUrl: string | null
@@ -8515,9 +8515,9 @@ export namespace Prisma {
     conteudo: string | null
     remetenteId: number | null
     destinatarioId: number | null
+    editadoEm: Date | null
     criadoEm: Date | null
     atualizadoEm: Date | null
-    editadoEm: Date | null
     deletadoParaRemetente: boolean | null
     deletadoParaDestinatario: boolean | null
     arquivoUrl: string | null
@@ -8531,9 +8531,9 @@ export namespace Prisma {
     conteudo: number
     remetenteId: number
     destinatarioId: number
+    editadoEm: number
     criadoEm: number
     atualizadoEm: number
-    editadoEm: number
     deletadoParaRemetente: number
     deletadoParaDestinatario: number
     arquivoUrl: number
@@ -8563,9 +8563,9 @@ export namespace Prisma {
     conteudo?: true
     remetenteId?: true
     destinatarioId?: true
+    editadoEm?: true
     criadoEm?: true
     atualizadoEm?: true
-    editadoEm?: true
     deletadoParaRemetente?: true
     deletadoParaDestinatario?: true
     arquivoUrl?: true
@@ -8579,9 +8579,9 @@ export namespace Prisma {
     conteudo?: true
     remetenteId?: true
     destinatarioId?: true
+    editadoEm?: true
     criadoEm?: true
     atualizadoEm?: true
-    editadoEm?: true
     deletadoParaRemetente?: true
     deletadoParaDestinatario?: true
     arquivoUrl?: true
@@ -8595,9 +8595,9 @@ export namespace Prisma {
     conteudo?: true
     remetenteId?: true
     destinatarioId?: true
+    editadoEm?: true
     criadoEm?: true
     atualizadoEm?: true
-    editadoEm?: true
     deletadoParaRemetente?: true
     deletadoParaDestinatario?: true
     arquivoUrl?: true
@@ -8698,9 +8698,9 @@ export namespace Prisma {
     conteudo: string
     remetenteId: number
     destinatarioId: number
+    editadoEm: Date | null
     criadoEm: Date
     atualizadoEm: Date
-    editadoEm: Date | null
     deletadoParaRemetente: boolean
     deletadoParaDestinatario: boolean
     arquivoUrl: string | null
@@ -8733,9 +8733,9 @@ export namespace Prisma {
     conteudo?: boolean
     remetenteId?: boolean
     destinatarioId?: boolean
+    editadoEm?: boolean
     criadoEm?: boolean
     atualizadoEm?: boolean
-    editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: boolean
@@ -8751,9 +8751,9 @@ export namespace Prisma {
     conteudo?: boolean
     remetenteId?: boolean
     destinatarioId?: boolean
+    editadoEm?: boolean
     criadoEm?: boolean
     atualizadoEm?: boolean
-    editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: boolean
@@ -8769,9 +8769,9 @@ export namespace Prisma {
     conteudo?: boolean
     remetenteId?: boolean
     destinatarioId?: boolean
+    editadoEm?: boolean
     criadoEm?: boolean
     atualizadoEm?: boolean
-    editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: boolean
@@ -8787,9 +8787,9 @@ export namespace Prisma {
     conteudo?: boolean
     remetenteId?: boolean
     destinatarioId?: boolean
+    editadoEm?: boolean
     criadoEm?: boolean
     atualizadoEm?: boolean
-    editadoEm?: boolean
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: boolean
@@ -8798,7 +8798,7 @@ export namespace Prisma {
     arquivoTamanho?: boolean
   }
 
-  export type MensagemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "conteudo" | "remetenteId" | "destinatarioId" | "criadoEm" | "atualizadoEm" | "editadoEm" | "deletadoParaRemetente" | "deletadoParaDestinatario" | "arquivoUrl" | "arquivoNome" | "arquivoTipo" | "arquivoTamanho", ExtArgs["result"]["mensagem"]>
+  export type MensagemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "conteudo" | "remetenteId" | "destinatarioId" | "editadoEm" | "criadoEm" | "atualizadoEm" | "deletadoParaRemetente" | "deletadoParaDestinatario" | "arquivoUrl" | "arquivoNome" | "arquivoTipo" | "arquivoTamanho", ExtArgs["result"]["mensagem"]>
   export type MensagemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     remetente?: boolean | UsuarioDefaultArgs<ExtArgs>
     destinatario?: boolean | UsuarioDefaultArgs<ExtArgs>
@@ -8823,9 +8823,9 @@ export namespace Prisma {
       conteudo: string
       remetenteId: number
       destinatarioId: number
+      editadoEm: Date | null
       criadoEm: Date
       atualizadoEm: Date
-      editadoEm: Date | null
       deletadoParaRemetente: boolean
       deletadoParaDestinatario: boolean
       arquivoUrl: string | null
@@ -9261,9 +9261,9 @@ export namespace Prisma {
     readonly conteudo: FieldRef<"Mensagem", 'String'>
     readonly remetenteId: FieldRef<"Mensagem", 'Int'>
     readonly destinatarioId: FieldRef<"Mensagem", 'Int'>
+    readonly editadoEm: FieldRef<"Mensagem", 'DateTime'>
     readonly criadoEm: FieldRef<"Mensagem", 'DateTime'>
     readonly atualizadoEm: FieldRef<"Mensagem", 'DateTime'>
-    readonly editadoEm: FieldRef<"Mensagem", 'DateTime'>
     readonly deletadoParaRemetente: FieldRef<"Mensagem", 'Boolean'>
     readonly deletadoParaDestinatario: FieldRef<"Mensagem", 'Boolean'>
     readonly arquivoUrl: FieldRef<"Mensagem", 'String'>
@@ -10729,1038 +10729,6 @@ export namespace Prisma {
      * Omit specific fields from the Aviso
      */
     omit?: AvisoOmit<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Relatorio
-   */
-
-  export type AggregateRelatorio = {
-    _count: RelatorioCountAggregateOutputType | null
-    _avg: RelatorioAvgAggregateOutputType | null
-    _sum: RelatorioSumAggregateOutputType | null
-    _min: RelatorioMinAggregateOutputType | null
-    _max: RelatorioMaxAggregateOutputType | null
-  }
-
-  export type RelatorioAvgAggregateOutputType = {
-    id: number | null
-  }
-
-  export type RelatorioSumAggregateOutputType = {
-    id: number | null
-  }
-
-  export type RelatorioMinAggregateOutputType = {
-    id: number | null
-    titulo: string | null
-    conteudo: string | null
-    criadoEm: Date | null
-    atualizadoEm: Date | null
-  }
-
-  export type RelatorioMaxAggregateOutputType = {
-    id: number | null
-    titulo: string | null
-    conteudo: string | null
-    criadoEm: Date | null
-    atualizadoEm: Date | null
-  }
-
-  export type RelatorioCountAggregateOutputType = {
-    id: number
-    titulo: number
-    conteudo: number
-    criadoEm: number
-    atualizadoEm: number
-    _all: number
-  }
-
-
-  export type RelatorioAvgAggregateInputType = {
-    id?: true
-  }
-
-  export type RelatorioSumAggregateInputType = {
-    id?: true
-  }
-
-  export type RelatorioMinAggregateInputType = {
-    id?: true
-    titulo?: true
-    conteudo?: true
-    criadoEm?: true
-    atualizadoEm?: true
-  }
-
-  export type RelatorioMaxAggregateInputType = {
-    id?: true
-    titulo?: true
-    conteudo?: true
-    criadoEm?: true
-    atualizadoEm?: true
-  }
-
-  export type RelatorioCountAggregateInputType = {
-    id?: true
-    titulo?: true
-    conteudo?: true
-    criadoEm?: true
-    atualizadoEm?: true
-    _all?: true
-  }
-
-  export type RelatorioAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Relatorio to aggregate.
-     */
-    where?: RelatorioWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Relatorios to fetch.
-     */
-    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: RelatorioWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Relatorios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Relatorios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Relatorios
-    **/
-    _count?: true | RelatorioCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: RelatorioAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: RelatorioSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: RelatorioMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: RelatorioMaxAggregateInputType
-  }
-
-  export type GetRelatorioAggregateType<T extends RelatorioAggregateArgs> = {
-        [P in keyof T & keyof AggregateRelatorio]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateRelatorio[P]>
-      : GetScalarType<T[P], AggregateRelatorio[P]>
-  }
-
-
-
-
-  export type RelatorioGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: RelatorioWhereInput
-    orderBy?: RelatorioOrderByWithAggregationInput | RelatorioOrderByWithAggregationInput[]
-    by: RelatorioScalarFieldEnum[] | RelatorioScalarFieldEnum
-    having?: RelatorioScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: RelatorioCountAggregateInputType | true
-    _avg?: RelatorioAvgAggregateInputType
-    _sum?: RelatorioSumAggregateInputType
-    _min?: RelatorioMinAggregateInputType
-    _max?: RelatorioMaxAggregateInputType
-  }
-
-  export type RelatorioGroupByOutputType = {
-    id: number
-    titulo: string
-    conteudo: string
-    criadoEm: Date
-    atualizadoEm: Date
-    _count: RelatorioCountAggregateOutputType | null
-    _avg: RelatorioAvgAggregateOutputType | null
-    _sum: RelatorioSumAggregateOutputType | null
-    _min: RelatorioMinAggregateOutputType | null
-    _max: RelatorioMaxAggregateOutputType | null
-  }
-
-  type GetRelatorioGroupByPayload<T extends RelatorioGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<RelatorioGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof RelatorioGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], RelatorioGroupByOutputType[P]>
-            : GetScalarType<T[P], RelatorioGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type RelatorioSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    titulo?: boolean
-    conteudo?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
-  }, ExtArgs["result"]["relatorio"]>
-
-  export type RelatorioSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    titulo?: boolean
-    conteudo?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
-  }, ExtArgs["result"]["relatorio"]>
-
-  export type RelatorioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    titulo?: boolean
-    conteudo?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
-  }, ExtArgs["result"]["relatorio"]>
-
-  export type RelatorioSelectScalar = {
-    id?: boolean
-    titulo?: boolean
-    conteudo?: boolean
-    criadoEm?: boolean
-    atualizadoEm?: boolean
-  }
-
-  export type RelatorioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "conteudo" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["relatorio"]>
-
-  export type $RelatorioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Relatorio"
-    objects: {}
-    scalars: $Extensions.GetPayloadResult<{
-      id: number
-      titulo: string
-      conteudo: string
-      criadoEm: Date
-      atualizadoEm: Date
-    }, ExtArgs["result"]["relatorio"]>
-    composites: {}
-  }
-
-  type RelatorioGetPayload<S extends boolean | null | undefined | RelatorioDefaultArgs> = $Result.GetResult<Prisma.$RelatorioPayload, S>
-
-  type RelatorioCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<RelatorioFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: RelatorioCountAggregateInputType | true
-    }
-
-  export interface RelatorioDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Relatorio'], meta: { name: 'Relatorio' } }
-    /**
-     * Find zero or one Relatorio that matches the filter.
-     * @param {RelatorioFindUniqueArgs} args - Arguments to find a Relatorio
-     * @example
-     * // Get one Relatorio
-     * const relatorio = await prisma.relatorio.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends RelatorioFindUniqueArgs>(args: SelectSubset<T, RelatorioFindUniqueArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Relatorio that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {RelatorioFindUniqueOrThrowArgs} args - Arguments to find a Relatorio
-     * @example
-     * // Get one Relatorio
-     * const relatorio = await prisma.relatorio.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends RelatorioFindUniqueOrThrowArgs>(args: SelectSubset<T, RelatorioFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Relatorio that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RelatorioFindFirstArgs} args - Arguments to find a Relatorio
-     * @example
-     * // Get one Relatorio
-     * const relatorio = await prisma.relatorio.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends RelatorioFindFirstArgs>(args?: SelectSubset<T, RelatorioFindFirstArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Relatorio that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RelatorioFindFirstOrThrowArgs} args - Arguments to find a Relatorio
-     * @example
-     * // Get one Relatorio
-     * const relatorio = await prisma.relatorio.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends RelatorioFindFirstOrThrowArgs>(args?: SelectSubset<T, RelatorioFindFirstOrThrowArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Relatorios that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RelatorioFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Relatorios
-     * const relatorios = await prisma.relatorio.findMany()
-     * 
-     * // Get first 10 Relatorios
-     * const relatorios = await prisma.relatorio.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const relatorioWithIdOnly = await prisma.relatorio.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends RelatorioFindManyArgs>(args?: SelectSubset<T, RelatorioFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Relatorio.
-     * @param {RelatorioCreateArgs} args - Arguments to create a Relatorio.
-     * @example
-     * // Create one Relatorio
-     * const Relatorio = await prisma.relatorio.create({
-     *   data: {
-     *     // ... data to create a Relatorio
-     *   }
-     * })
-     * 
-     */
-    create<T extends RelatorioCreateArgs>(args: SelectSubset<T, RelatorioCreateArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Relatorios.
-     * @param {RelatorioCreateManyArgs} args - Arguments to create many Relatorios.
-     * @example
-     * // Create many Relatorios
-     * const relatorio = await prisma.relatorio.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends RelatorioCreateManyArgs>(args?: SelectSubset<T, RelatorioCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Relatorios and returns the data saved in the database.
-     * @param {RelatorioCreateManyAndReturnArgs} args - Arguments to create many Relatorios.
-     * @example
-     * // Create many Relatorios
-     * const relatorio = await prisma.relatorio.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Relatorios and only return the `id`
-     * const relatorioWithIdOnly = await prisma.relatorio.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends RelatorioCreateManyAndReturnArgs>(args?: SelectSubset<T, RelatorioCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Relatorio.
-     * @param {RelatorioDeleteArgs} args - Arguments to delete one Relatorio.
-     * @example
-     * // Delete one Relatorio
-     * const Relatorio = await prisma.relatorio.delete({
-     *   where: {
-     *     // ... filter to delete one Relatorio
-     *   }
-     * })
-     * 
-     */
-    delete<T extends RelatorioDeleteArgs>(args: SelectSubset<T, RelatorioDeleteArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Relatorio.
-     * @param {RelatorioUpdateArgs} args - Arguments to update one Relatorio.
-     * @example
-     * // Update one Relatorio
-     * const relatorio = await prisma.relatorio.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends RelatorioUpdateArgs>(args: SelectSubset<T, RelatorioUpdateArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Relatorios.
-     * @param {RelatorioDeleteManyArgs} args - Arguments to filter Relatorios to delete.
-     * @example
-     * // Delete a few Relatorios
-     * const { count } = await prisma.relatorio.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends RelatorioDeleteManyArgs>(args?: SelectSubset<T, RelatorioDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Relatorios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RelatorioUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Relatorios
-     * const relatorio = await prisma.relatorio.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends RelatorioUpdateManyArgs>(args: SelectSubset<T, RelatorioUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Relatorios and returns the data updated in the database.
-     * @param {RelatorioUpdateManyAndReturnArgs} args - Arguments to update many Relatorios.
-     * @example
-     * // Update many Relatorios
-     * const relatorio = await prisma.relatorio.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Relatorios and only return the `id`
-     * const relatorioWithIdOnly = await prisma.relatorio.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends RelatorioUpdateManyAndReturnArgs>(args: SelectSubset<T, RelatorioUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Relatorio.
-     * @param {RelatorioUpsertArgs} args - Arguments to update or create a Relatorio.
-     * @example
-     * // Update or create a Relatorio
-     * const relatorio = await prisma.relatorio.upsert({
-     *   create: {
-     *     // ... data to create a Relatorio
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Relatorio we want to update
-     *   }
-     * })
-     */
-    upsert<T extends RelatorioUpsertArgs>(args: SelectSubset<T, RelatorioUpsertArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Relatorios.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RelatorioCountArgs} args - Arguments to filter Relatorios to count.
-     * @example
-     * // Count the number of Relatorios
-     * const count = await prisma.relatorio.count({
-     *   where: {
-     *     // ... the filter for the Relatorios we want to count
-     *   }
-     * })
-    **/
-    count<T extends RelatorioCountArgs>(
-      args?: Subset<T, RelatorioCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], RelatorioCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Relatorio.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RelatorioAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends RelatorioAggregateArgs>(args: Subset<T, RelatorioAggregateArgs>): Prisma.PrismaPromise<GetRelatorioAggregateType<T>>
-
-    /**
-     * Group by Relatorio.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {RelatorioGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends RelatorioGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: RelatorioGroupByArgs['orderBy'] }
-        : { orderBy?: RelatorioGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, RelatorioGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRelatorioGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Relatorio model
-   */
-  readonly fields: RelatorioFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Relatorio.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__RelatorioClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Relatorio model
-   */
-  interface RelatorioFieldRefs {
-    readonly id: FieldRef<"Relatorio", 'Int'>
-    readonly titulo: FieldRef<"Relatorio", 'String'>
-    readonly conteudo: FieldRef<"Relatorio", 'String'>
-    readonly criadoEm: FieldRef<"Relatorio", 'DateTime'>
-    readonly atualizadoEm: FieldRef<"Relatorio", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Relatorio findUnique
-   */
-  export type RelatorioFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * Filter, which Relatorio to fetch.
-     */
-    where: RelatorioWhereUniqueInput
-  }
-
-  /**
-   * Relatorio findUniqueOrThrow
-   */
-  export type RelatorioFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * Filter, which Relatorio to fetch.
-     */
-    where: RelatorioWhereUniqueInput
-  }
-
-  /**
-   * Relatorio findFirst
-   */
-  export type RelatorioFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * Filter, which Relatorio to fetch.
-     */
-    where?: RelatorioWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Relatorios to fetch.
-     */
-    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Relatorios.
-     */
-    cursor?: RelatorioWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Relatorios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Relatorios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Relatorios.
-     */
-    distinct?: RelatorioScalarFieldEnum | RelatorioScalarFieldEnum[]
-  }
-
-  /**
-   * Relatorio findFirstOrThrow
-   */
-  export type RelatorioFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * Filter, which Relatorio to fetch.
-     */
-    where?: RelatorioWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Relatorios to fetch.
-     */
-    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Relatorios.
-     */
-    cursor?: RelatorioWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Relatorios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Relatorios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Relatorios.
-     */
-    distinct?: RelatorioScalarFieldEnum | RelatorioScalarFieldEnum[]
-  }
-
-  /**
-   * Relatorio findMany
-   */
-  export type RelatorioFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * Filter, which Relatorios to fetch.
-     */
-    where?: RelatorioWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Relatorios to fetch.
-     */
-    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Relatorios.
-     */
-    cursor?: RelatorioWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Relatorios from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Relatorios.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Relatorios.
-     */
-    distinct?: RelatorioScalarFieldEnum | RelatorioScalarFieldEnum[]
-  }
-
-  /**
-   * Relatorio create
-   */
-  export type RelatorioCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * The data needed to create a Relatorio.
-     */
-    data: XOR<RelatorioCreateInput, RelatorioUncheckedCreateInput>
-  }
-
-  /**
-   * Relatorio createMany
-   */
-  export type RelatorioCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Relatorios.
-     */
-    data: RelatorioCreateManyInput | RelatorioCreateManyInput[]
-  }
-
-  /**
-   * Relatorio createManyAndReturn
-   */
-  export type RelatorioCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * The data used to create many Relatorios.
-     */
-    data: RelatorioCreateManyInput | RelatorioCreateManyInput[]
-  }
-
-  /**
-   * Relatorio update
-   */
-  export type RelatorioUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * The data needed to update a Relatorio.
-     */
-    data: XOR<RelatorioUpdateInput, RelatorioUncheckedUpdateInput>
-    /**
-     * Choose, which Relatorio to update.
-     */
-    where: RelatorioWhereUniqueInput
-  }
-
-  /**
-   * Relatorio updateMany
-   */
-  export type RelatorioUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Relatorios.
-     */
-    data: XOR<RelatorioUpdateManyMutationInput, RelatorioUncheckedUpdateManyInput>
-    /**
-     * Filter which Relatorios to update
-     */
-    where?: RelatorioWhereInput
-    /**
-     * Limit how many Relatorios to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Relatorio updateManyAndReturn
-   */
-  export type RelatorioUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * The data used to update Relatorios.
-     */
-    data: XOR<RelatorioUpdateManyMutationInput, RelatorioUncheckedUpdateManyInput>
-    /**
-     * Filter which Relatorios to update
-     */
-    where?: RelatorioWhereInput
-    /**
-     * Limit how many Relatorios to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Relatorio upsert
-   */
-  export type RelatorioUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * The filter to search for the Relatorio to update in case it exists.
-     */
-    where: RelatorioWhereUniqueInput
-    /**
-     * In case the Relatorio found by the `where` argument doesn't exist, create a new Relatorio with this data.
-     */
-    create: XOR<RelatorioCreateInput, RelatorioUncheckedCreateInput>
-    /**
-     * In case the Relatorio was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<RelatorioUpdateInput, RelatorioUncheckedUpdateInput>
-  }
-
-  /**
-   * Relatorio delete
-   */
-  export type RelatorioDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
-    /**
-     * Filter which Relatorio to delete.
-     */
-    where: RelatorioWhereUniqueInput
-  }
-
-  /**
-   * Relatorio deleteMany
-   */
-  export type RelatorioDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Relatorios to delete
-     */
-    where?: RelatorioWhereInput
-    /**
-     * Limit how many Relatorios to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Relatorio without action
-   */
-  export type RelatorioDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Relatorio
-     */
-    select?: RelatorioSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Relatorio
-     */
-    omit?: RelatorioOmit<ExtArgs> | null
   }
 
 
@@ -13997,6 +12965,1091 @@ export namespace Prisma {
 
 
   /**
+   * Model ReuniaoParticipante
+   */
+
+  export type AggregateReuniaoParticipante = {
+    _count: ReuniaoParticipanteCountAggregateOutputType | null
+    _avg: ReuniaoParticipanteAvgAggregateOutputType | null
+    _sum: ReuniaoParticipanteSumAggregateOutputType | null
+    _min: ReuniaoParticipanteMinAggregateOutputType | null
+    _max: ReuniaoParticipanteMaxAggregateOutputType | null
+  }
+
+  export type ReuniaoParticipanteAvgAggregateOutputType = {
+    id: number | null
+    reuniaoId: number | null
+    usuarioId: number | null
+  }
+
+  export type ReuniaoParticipanteSumAggregateOutputType = {
+    id: number | null
+    reuniaoId: number | null
+    usuarioId: number | null
+  }
+
+  export type ReuniaoParticipanteMinAggregateOutputType = {
+    id: number | null
+    reuniaoId: number | null
+    usuarioId: number | null
+  }
+
+  export type ReuniaoParticipanteMaxAggregateOutputType = {
+    id: number | null
+    reuniaoId: number | null
+    usuarioId: number | null
+  }
+
+  export type ReuniaoParticipanteCountAggregateOutputType = {
+    id: number
+    reuniaoId: number
+    usuarioId: number
+    _all: number
+  }
+
+
+  export type ReuniaoParticipanteAvgAggregateInputType = {
+    id?: true
+    reuniaoId?: true
+    usuarioId?: true
+  }
+
+  export type ReuniaoParticipanteSumAggregateInputType = {
+    id?: true
+    reuniaoId?: true
+    usuarioId?: true
+  }
+
+  export type ReuniaoParticipanteMinAggregateInputType = {
+    id?: true
+    reuniaoId?: true
+    usuarioId?: true
+  }
+
+  export type ReuniaoParticipanteMaxAggregateInputType = {
+    id?: true
+    reuniaoId?: true
+    usuarioId?: true
+  }
+
+  export type ReuniaoParticipanteCountAggregateInputType = {
+    id?: true
+    reuniaoId?: true
+    usuarioId?: true
+    _all?: true
+  }
+
+  export type ReuniaoParticipanteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReuniaoParticipante to aggregate.
+     */
+    where?: ReuniaoParticipanteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReuniaoParticipantes to fetch.
+     */
+    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ReuniaoParticipanteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReuniaoParticipantes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ReuniaoParticipantes
+    **/
+    _count?: true | ReuniaoParticipanteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ReuniaoParticipanteAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ReuniaoParticipanteSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ReuniaoParticipanteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ReuniaoParticipanteMaxAggregateInputType
+  }
+
+  export type GetReuniaoParticipanteAggregateType<T extends ReuniaoParticipanteAggregateArgs> = {
+        [P in keyof T & keyof AggregateReuniaoParticipante]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReuniaoParticipante[P]>
+      : GetScalarType<T[P], AggregateReuniaoParticipante[P]>
+  }
+
+
+
+
+  export type ReuniaoParticipanteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ReuniaoParticipanteWhereInput
+    orderBy?: ReuniaoParticipanteOrderByWithAggregationInput | ReuniaoParticipanteOrderByWithAggregationInput[]
+    by: ReuniaoParticipanteScalarFieldEnum[] | ReuniaoParticipanteScalarFieldEnum
+    having?: ReuniaoParticipanteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ReuniaoParticipanteCountAggregateInputType | true
+    _avg?: ReuniaoParticipanteAvgAggregateInputType
+    _sum?: ReuniaoParticipanteSumAggregateInputType
+    _min?: ReuniaoParticipanteMinAggregateInputType
+    _max?: ReuniaoParticipanteMaxAggregateInputType
+  }
+
+  export type ReuniaoParticipanteGroupByOutputType = {
+    id: number
+    reuniaoId: number
+    usuarioId: number
+    _count: ReuniaoParticipanteCountAggregateOutputType | null
+    _avg: ReuniaoParticipanteAvgAggregateOutputType | null
+    _sum: ReuniaoParticipanteSumAggregateOutputType | null
+    _min: ReuniaoParticipanteMinAggregateOutputType | null
+    _max: ReuniaoParticipanteMaxAggregateOutputType | null
+  }
+
+  type GetReuniaoParticipanteGroupByPayload<T extends ReuniaoParticipanteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ReuniaoParticipanteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ReuniaoParticipanteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ReuniaoParticipanteGroupByOutputType[P]>
+            : GetScalarType<T[P], ReuniaoParticipanteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ReuniaoParticipanteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reuniaoId?: boolean
+    usuarioId?: boolean
+    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
+    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reuniaoParticipante"]>
+
+  export type ReuniaoParticipanteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reuniaoId?: boolean
+    usuarioId?: boolean
+    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
+    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reuniaoParticipante"]>
+
+  export type ReuniaoParticipanteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    reuniaoId?: boolean
+    usuarioId?: boolean
+    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
+    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["reuniaoParticipante"]>
+
+  export type ReuniaoParticipanteSelectScalar = {
+    id?: boolean
+    reuniaoId?: boolean
+    usuarioId?: boolean
+  }
+
+  export type ReuniaoParticipanteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reuniaoId" | "usuarioId", ExtArgs["result"]["reuniaoParticipante"]>
+  export type ReuniaoParticipanteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
+    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
+  }
+  export type ReuniaoParticipanteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
+    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
+  }
+  export type ReuniaoParticipanteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
+    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
+  }
+
+  export type $ReuniaoParticipantePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ReuniaoParticipante"
+    objects: {
+      reuniao: Prisma.$ReuniaoPayload<ExtArgs>
+      usuario: Prisma.$UsuarioPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      reuniaoId: number
+      usuarioId: number
+    }, ExtArgs["result"]["reuniaoParticipante"]>
+    composites: {}
+  }
+
+  type ReuniaoParticipanteGetPayload<S extends boolean | null | undefined | ReuniaoParticipanteDefaultArgs> = $Result.GetResult<Prisma.$ReuniaoParticipantePayload, S>
+
+  type ReuniaoParticipanteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ReuniaoParticipanteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ReuniaoParticipanteCountAggregateInputType | true
+    }
+
+  export interface ReuniaoParticipanteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReuniaoParticipante'], meta: { name: 'ReuniaoParticipante' } }
+    /**
+     * Find zero or one ReuniaoParticipante that matches the filter.
+     * @param {ReuniaoParticipanteFindUniqueArgs} args - Arguments to find a ReuniaoParticipante
+     * @example
+     * // Get one ReuniaoParticipante
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ReuniaoParticipanteFindUniqueArgs>(args: SelectSubset<T, ReuniaoParticipanteFindUniqueArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ReuniaoParticipante that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ReuniaoParticipanteFindUniqueOrThrowArgs} args - Arguments to find a ReuniaoParticipante
+     * @example
+     * // Get one ReuniaoParticipante
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ReuniaoParticipanteFindUniqueOrThrowArgs>(args: SelectSubset<T, ReuniaoParticipanteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReuniaoParticipante that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReuniaoParticipanteFindFirstArgs} args - Arguments to find a ReuniaoParticipante
+     * @example
+     * // Get one ReuniaoParticipante
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ReuniaoParticipanteFindFirstArgs>(args?: SelectSubset<T, ReuniaoParticipanteFindFirstArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ReuniaoParticipante that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReuniaoParticipanteFindFirstOrThrowArgs} args - Arguments to find a ReuniaoParticipante
+     * @example
+     * // Get one ReuniaoParticipante
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ReuniaoParticipanteFindFirstOrThrowArgs>(args?: SelectSubset<T, ReuniaoParticipanteFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ReuniaoParticipantes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReuniaoParticipanteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ReuniaoParticipantes
+     * const reuniaoParticipantes = await prisma.reuniaoParticipante.findMany()
+     * 
+     * // Get first 10 ReuniaoParticipantes
+     * const reuniaoParticipantes = await prisma.reuniaoParticipante.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reuniaoParticipanteWithIdOnly = await prisma.reuniaoParticipante.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ReuniaoParticipanteFindManyArgs>(args?: SelectSubset<T, ReuniaoParticipanteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ReuniaoParticipante.
+     * @param {ReuniaoParticipanteCreateArgs} args - Arguments to create a ReuniaoParticipante.
+     * @example
+     * // Create one ReuniaoParticipante
+     * const ReuniaoParticipante = await prisma.reuniaoParticipante.create({
+     *   data: {
+     *     // ... data to create a ReuniaoParticipante
+     *   }
+     * })
+     * 
+     */
+    create<T extends ReuniaoParticipanteCreateArgs>(args: SelectSubset<T, ReuniaoParticipanteCreateArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ReuniaoParticipantes.
+     * @param {ReuniaoParticipanteCreateManyArgs} args - Arguments to create many ReuniaoParticipantes.
+     * @example
+     * // Create many ReuniaoParticipantes
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ReuniaoParticipanteCreateManyArgs>(args?: SelectSubset<T, ReuniaoParticipanteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ReuniaoParticipantes and returns the data saved in the database.
+     * @param {ReuniaoParticipanteCreateManyAndReturnArgs} args - Arguments to create many ReuniaoParticipantes.
+     * @example
+     * // Create many ReuniaoParticipantes
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ReuniaoParticipantes and only return the `id`
+     * const reuniaoParticipanteWithIdOnly = await prisma.reuniaoParticipante.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ReuniaoParticipanteCreateManyAndReturnArgs>(args?: SelectSubset<T, ReuniaoParticipanteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ReuniaoParticipante.
+     * @param {ReuniaoParticipanteDeleteArgs} args - Arguments to delete one ReuniaoParticipante.
+     * @example
+     * // Delete one ReuniaoParticipante
+     * const ReuniaoParticipante = await prisma.reuniaoParticipante.delete({
+     *   where: {
+     *     // ... filter to delete one ReuniaoParticipante
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ReuniaoParticipanteDeleteArgs>(args: SelectSubset<T, ReuniaoParticipanteDeleteArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ReuniaoParticipante.
+     * @param {ReuniaoParticipanteUpdateArgs} args - Arguments to update one ReuniaoParticipante.
+     * @example
+     * // Update one ReuniaoParticipante
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ReuniaoParticipanteUpdateArgs>(args: SelectSubset<T, ReuniaoParticipanteUpdateArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ReuniaoParticipantes.
+     * @param {ReuniaoParticipanteDeleteManyArgs} args - Arguments to filter ReuniaoParticipantes to delete.
+     * @example
+     * // Delete a few ReuniaoParticipantes
+     * const { count } = await prisma.reuniaoParticipante.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ReuniaoParticipanteDeleteManyArgs>(args?: SelectSubset<T, ReuniaoParticipanteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReuniaoParticipantes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReuniaoParticipanteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ReuniaoParticipantes
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ReuniaoParticipanteUpdateManyArgs>(args: SelectSubset<T, ReuniaoParticipanteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ReuniaoParticipantes and returns the data updated in the database.
+     * @param {ReuniaoParticipanteUpdateManyAndReturnArgs} args - Arguments to update many ReuniaoParticipantes.
+     * @example
+     * // Update many ReuniaoParticipantes
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ReuniaoParticipantes and only return the `id`
+     * const reuniaoParticipanteWithIdOnly = await prisma.reuniaoParticipante.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ReuniaoParticipanteUpdateManyAndReturnArgs>(args: SelectSubset<T, ReuniaoParticipanteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ReuniaoParticipante.
+     * @param {ReuniaoParticipanteUpsertArgs} args - Arguments to update or create a ReuniaoParticipante.
+     * @example
+     * // Update or create a ReuniaoParticipante
+     * const reuniaoParticipante = await prisma.reuniaoParticipante.upsert({
+     *   create: {
+     *     // ... data to create a ReuniaoParticipante
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ReuniaoParticipante we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ReuniaoParticipanteUpsertArgs>(args: SelectSubset<T, ReuniaoParticipanteUpsertArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ReuniaoParticipantes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReuniaoParticipanteCountArgs} args - Arguments to filter ReuniaoParticipantes to count.
+     * @example
+     * // Count the number of ReuniaoParticipantes
+     * const count = await prisma.reuniaoParticipante.count({
+     *   where: {
+     *     // ... the filter for the ReuniaoParticipantes we want to count
+     *   }
+     * })
+    **/
+    count<T extends ReuniaoParticipanteCountArgs>(
+      args?: Subset<T, ReuniaoParticipanteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ReuniaoParticipanteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ReuniaoParticipante.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReuniaoParticipanteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ReuniaoParticipanteAggregateArgs>(args: Subset<T, ReuniaoParticipanteAggregateArgs>): Prisma.PrismaPromise<GetReuniaoParticipanteAggregateType<T>>
+
+    /**
+     * Group by ReuniaoParticipante.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ReuniaoParticipanteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ReuniaoParticipanteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ReuniaoParticipanteGroupByArgs['orderBy'] }
+        : { orderBy?: ReuniaoParticipanteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ReuniaoParticipanteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReuniaoParticipanteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ReuniaoParticipante model
+   */
+  readonly fields: ReuniaoParticipanteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ReuniaoParticipante.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ReuniaoParticipanteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    reuniao<T extends ReuniaoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReuniaoDefaultArgs<ExtArgs>>): Prisma__ReuniaoClient<$Result.GetResult<Prisma.$ReuniaoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    usuario<T extends UsuarioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsuarioDefaultArgs<ExtArgs>>): Prisma__UsuarioClient<$Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ReuniaoParticipante model
+   */
+  interface ReuniaoParticipanteFieldRefs {
+    readonly id: FieldRef<"ReuniaoParticipante", 'Int'>
+    readonly reuniaoId: FieldRef<"ReuniaoParticipante", 'Int'>
+    readonly usuarioId: FieldRef<"ReuniaoParticipante", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ReuniaoParticipante findUnique
+   */
+  export type ReuniaoParticipanteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * Filter, which ReuniaoParticipante to fetch.
+     */
+    where: ReuniaoParticipanteWhereUniqueInput
+  }
+
+  /**
+   * ReuniaoParticipante findUniqueOrThrow
+   */
+  export type ReuniaoParticipanteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * Filter, which ReuniaoParticipante to fetch.
+     */
+    where: ReuniaoParticipanteWhereUniqueInput
+  }
+
+  /**
+   * ReuniaoParticipante findFirst
+   */
+  export type ReuniaoParticipanteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * Filter, which ReuniaoParticipante to fetch.
+     */
+    where?: ReuniaoParticipanteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReuniaoParticipantes to fetch.
+     */
+    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReuniaoParticipantes.
+     */
+    cursor?: ReuniaoParticipanteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReuniaoParticipantes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReuniaoParticipantes.
+     */
+    distinct?: ReuniaoParticipanteScalarFieldEnum | ReuniaoParticipanteScalarFieldEnum[]
+  }
+
+  /**
+   * ReuniaoParticipante findFirstOrThrow
+   */
+  export type ReuniaoParticipanteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * Filter, which ReuniaoParticipante to fetch.
+     */
+    where?: ReuniaoParticipanteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReuniaoParticipantes to fetch.
+     */
+    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ReuniaoParticipantes.
+     */
+    cursor?: ReuniaoParticipanteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReuniaoParticipantes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReuniaoParticipantes.
+     */
+    distinct?: ReuniaoParticipanteScalarFieldEnum | ReuniaoParticipanteScalarFieldEnum[]
+  }
+
+  /**
+   * ReuniaoParticipante findMany
+   */
+  export type ReuniaoParticipanteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * Filter, which ReuniaoParticipantes to fetch.
+     */
+    where?: ReuniaoParticipanteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ReuniaoParticipantes to fetch.
+     */
+    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ReuniaoParticipantes.
+     */
+    cursor?: ReuniaoParticipanteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ReuniaoParticipantes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ReuniaoParticipantes.
+     */
+    distinct?: ReuniaoParticipanteScalarFieldEnum | ReuniaoParticipanteScalarFieldEnum[]
+  }
+
+  /**
+   * ReuniaoParticipante create
+   */
+  export type ReuniaoParticipanteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ReuniaoParticipante.
+     */
+    data: XOR<ReuniaoParticipanteCreateInput, ReuniaoParticipanteUncheckedCreateInput>
+  }
+
+  /**
+   * ReuniaoParticipante createMany
+   */
+  export type ReuniaoParticipanteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ReuniaoParticipantes.
+     */
+    data: ReuniaoParticipanteCreateManyInput | ReuniaoParticipanteCreateManyInput[]
+  }
+
+  /**
+   * ReuniaoParticipante createManyAndReturn
+   */
+  export type ReuniaoParticipanteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * The data used to create many ReuniaoParticipantes.
+     */
+    data: ReuniaoParticipanteCreateManyInput | ReuniaoParticipanteCreateManyInput[]
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReuniaoParticipante update
+   */
+  export type ReuniaoParticipanteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ReuniaoParticipante.
+     */
+    data: XOR<ReuniaoParticipanteUpdateInput, ReuniaoParticipanteUncheckedUpdateInput>
+    /**
+     * Choose, which ReuniaoParticipante to update.
+     */
+    where: ReuniaoParticipanteWhereUniqueInput
+  }
+
+  /**
+   * ReuniaoParticipante updateMany
+   */
+  export type ReuniaoParticipanteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ReuniaoParticipantes.
+     */
+    data: XOR<ReuniaoParticipanteUpdateManyMutationInput, ReuniaoParticipanteUncheckedUpdateManyInput>
+    /**
+     * Filter which ReuniaoParticipantes to update
+     */
+    where?: ReuniaoParticipanteWhereInput
+    /**
+     * Limit how many ReuniaoParticipantes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReuniaoParticipante updateManyAndReturn
+   */
+  export type ReuniaoParticipanteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * The data used to update ReuniaoParticipantes.
+     */
+    data: XOR<ReuniaoParticipanteUpdateManyMutationInput, ReuniaoParticipanteUncheckedUpdateManyInput>
+    /**
+     * Filter which ReuniaoParticipantes to update
+     */
+    where?: ReuniaoParticipanteWhereInput
+    /**
+     * Limit how many ReuniaoParticipantes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ReuniaoParticipante upsert
+   */
+  export type ReuniaoParticipanteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ReuniaoParticipante to update in case it exists.
+     */
+    where: ReuniaoParticipanteWhereUniqueInput
+    /**
+     * In case the ReuniaoParticipante found by the `where` argument doesn't exist, create a new ReuniaoParticipante with this data.
+     */
+    create: XOR<ReuniaoParticipanteCreateInput, ReuniaoParticipanteUncheckedCreateInput>
+    /**
+     * In case the ReuniaoParticipante was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ReuniaoParticipanteUpdateInput, ReuniaoParticipanteUncheckedUpdateInput>
+  }
+
+  /**
+   * ReuniaoParticipante delete
+   */
+  export type ReuniaoParticipanteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    /**
+     * Filter which ReuniaoParticipante to delete.
+     */
+    where: ReuniaoParticipanteWhereUniqueInput
+  }
+
+  /**
+   * ReuniaoParticipante deleteMany
+   */
+  export type ReuniaoParticipanteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ReuniaoParticipantes to delete
+     */
+    where?: ReuniaoParticipanteWhereInput
+    /**
+     * Limit how many ReuniaoParticipantes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ReuniaoParticipante without action
+   */
+  export type ReuniaoParticipanteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ReuniaoParticipante
+     */
+    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ReuniaoParticipante
+     */
+    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model Curso
    */
 
@@ -15160,375 +15213,370 @@ export namespace Prisma {
 
 
   /**
-   * Model ReuniaoParticipante
+   * Model Relatorio
    */
 
-  export type AggregateReuniaoParticipante = {
-    _count: ReuniaoParticipanteCountAggregateOutputType | null
-    _avg: ReuniaoParticipanteAvgAggregateOutputType | null
-    _sum: ReuniaoParticipanteSumAggregateOutputType | null
-    _min: ReuniaoParticipanteMinAggregateOutputType | null
-    _max: ReuniaoParticipanteMaxAggregateOutputType | null
+  export type AggregateRelatorio = {
+    _count: RelatorioCountAggregateOutputType | null
+    _avg: RelatorioAvgAggregateOutputType | null
+    _sum: RelatorioSumAggregateOutputType | null
+    _min: RelatorioMinAggregateOutputType | null
+    _max: RelatorioMaxAggregateOutputType | null
   }
 
-  export type ReuniaoParticipanteAvgAggregateOutputType = {
+  export type RelatorioAvgAggregateOutputType = {
     id: number | null
-    reuniaoId: number | null
-    usuarioId: number | null
   }
 
-  export type ReuniaoParticipanteSumAggregateOutputType = {
+  export type RelatorioSumAggregateOutputType = {
     id: number | null
-    reuniaoId: number | null
-    usuarioId: number | null
   }
 
-  export type ReuniaoParticipanteMinAggregateOutputType = {
+  export type RelatorioMinAggregateOutputType = {
     id: number | null
-    reuniaoId: number | null
-    usuarioId: number | null
+    titulo: string | null
+    conteudo: string | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
-  export type ReuniaoParticipanteMaxAggregateOutputType = {
+  export type RelatorioMaxAggregateOutputType = {
     id: number | null
-    reuniaoId: number | null
-    usuarioId: number | null
+    titulo: string | null
+    conteudo: string | null
+    criadoEm: Date | null
+    atualizadoEm: Date | null
   }
 
-  export type ReuniaoParticipanteCountAggregateOutputType = {
+  export type RelatorioCountAggregateOutputType = {
     id: number
-    reuniaoId: number
-    usuarioId: number
+    titulo: number
+    conteudo: number
+    criadoEm: number
+    atualizadoEm: number
     _all: number
   }
 
 
-  export type ReuniaoParticipanteAvgAggregateInputType = {
+  export type RelatorioAvgAggregateInputType = {
     id?: true
-    reuniaoId?: true
-    usuarioId?: true
   }
 
-  export type ReuniaoParticipanteSumAggregateInputType = {
+  export type RelatorioSumAggregateInputType = {
     id?: true
-    reuniaoId?: true
-    usuarioId?: true
   }
 
-  export type ReuniaoParticipanteMinAggregateInputType = {
+  export type RelatorioMinAggregateInputType = {
     id?: true
-    reuniaoId?: true
-    usuarioId?: true
+    titulo?: true
+    conteudo?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
-  export type ReuniaoParticipanteMaxAggregateInputType = {
+  export type RelatorioMaxAggregateInputType = {
     id?: true
-    reuniaoId?: true
-    usuarioId?: true
+    titulo?: true
+    conteudo?: true
+    criadoEm?: true
+    atualizadoEm?: true
   }
 
-  export type ReuniaoParticipanteCountAggregateInputType = {
+  export type RelatorioCountAggregateInputType = {
     id?: true
-    reuniaoId?: true
-    usuarioId?: true
+    titulo?: true
+    conteudo?: true
+    criadoEm?: true
+    atualizadoEm?: true
     _all?: true
   }
 
-  export type ReuniaoParticipanteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Filter which ReuniaoParticipante to aggregate.
+     * Filter which Relatorio to aggregate.
      */
-    where?: ReuniaoParticipanteWhereInput
+    where?: RelatorioWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ReuniaoParticipantes to fetch.
+     * Determine the order of Relatorios to fetch.
      */
-    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
      * Sets the start position
      */
-    cursor?: ReuniaoParticipanteWhereUniqueInput
+    cursor?: RelatorioWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     * Take `±n` Relatorios from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ReuniaoParticipantes.
+     * Skip the first `n` Relatorios.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
-     * Count returned ReuniaoParticipantes
+     * Count returned Relatorios
     **/
-    _count?: true | ReuniaoParticipanteCountAggregateInputType
+    _count?: true | RelatorioCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to average
     **/
-    _avg?: ReuniaoParticipanteAvgAggregateInputType
+    _avg?: RelatorioAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to sum
     **/
-    _sum?: ReuniaoParticipanteSumAggregateInputType
+    _sum?: RelatorioSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the minimum value
     **/
-    _min?: ReuniaoParticipanteMinAggregateInputType
+    _min?: RelatorioMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
      * Select which fields to find the maximum value
     **/
-    _max?: ReuniaoParticipanteMaxAggregateInputType
+    _max?: RelatorioMaxAggregateInputType
   }
 
-  export type GetReuniaoParticipanteAggregateType<T extends ReuniaoParticipanteAggregateArgs> = {
-        [P in keyof T & keyof AggregateReuniaoParticipante]: P extends '_count' | 'count'
+  export type GetRelatorioAggregateType<T extends RelatorioAggregateArgs> = {
+        [P in keyof T & keyof AggregateRelatorio]: P extends '_count' | 'count'
       ? T[P] extends true
         ? number
-        : GetScalarType<T[P], AggregateReuniaoParticipante[P]>
-      : GetScalarType<T[P], AggregateReuniaoParticipante[P]>
+        : GetScalarType<T[P], AggregateRelatorio[P]>
+      : GetScalarType<T[P], AggregateRelatorio[P]>
   }
 
 
 
 
-  export type ReuniaoParticipanteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ReuniaoParticipanteWhereInput
-    orderBy?: ReuniaoParticipanteOrderByWithAggregationInput | ReuniaoParticipanteOrderByWithAggregationInput[]
-    by: ReuniaoParticipanteScalarFieldEnum[] | ReuniaoParticipanteScalarFieldEnum
-    having?: ReuniaoParticipanteScalarWhereWithAggregatesInput
+  export type RelatorioGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: RelatorioWhereInput
+    orderBy?: RelatorioOrderByWithAggregationInput | RelatorioOrderByWithAggregationInput[]
+    by: RelatorioScalarFieldEnum[] | RelatorioScalarFieldEnum
+    having?: RelatorioScalarWhereWithAggregatesInput
     take?: number
     skip?: number
-    _count?: ReuniaoParticipanteCountAggregateInputType | true
-    _avg?: ReuniaoParticipanteAvgAggregateInputType
-    _sum?: ReuniaoParticipanteSumAggregateInputType
-    _min?: ReuniaoParticipanteMinAggregateInputType
-    _max?: ReuniaoParticipanteMaxAggregateInputType
+    _count?: RelatorioCountAggregateInputType | true
+    _avg?: RelatorioAvgAggregateInputType
+    _sum?: RelatorioSumAggregateInputType
+    _min?: RelatorioMinAggregateInputType
+    _max?: RelatorioMaxAggregateInputType
   }
 
-  export type ReuniaoParticipanteGroupByOutputType = {
+  export type RelatorioGroupByOutputType = {
     id: number
-    reuniaoId: number
-    usuarioId: number
-    _count: ReuniaoParticipanteCountAggregateOutputType | null
-    _avg: ReuniaoParticipanteAvgAggregateOutputType | null
-    _sum: ReuniaoParticipanteSumAggregateOutputType | null
-    _min: ReuniaoParticipanteMinAggregateOutputType | null
-    _max: ReuniaoParticipanteMaxAggregateOutputType | null
+    titulo: string
+    conteudo: string
+    criadoEm: Date
+    atualizadoEm: Date
+    _count: RelatorioCountAggregateOutputType | null
+    _avg: RelatorioAvgAggregateOutputType | null
+    _sum: RelatorioSumAggregateOutputType | null
+    _min: RelatorioMinAggregateOutputType | null
+    _max: RelatorioMaxAggregateOutputType | null
   }
 
-  type GetReuniaoParticipanteGroupByPayload<T extends ReuniaoParticipanteGroupByArgs> = Prisma.PrismaPromise<
+  type GetRelatorioGroupByPayload<T extends RelatorioGroupByArgs> = Prisma.PrismaPromise<
     Array<
-      PickEnumerable<ReuniaoParticipanteGroupByOutputType, T['by']> &
+      PickEnumerable<RelatorioGroupByOutputType, T['by']> &
         {
-          [P in ((keyof T) & (keyof ReuniaoParticipanteGroupByOutputType))]: P extends '_count'
+          [P in ((keyof T) & (keyof RelatorioGroupByOutputType))]: P extends '_count'
             ? T[P] extends boolean
               ? number
-              : GetScalarType<T[P], ReuniaoParticipanteGroupByOutputType[P]>
-            : GetScalarType<T[P], ReuniaoParticipanteGroupByOutputType[P]>
+              : GetScalarType<T[P], RelatorioGroupByOutputType[P]>
+            : GetScalarType<T[P], RelatorioGroupByOutputType[P]>
         }
       >
     >
 
 
-  export type ReuniaoParticipanteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type RelatorioSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    reuniaoId?: boolean
-    usuarioId?: boolean
-    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
-    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["reuniaoParticipante"]>
+    titulo?: boolean
+    conteudo?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
+  }, ExtArgs["result"]["relatorio"]>
 
-  export type ReuniaoParticipanteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type RelatorioSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    reuniaoId?: boolean
-    usuarioId?: boolean
-    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
-    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["reuniaoParticipante"]>
+    titulo?: boolean
+    conteudo?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
+  }, ExtArgs["result"]["relatorio"]>
 
-  export type ReuniaoParticipanteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+  export type RelatorioSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
-    reuniaoId?: boolean
-    usuarioId?: boolean
-    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
-    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["reuniaoParticipante"]>
+    titulo?: boolean
+    conteudo?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
+  }, ExtArgs["result"]["relatorio"]>
 
-  export type ReuniaoParticipanteSelectScalar = {
+  export type RelatorioSelectScalar = {
     id?: boolean
-    reuniaoId?: boolean
-    usuarioId?: boolean
+    titulo?: boolean
+    conteudo?: boolean
+    criadoEm?: boolean
+    atualizadoEm?: boolean
   }
 
-  export type ReuniaoParticipanteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "reuniaoId" | "usuarioId", ExtArgs["result"]["reuniaoParticipante"]>
-  export type ReuniaoParticipanteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
-    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
-  }
-  export type ReuniaoParticipanteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
-    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
-  }
-  export type ReuniaoParticipanteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    reuniao?: boolean | ReuniaoDefaultArgs<ExtArgs>
-    usuario?: boolean | UsuarioDefaultArgs<ExtArgs>
-  }
+  export type RelatorioOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "conteudo" | "criadoEm" | "atualizadoEm", ExtArgs["result"]["relatorio"]>
 
-  export type $ReuniaoParticipantePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "ReuniaoParticipante"
-    objects: {
-      reuniao: Prisma.$ReuniaoPayload<ExtArgs>
-      usuario: Prisma.$UsuarioPayload<ExtArgs>
-    }
+  export type $RelatorioPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Relatorio"
+    objects: {}
     scalars: $Extensions.GetPayloadResult<{
       id: number
-      reuniaoId: number
-      usuarioId: number
-    }, ExtArgs["result"]["reuniaoParticipante"]>
+      titulo: string
+      conteudo: string
+      criadoEm: Date
+      atualizadoEm: Date
+    }, ExtArgs["result"]["relatorio"]>
     composites: {}
   }
 
-  type ReuniaoParticipanteGetPayload<S extends boolean | null | undefined | ReuniaoParticipanteDefaultArgs> = $Result.GetResult<Prisma.$ReuniaoParticipantePayload, S>
+  type RelatorioGetPayload<S extends boolean | null | undefined | RelatorioDefaultArgs> = $Result.GetResult<Prisma.$RelatorioPayload, S>
 
-  type ReuniaoParticipanteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ReuniaoParticipanteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ReuniaoParticipanteCountAggregateInputType | true
+  type RelatorioCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<RelatorioFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: RelatorioCountAggregateInputType | true
     }
 
-  export interface ReuniaoParticipanteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ReuniaoParticipante'], meta: { name: 'ReuniaoParticipante' } }
+  export interface RelatorioDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Relatorio'], meta: { name: 'Relatorio' } }
     /**
-     * Find zero or one ReuniaoParticipante that matches the filter.
-     * @param {ReuniaoParticipanteFindUniqueArgs} args - Arguments to find a ReuniaoParticipante
+     * Find zero or one Relatorio that matches the filter.
+     * @param {RelatorioFindUniqueArgs} args - Arguments to find a Relatorio
      * @example
-     * // Get one ReuniaoParticipante
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.findUnique({
+     * // Get one Relatorio
+     * const relatorio = await prisma.relatorio.findUnique({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUnique<T extends ReuniaoParticipanteFindUniqueArgs>(args: SelectSubset<T, ReuniaoParticipanteFindUniqueArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findUnique<T extends RelatorioFindUniqueArgs>(args: SelectSubset<T, RelatorioFindUniqueArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find one ReuniaoParticipante that matches the filter or throw an error with `error.code='P2025'`
+     * Find one Relatorio that matches the filter or throw an error with `error.code='P2025'`
      * if no matches were found.
-     * @param {ReuniaoParticipanteFindUniqueOrThrowArgs} args - Arguments to find a ReuniaoParticipante
+     * @param {RelatorioFindUniqueOrThrowArgs} args - Arguments to find a Relatorio
      * @example
-     * // Get one ReuniaoParticipante
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.findUniqueOrThrow({
+     * // Get one Relatorio
+     * const relatorio = await prisma.relatorio.findUniqueOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findUniqueOrThrow<T extends ReuniaoParticipanteFindUniqueOrThrowArgs>(args: SelectSubset<T, ReuniaoParticipanteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findUniqueOrThrow<T extends RelatorioFindUniqueOrThrowArgs>(args: SelectSubset<T, RelatorioFindUniqueOrThrowArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ReuniaoParticipante that matches the filter.
+     * Find the first Relatorio that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReuniaoParticipanteFindFirstArgs} args - Arguments to find a ReuniaoParticipante
+     * @param {RelatorioFindFirstArgs} args - Arguments to find a Relatorio
      * @example
-     * // Get one ReuniaoParticipante
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.findFirst({
+     * // Get one Relatorio
+     * const relatorio = await prisma.relatorio.findFirst({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirst<T extends ReuniaoParticipanteFindFirstArgs>(args?: SelectSubset<T, ReuniaoParticipanteFindFirstArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    findFirst<T extends RelatorioFindFirstArgs>(args?: SelectSubset<T, RelatorioFindFirstArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find the first ReuniaoParticipante that matches the filter or
+     * Find the first Relatorio that matches the filter or
      * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReuniaoParticipanteFindFirstOrThrowArgs} args - Arguments to find a ReuniaoParticipante
+     * @param {RelatorioFindFirstOrThrowArgs} args - Arguments to find a Relatorio
      * @example
-     * // Get one ReuniaoParticipante
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.findFirstOrThrow({
+     * // Get one Relatorio
+     * const relatorio = await prisma.relatorio.findFirstOrThrow({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      */
-    findFirstOrThrow<T extends ReuniaoParticipanteFindFirstOrThrowArgs>(args?: SelectSubset<T, ReuniaoParticipanteFindFirstOrThrowArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    findFirstOrThrow<T extends RelatorioFindFirstOrThrowArgs>(args?: SelectSubset<T, RelatorioFindFirstOrThrowArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Find zero or more ReuniaoParticipantes that matches the filter.
+     * Find zero or more Relatorios that matches the filter.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReuniaoParticipanteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @param {RelatorioFindManyArgs} args - Arguments to filter and select certain fields only.
      * @example
-     * // Get all ReuniaoParticipantes
-     * const reuniaoParticipantes = await prisma.reuniaoParticipante.findMany()
+     * // Get all Relatorios
+     * const relatorios = await prisma.relatorio.findMany()
      * 
-     * // Get first 10 ReuniaoParticipantes
-     * const reuniaoParticipantes = await prisma.reuniaoParticipante.findMany({ take: 10 })
+     * // Get first 10 Relatorios
+     * const relatorios = await prisma.relatorio.findMany({ take: 10 })
      * 
      * // Only select the `id`
-     * const reuniaoParticipanteWithIdOnly = await prisma.reuniaoParticipante.findMany({ select: { id: true } })
+     * const relatorioWithIdOnly = await prisma.relatorio.findMany({ select: { id: true } })
      * 
      */
-    findMany<T extends ReuniaoParticipanteFindManyArgs>(args?: SelectSubset<T, ReuniaoParticipanteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+    findMany<T extends RelatorioFindManyArgs>(args?: SelectSubset<T, RelatorioFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
     /**
-     * Create a ReuniaoParticipante.
-     * @param {ReuniaoParticipanteCreateArgs} args - Arguments to create a ReuniaoParticipante.
+     * Create a Relatorio.
+     * @param {RelatorioCreateArgs} args - Arguments to create a Relatorio.
      * @example
-     * // Create one ReuniaoParticipante
-     * const ReuniaoParticipante = await prisma.reuniaoParticipante.create({
+     * // Create one Relatorio
+     * const Relatorio = await prisma.relatorio.create({
      *   data: {
-     *     // ... data to create a ReuniaoParticipante
+     *     // ... data to create a Relatorio
      *   }
      * })
      * 
      */
-    create<T extends ReuniaoParticipanteCreateArgs>(args: SelectSubset<T, ReuniaoParticipanteCreateArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    create<T extends RelatorioCreateArgs>(args: SelectSubset<T, RelatorioCreateArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Create many ReuniaoParticipantes.
-     * @param {ReuniaoParticipanteCreateManyArgs} args - Arguments to create many ReuniaoParticipantes.
+     * Create many Relatorios.
+     * @param {RelatorioCreateManyArgs} args - Arguments to create many Relatorios.
      * @example
-     * // Create many ReuniaoParticipantes
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.createMany({
+     * // Create many Relatorios
+     * const relatorio = await prisma.relatorio.createMany({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      *     
      */
-    createMany<T extends ReuniaoParticipanteCreateManyArgs>(args?: SelectSubset<T, ReuniaoParticipanteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    createMany<T extends RelatorioCreateManyArgs>(args?: SelectSubset<T, RelatorioCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Create many ReuniaoParticipantes and returns the data saved in the database.
-     * @param {ReuniaoParticipanteCreateManyAndReturnArgs} args - Arguments to create many ReuniaoParticipantes.
+     * Create many Relatorios and returns the data saved in the database.
+     * @param {RelatorioCreateManyAndReturnArgs} args - Arguments to create many Relatorios.
      * @example
-     * // Create many ReuniaoParticipantes
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.createManyAndReturn({
+     * // Create many Relatorios
+     * const relatorio = await prisma.relatorio.createManyAndReturn({
      *   data: [
      *     // ... provide data here
      *   ]
      * })
      * 
-     * // Create many ReuniaoParticipantes and only return the `id`
-     * const reuniaoParticipanteWithIdOnly = await prisma.reuniaoParticipante.createManyAndReturn({
+     * // Create many Relatorios and only return the `id`
+     * const relatorioWithIdOnly = await prisma.relatorio.createManyAndReturn({
      *   select: { id: true },
      *   data: [
      *     // ... provide data here
@@ -15538,28 +15586,28 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    createManyAndReturn<T extends ReuniaoParticipanteCreateManyAndReturnArgs>(args?: SelectSubset<T, ReuniaoParticipanteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+    createManyAndReturn<T extends RelatorioCreateManyAndReturnArgs>(args?: SelectSubset<T, RelatorioCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Delete a ReuniaoParticipante.
-     * @param {ReuniaoParticipanteDeleteArgs} args - Arguments to delete one ReuniaoParticipante.
+     * Delete a Relatorio.
+     * @param {RelatorioDeleteArgs} args - Arguments to delete one Relatorio.
      * @example
-     * // Delete one ReuniaoParticipante
-     * const ReuniaoParticipante = await prisma.reuniaoParticipante.delete({
+     * // Delete one Relatorio
+     * const Relatorio = await prisma.relatorio.delete({
      *   where: {
-     *     // ... filter to delete one ReuniaoParticipante
+     *     // ... filter to delete one Relatorio
      *   }
      * })
      * 
      */
-    delete<T extends ReuniaoParticipanteDeleteArgs>(args: SelectSubset<T, ReuniaoParticipanteDeleteArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    delete<T extends RelatorioDeleteArgs>(args: SelectSubset<T, RelatorioDeleteArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Update one ReuniaoParticipante.
-     * @param {ReuniaoParticipanteUpdateArgs} args - Arguments to update one ReuniaoParticipante.
+     * Update one Relatorio.
+     * @param {RelatorioUpdateArgs} args - Arguments to update one Relatorio.
      * @example
-     * // Update one ReuniaoParticipante
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.update({
+     * // Update one Relatorio
+     * const relatorio = await prisma.relatorio.update({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -15569,30 +15617,30 @@ export namespace Prisma {
      * })
      * 
      */
-    update<T extends ReuniaoParticipanteUpdateArgs>(args: SelectSubset<T, ReuniaoParticipanteUpdateArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    update<T extends RelatorioUpdateArgs>(args: SelectSubset<T, RelatorioUpdateArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
     /**
-     * Delete zero or more ReuniaoParticipantes.
-     * @param {ReuniaoParticipanteDeleteManyArgs} args - Arguments to filter ReuniaoParticipantes to delete.
+     * Delete zero or more Relatorios.
+     * @param {RelatorioDeleteManyArgs} args - Arguments to filter Relatorios to delete.
      * @example
-     * // Delete a few ReuniaoParticipantes
-     * const { count } = await prisma.reuniaoParticipante.deleteMany({
+     * // Delete a few Relatorios
+     * const { count } = await prisma.relatorio.deleteMany({
      *   where: {
      *     // ... provide filter here
      *   }
      * })
      * 
      */
-    deleteMany<T extends ReuniaoParticipanteDeleteManyArgs>(args?: SelectSubset<T, ReuniaoParticipanteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    deleteMany<T extends RelatorioDeleteManyArgs>(args?: SelectSubset<T, RelatorioDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ReuniaoParticipantes.
+     * Update zero or more Relatorios.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReuniaoParticipanteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @param {RelatorioUpdateManyArgs} args - Arguments to update one or more rows.
      * @example
-     * // Update many ReuniaoParticipantes
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.updateMany({
+     * // Update many Relatorios
+     * const relatorio = await prisma.relatorio.updateMany({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -15602,14 +15650,14 @@ export namespace Prisma {
      * })
      * 
      */
-    updateMany<T extends ReuniaoParticipanteUpdateManyArgs>(args: SelectSubset<T, ReuniaoParticipanteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+    updateMany<T extends RelatorioUpdateManyArgs>(args: SelectSubset<T, RelatorioUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
     /**
-     * Update zero or more ReuniaoParticipantes and returns the data updated in the database.
-     * @param {ReuniaoParticipanteUpdateManyAndReturnArgs} args - Arguments to update many ReuniaoParticipantes.
+     * Update zero or more Relatorios and returns the data updated in the database.
+     * @param {RelatorioUpdateManyAndReturnArgs} args - Arguments to update many Relatorios.
      * @example
-     * // Update many ReuniaoParticipantes
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.updateManyAndReturn({
+     * // Update many Relatorios
+     * const relatorio = await prisma.relatorio.updateManyAndReturn({
      *   where: {
      *     // ... provide filter here
      *   },
@@ -15618,8 +15666,8 @@ export namespace Prisma {
      *   ]
      * })
      * 
-     * // Update zero or more ReuniaoParticipantes and only return the `id`
-     * const reuniaoParticipanteWithIdOnly = await prisma.reuniaoParticipante.updateManyAndReturn({
+     * // Update zero or more Relatorios and only return the `id`
+     * const relatorioWithIdOnly = await prisma.relatorio.updateManyAndReturn({
      *   select: { id: true },
      *   where: {
      *     // ... provide filter here
@@ -15632,56 +15680,56 @@ export namespace Prisma {
      * Read more here: https://pris.ly/d/null-undefined
      * 
      */
-    updateManyAndReturn<T extends ReuniaoParticipanteUpdateManyAndReturnArgs>(args: SelectSubset<T, ReuniaoParticipanteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+    updateManyAndReturn<T extends RelatorioUpdateManyAndReturnArgs>(args: SelectSubset<T, RelatorioUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
     /**
-     * Create or update one ReuniaoParticipante.
-     * @param {ReuniaoParticipanteUpsertArgs} args - Arguments to update or create a ReuniaoParticipante.
+     * Create or update one Relatorio.
+     * @param {RelatorioUpsertArgs} args - Arguments to update or create a Relatorio.
      * @example
-     * // Update or create a ReuniaoParticipante
-     * const reuniaoParticipante = await prisma.reuniaoParticipante.upsert({
+     * // Update or create a Relatorio
+     * const relatorio = await prisma.relatorio.upsert({
      *   create: {
-     *     // ... data to create a ReuniaoParticipante
+     *     // ... data to create a Relatorio
      *   },
      *   update: {
      *     // ... in case it already exists, update
      *   },
      *   where: {
-     *     // ... the filter for the ReuniaoParticipante we want to update
+     *     // ... the filter for the Relatorio we want to update
      *   }
      * })
      */
-    upsert<T extends ReuniaoParticipanteUpsertArgs>(args: SelectSubset<T, ReuniaoParticipanteUpsertArgs<ExtArgs>>): Prisma__ReuniaoParticipanteClient<$Result.GetResult<Prisma.$ReuniaoParticipantePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+    upsert<T extends RelatorioUpsertArgs>(args: SelectSubset<T, RelatorioUpsertArgs<ExtArgs>>): Prisma__RelatorioClient<$Result.GetResult<Prisma.$RelatorioPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
 
     /**
-     * Count the number of ReuniaoParticipantes.
+     * Count the number of Relatorios.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReuniaoParticipanteCountArgs} args - Arguments to filter ReuniaoParticipantes to count.
+     * @param {RelatorioCountArgs} args - Arguments to filter Relatorios to count.
      * @example
-     * // Count the number of ReuniaoParticipantes
-     * const count = await prisma.reuniaoParticipante.count({
+     * // Count the number of Relatorios
+     * const count = await prisma.relatorio.count({
      *   where: {
-     *     // ... the filter for the ReuniaoParticipantes we want to count
+     *     // ... the filter for the Relatorios we want to count
      *   }
      * })
     **/
-    count<T extends ReuniaoParticipanteCountArgs>(
-      args?: Subset<T, ReuniaoParticipanteCountArgs>,
+    count<T extends RelatorioCountArgs>(
+      args?: Subset<T, RelatorioCountArgs>,
     ): Prisma.PrismaPromise<
       T extends $Utils.Record<'select', any>
         ? T['select'] extends true
           ? number
-          : GetScalarType<T['select'], ReuniaoParticipanteCountAggregateOutputType>
+          : GetScalarType<T['select'], RelatorioCountAggregateOutputType>
         : number
     >
 
     /**
-     * Allows you to perform aggregations operations on a ReuniaoParticipante.
+     * Allows you to perform aggregations operations on a Relatorio.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReuniaoParticipanteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @param {RelatorioAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
      * @example
      * // Ordered by age ascending
      * // Where email contains prisma.io
@@ -15701,13 +15749,13 @@ export namespace Prisma {
      *   take: 10,
      * })
     **/
-    aggregate<T extends ReuniaoParticipanteAggregateArgs>(args: Subset<T, ReuniaoParticipanteAggregateArgs>): Prisma.PrismaPromise<GetReuniaoParticipanteAggregateType<T>>
+    aggregate<T extends RelatorioAggregateArgs>(args: Subset<T, RelatorioAggregateArgs>): Prisma.PrismaPromise<GetRelatorioAggregateType<T>>
 
     /**
-     * Group by ReuniaoParticipante.
+     * Group by Relatorio.
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * @param {ReuniaoParticipanteGroupByArgs} args - Group by arguments.
+     * @param {RelatorioGroupByArgs} args - Group by arguments.
      * @example
      * // Group by city, order by createdAt, get count
      * const result = await prisma.user.groupBy({
@@ -15722,14 +15770,14 @@ export namespace Prisma {
      * 
     **/
     groupBy<
-      T extends ReuniaoParticipanteGroupByArgs,
+      T extends RelatorioGroupByArgs,
       HasSelectOrTake extends Or<
         Extends<'skip', Keys<T>>,
         Extends<'take', Keys<T>>
       >,
       OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ReuniaoParticipanteGroupByArgs['orderBy'] }
-        : { orderBy?: ReuniaoParticipanteGroupByArgs['orderBy'] },
+        ? { orderBy: RelatorioGroupByArgs['orderBy'] }
+        : { orderBy?: RelatorioGroupByArgs['orderBy'] },
       OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
       ByFields extends MaybeTupleToUnion<T['by']>,
       ByValid extends Has<ByFields, OrderFields>,
@@ -15778,23 +15826,21 @@ export namespace Prisma {
             ? never
             : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
         }[OrderFields]
-    >(args: SubsetIntersection<T, ReuniaoParticipanteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReuniaoParticipanteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+    >(args: SubsetIntersection<T, RelatorioGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetRelatorioGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
   /**
-   * Fields of the ReuniaoParticipante model
+   * Fields of the Relatorio model
    */
-  readonly fields: ReuniaoParticipanteFieldRefs;
+  readonly fields: RelatorioFieldRefs;
   }
 
   /**
-   * The delegate class that acts as a "Promise-like" for ReuniaoParticipante.
+   * The delegate class that acts as a "Promise-like" for Relatorio.
    * Why is this prefixed with `Prisma__`?
    * Because we want to prevent naming conflicts as mentioned in
    * https://github.com/prisma/prisma-client-js/issues/707
    */
-  export interface Prisma__ReuniaoParticipanteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+  export interface Prisma__RelatorioClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    reuniao<T extends ReuniaoDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ReuniaoDefaultArgs<ExtArgs>>): Prisma__ReuniaoClient<$Result.GetResult<Prisma.$ReuniaoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    usuario<T extends UsuarioDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UsuarioDefaultArgs<ExtArgs>>): Prisma__UsuarioClient<$Result.GetResult<Prisma.$UsuarioPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -15821,426 +15867,380 @@ export namespace Prisma {
 
 
   /**
-   * Fields of the ReuniaoParticipante model
+   * Fields of the Relatorio model
    */
-  interface ReuniaoParticipanteFieldRefs {
-    readonly id: FieldRef<"ReuniaoParticipante", 'Int'>
-    readonly reuniaoId: FieldRef<"ReuniaoParticipante", 'Int'>
-    readonly usuarioId: FieldRef<"ReuniaoParticipante", 'Int'>
+  interface RelatorioFieldRefs {
+    readonly id: FieldRef<"Relatorio", 'Int'>
+    readonly titulo: FieldRef<"Relatorio", 'String'>
+    readonly conteudo: FieldRef<"Relatorio", 'String'>
+    readonly criadoEm: FieldRef<"Relatorio", 'DateTime'>
+    readonly atualizadoEm: FieldRef<"Relatorio", 'DateTime'>
   }
     
 
   // Custom InputTypes
   /**
-   * ReuniaoParticipante findUnique
+   * Relatorio findUnique
    */
-  export type ReuniaoParticipanteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which Relatorio to fetch.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * Filter, which ReuniaoParticipante to fetch.
-     */
-    where: ReuniaoParticipanteWhereUniqueInput
+    where: RelatorioWhereUniqueInput
   }
 
   /**
-   * ReuniaoParticipante findUniqueOrThrow
+   * Relatorio findUniqueOrThrow
    */
-  export type ReuniaoParticipanteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which Relatorio to fetch.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * Filter, which ReuniaoParticipante to fetch.
-     */
-    where: ReuniaoParticipanteWhereUniqueInput
+    where: RelatorioWhereUniqueInput
   }
 
   /**
-   * ReuniaoParticipante findFirst
+   * Relatorio findFirst
    */
-  export type ReuniaoParticipanteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which Relatorio to fetch.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * Filter, which ReuniaoParticipante to fetch.
-     */
-    where?: ReuniaoParticipanteWhereInput
+    where?: RelatorioWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ReuniaoParticipantes to fetch.
+     * Determine the order of Relatorios to fetch.
      */
-    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for ReuniaoParticipantes.
+     * Sets the position for searching for Relatorios.
      */
-    cursor?: ReuniaoParticipanteWhereUniqueInput
+    cursor?: RelatorioWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     * Take `±n` Relatorios from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ReuniaoParticipantes.
+     * Skip the first `n` Relatorios.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ReuniaoParticipantes.
+     * Filter by unique combinations of Relatorios.
      */
-    distinct?: ReuniaoParticipanteScalarFieldEnum | ReuniaoParticipanteScalarFieldEnum[]
+    distinct?: RelatorioScalarFieldEnum | RelatorioScalarFieldEnum[]
   }
 
   /**
-   * ReuniaoParticipante findFirstOrThrow
+   * Relatorio findFirstOrThrow
    */
-  export type ReuniaoParticipanteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which Relatorio to fetch.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * Filter, which ReuniaoParticipante to fetch.
-     */
-    where?: ReuniaoParticipanteWhereInput
+    where?: RelatorioWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ReuniaoParticipantes to fetch.
+     * Determine the order of Relatorios to fetch.
      */
-    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for searching for ReuniaoParticipantes.
+     * Sets the position for searching for Relatorios.
      */
-    cursor?: ReuniaoParticipanteWhereUniqueInput
+    cursor?: RelatorioWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     * Take `±n` Relatorios from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ReuniaoParticipantes.
+     * Skip the first `n` Relatorios.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ReuniaoParticipantes.
+     * Filter by unique combinations of Relatorios.
      */
-    distinct?: ReuniaoParticipanteScalarFieldEnum | ReuniaoParticipanteScalarFieldEnum[]
+    distinct?: RelatorioScalarFieldEnum | RelatorioScalarFieldEnum[]
   }
 
   /**
-   * ReuniaoParticipante findMany
+   * Relatorio findMany
    */
-  export type ReuniaoParticipanteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * Filter, which Relatorios to fetch.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * Filter, which ReuniaoParticipantes to fetch.
-     */
-    where?: ReuniaoParticipanteWhereInput
+    where?: RelatorioWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
      * 
-     * Determine the order of ReuniaoParticipantes to fetch.
+     * Determine the order of Relatorios to fetch.
      */
-    orderBy?: ReuniaoParticipanteOrderByWithRelationInput | ReuniaoParticipanteOrderByWithRelationInput[]
+    orderBy?: RelatorioOrderByWithRelationInput | RelatorioOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
-     * Sets the position for listing ReuniaoParticipantes.
+     * Sets the position for listing Relatorios.
      */
-    cursor?: ReuniaoParticipanteWhereUniqueInput
+    cursor?: RelatorioWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Take `±n` ReuniaoParticipantes from the position of the cursor.
+     * Take `±n` Relatorios from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
      * 
-     * Skip the first `n` ReuniaoParticipantes.
+     * Skip the first `n` Relatorios.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
      * 
-     * Filter by unique combinations of ReuniaoParticipantes.
+     * Filter by unique combinations of Relatorios.
      */
-    distinct?: ReuniaoParticipanteScalarFieldEnum | ReuniaoParticipanteScalarFieldEnum[]
+    distinct?: RelatorioScalarFieldEnum | RelatorioScalarFieldEnum[]
   }
 
   /**
-   * ReuniaoParticipante create
+   * Relatorio create
    */
-  export type ReuniaoParticipanteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * The data needed to create a Relatorio.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * The data needed to create a ReuniaoParticipante.
-     */
-    data: XOR<ReuniaoParticipanteCreateInput, ReuniaoParticipanteUncheckedCreateInput>
+    data: XOR<RelatorioCreateInput, RelatorioUncheckedCreateInput>
   }
 
   /**
-   * ReuniaoParticipante createMany
+   * Relatorio createMany
    */
-  export type ReuniaoParticipanteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to create many ReuniaoParticipantes.
+     * The data used to create many Relatorios.
      */
-    data: ReuniaoParticipanteCreateManyInput | ReuniaoParticipanteCreateManyInput[]
+    data: RelatorioCreateManyInput | RelatorioCreateManyInput[]
   }
 
   /**
-   * ReuniaoParticipante createManyAndReturn
+   * Relatorio createManyAndReturn
    */
-  export type ReuniaoParticipanteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelectCreateManyAndReturn<ExtArgs> | null
+    select?: RelatorioSelectCreateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * The data used to create many ReuniaoParticipantes.
+     * The data used to create many Relatorios.
      */
-    data: ReuniaoParticipanteCreateManyInput | ReuniaoParticipanteCreateManyInput[]
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReuniaoParticipanteIncludeCreateManyAndReturn<ExtArgs> | null
+    data: RelatorioCreateManyInput | RelatorioCreateManyInput[]
   }
 
   /**
-   * ReuniaoParticipante update
+   * Relatorio update
    */
-  export type ReuniaoParticipanteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * The data needed to update a Relatorio.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    data: XOR<RelatorioUpdateInput, RelatorioUncheckedUpdateInput>
     /**
-     * The data needed to update a ReuniaoParticipante.
+     * Choose, which Relatorio to update.
      */
-    data: XOR<ReuniaoParticipanteUpdateInput, ReuniaoParticipanteUncheckedUpdateInput>
-    /**
-     * Choose, which ReuniaoParticipante to update.
-     */
-    where: ReuniaoParticipanteWhereUniqueInput
+    where: RelatorioWhereUniqueInput
   }
 
   /**
-   * ReuniaoParticipante updateMany
+   * Relatorio updateMany
    */
-  export type ReuniaoParticipanteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * The data used to update ReuniaoParticipantes.
+     * The data used to update Relatorios.
      */
-    data: XOR<ReuniaoParticipanteUpdateManyMutationInput, ReuniaoParticipanteUncheckedUpdateManyInput>
+    data: XOR<RelatorioUpdateManyMutationInput, RelatorioUncheckedUpdateManyInput>
     /**
-     * Filter which ReuniaoParticipantes to update
+     * Filter which Relatorios to update
      */
-    where?: ReuniaoParticipanteWhereInput
+    where?: RelatorioWhereInput
     /**
-     * Limit how many ReuniaoParticipantes to update.
+     * Limit how many Relatorios to update.
      */
     limit?: number
   }
 
   /**
-   * ReuniaoParticipante updateManyAndReturn
+   * Relatorio updateManyAndReturn
    */
-  export type ReuniaoParticipanteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelectUpdateManyAndReturn<ExtArgs> | null
+    select?: RelatorioSelectUpdateManyAndReturn<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * The data used to update ReuniaoParticipantes.
+     * The data used to update Relatorios.
      */
-    data: XOR<ReuniaoParticipanteUpdateManyMutationInput, ReuniaoParticipanteUncheckedUpdateManyInput>
+    data: XOR<RelatorioUpdateManyMutationInput, RelatorioUncheckedUpdateManyInput>
     /**
-     * Filter which ReuniaoParticipantes to update
+     * Filter which Relatorios to update
      */
-    where?: ReuniaoParticipanteWhereInput
+    where?: RelatorioWhereInput
     /**
-     * Limit how many ReuniaoParticipantes to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReuniaoParticipanteIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * ReuniaoParticipante upsert
-   */
-  export type ReuniaoParticipanteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ReuniaoParticipante
-     */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ReuniaoParticipante
-     */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * The filter to search for the ReuniaoParticipante to update in case it exists.
-     */
-    where: ReuniaoParticipanteWhereUniqueInput
-    /**
-     * In case the ReuniaoParticipante found by the `where` argument doesn't exist, create a new ReuniaoParticipante with this data.
-     */
-    create: XOR<ReuniaoParticipanteCreateInput, ReuniaoParticipanteUncheckedCreateInput>
-    /**
-     * In case the ReuniaoParticipante was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ReuniaoParticipanteUpdateInput, ReuniaoParticipanteUncheckedUpdateInput>
-  }
-
-  /**
-   * ReuniaoParticipante delete
-   */
-  export type ReuniaoParticipanteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ReuniaoParticipante
-     */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ReuniaoParticipante
-     */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
-    /**
-     * Filter which ReuniaoParticipante to delete.
-     */
-    where: ReuniaoParticipanteWhereUniqueInput
-  }
-
-  /**
-   * ReuniaoParticipante deleteMany
-   */
-  export type ReuniaoParticipanteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which ReuniaoParticipantes to delete
-     */
-    where?: ReuniaoParticipanteWhereInput
-    /**
-     * Limit how many ReuniaoParticipantes to delete.
+     * Limit how many Relatorios to update.
      */
     limit?: number
   }
 
   /**
-   * ReuniaoParticipante without action
+   * Relatorio upsert
    */
-  export type ReuniaoParticipanteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type RelatorioUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the ReuniaoParticipante
+     * Select specific fields to fetch from the Relatorio
      */
-    select?: ReuniaoParticipanteSelect<ExtArgs> | null
+    select?: RelatorioSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the ReuniaoParticipante
+     * Omit specific fields from the Relatorio
      */
-    omit?: ReuniaoParticipanteOmit<ExtArgs> | null
+    omit?: RelatorioOmit<ExtArgs> | null
     /**
-     * Choose, which related nodes to fetch as well
+     * The filter to search for the Relatorio to update in case it exists.
      */
-    include?: ReuniaoParticipanteInclude<ExtArgs> | null
+    where: RelatorioWhereUniqueInput
+    /**
+     * In case the Relatorio found by the `where` argument doesn't exist, create a new Relatorio with this data.
+     */
+    create: XOR<RelatorioCreateInput, RelatorioUncheckedCreateInput>
+    /**
+     * In case the Relatorio was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<RelatorioUpdateInput, RelatorioUncheckedUpdateInput>
+  }
+
+  /**
+   * Relatorio delete
+   */
+  export type RelatorioDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Relatorio
+     */
+    select?: RelatorioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Relatorio
+     */
+    omit?: RelatorioOmit<ExtArgs> | null
+    /**
+     * Filter which Relatorio to delete.
+     */
+    where: RelatorioWhereUniqueInput
+  }
+
+  /**
+   * Relatorio deleteMany
+   */
+  export type RelatorioDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Relatorios to delete
+     */
+    where?: RelatorioWhereInput
+    /**
+     * Limit how many Relatorios to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Relatorio without action
+   */
+  export type RelatorioDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Relatorio
+     */
+    select?: RelatorioSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Relatorio
+     */
+    omit?: RelatorioOmit<ExtArgs> | null
   }
 
 
@@ -18439,10 +18439,10 @@ export namespace Prisma {
     telefone: 'telefone',
     perfil: 'perfil',
     imagem: 'imagem',
-    criadoEm: 'criadoEm',
-    atualizadoEm: 'atualizadoEm',
     relacaoEducando: 'relacaoEducando',
-    codigoVerificacao: 'codigoVerificacao'
+    codigoVerificacao: 'codigoVerificacao',
+    criadoEm: 'criadoEm',
+    atualizadoEm: 'atualizadoEm'
   };
 
   export type UsuarioScalarFieldEnum = (typeof UsuarioScalarFieldEnum)[keyof typeof UsuarioScalarFieldEnum]
@@ -18506,9 +18506,9 @@ export namespace Prisma {
     conteudo: 'conteudo',
     remetenteId: 'remetenteId',
     destinatarioId: 'destinatarioId',
+    editadoEm: 'editadoEm',
     criadoEm: 'criadoEm',
     atualizadoEm: 'atualizadoEm',
-    editadoEm: 'editadoEm',
     deletadoParaRemetente: 'deletadoParaRemetente',
     deletadoParaDestinatario: 'deletadoParaDestinatario',
     arquivoUrl: 'arquivoUrl',
@@ -18530,17 +18530,6 @@ export namespace Prisma {
   };
 
   export type AvisoScalarFieldEnum = (typeof AvisoScalarFieldEnum)[keyof typeof AvisoScalarFieldEnum]
-
-
-  export const RelatorioScalarFieldEnum: {
-    id: 'id',
-    titulo: 'titulo',
-    conteudo: 'conteudo',
-    criadoEm: 'criadoEm',
-    atualizadoEm: 'atualizadoEm'
-  };
-
-  export type RelatorioScalarFieldEnum = (typeof RelatorioScalarFieldEnum)[keyof typeof RelatorioScalarFieldEnum]
 
 
   export const EventoScalarFieldEnum: {
@@ -18569,6 +18558,15 @@ export namespace Prisma {
   export type ReuniaoScalarFieldEnum = (typeof ReuniaoScalarFieldEnum)[keyof typeof ReuniaoScalarFieldEnum]
 
 
+  export const ReuniaoParticipanteScalarFieldEnum: {
+    id: 'id',
+    reuniaoId: 'reuniaoId',
+    usuarioId: 'usuarioId'
+  };
+
+  export type ReuniaoParticipanteScalarFieldEnum = (typeof ReuniaoParticipanteScalarFieldEnum)[keyof typeof ReuniaoParticipanteScalarFieldEnum]
+
+
   export const CursoScalarFieldEnum: {
     id: 'id',
     nome: 'nome',
@@ -18580,13 +18578,15 @@ export namespace Prisma {
   export type CursoScalarFieldEnum = (typeof CursoScalarFieldEnum)[keyof typeof CursoScalarFieldEnum]
 
 
-  export const ReuniaoParticipanteScalarFieldEnum: {
+  export const RelatorioScalarFieldEnum: {
     id: 'id',
-    reuniaoId: 'reuniaoId',
-    usuarioId: 'usuarioId'
+    titulo: 'titulo',
+    conteudo: 'conteudo',
+    criadoEm: 'criadoEm',
+    atualizadoEm: 'atualizadoEm'
   };
 
-  export type ReuniaoParticipanteScalarFieldEnum = (typeof ReuniaoParticipanteScalarFieldEnum)[keyof typeof ReuniaoParticipanteScalarFieldEnum]
+  export type RelatorioScalarFieldEnum = (typeof RelatorioScalarFieldEnum)[keyof typeof RelatorioScalarFieldEnum]
 
 
   export const FeedbackScalarFieldEnum: {
@@ -18656,16 +18656,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime'
+   * Reference to a field of type 'Relacao'
    */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+  export type EnumRelacaoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Relacao'>
     
 
 
   /**
-   * Reference to a field of type 'Relacao'
+   * Reference to a field of type 'DateTime'
    */
-  export type EnumRelacaoFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Relacao'>
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
@@ -18697,10 +18697,10 @@ export namespace Prisma {
     telefone?: StringFilter<"Usuario"> | string
     perfil?: EnumPerfilFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableFilter<"Usuario"> | string | null
-    criadoEm?: DateTimeFilter<"Usuario"> | Date | string
-    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableFilter<"Usuario"> | string | null
+    criadoEm?: DateTimeFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     alunos?: AlunoListRelationFilter
     turmas?: TurmaListRelationFilter
     disciplinas?: DisciplinaListRelationFilter
@@ -18720,10 +18720,10 @@ export namespace Prisma {
     telefone?: SortOrder
     perfil?: SortOrder
     imagem?: SortOrderInput | SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrderInput | SortOrder
     codigoVerificacao?: SortOrderInput | SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
     alunos?: AlunoOrderByRelationAggregateInput
     turmas?: TurmaOrderByRelationAggregateInput
     disciplinas?: DisciplinaOrderByRelationAggregateInput
@@ -18746,10 +18746,10 @@ export namespace Prisma {
     senha?: StringFilter<"Usuario"> | string
     perfil?: EnumPerfilFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableFilter<"Usuario"> | string | null
-    criadoEm?: DateTimeFilter<"Usuario"> | Date | string
-    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableFilter<"Usuario"> | string | null
+    criadoEm?: DateTimeFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     alunos?: AlunoListRelationFilter
     turmas?: TurmaListRelationFilter
     disciplinas?: DisciplinaListRelationFilter
@@ -18769,10 +18769,10 @@ export namespace Prisma {
     telefone?: SortOrder
     perfil?: SortOrder
     imagem?: SortOrderInput | SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrderInput | SortOrder
     codigoVerificacao?: SortOrderInput | SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
     _count?: UsuarioCountOrderByAggregateInput
     _avg?: UsuarioAvgOrderByAggregateInput
     _max?: UsuarioMaxOrderByAggregateInput
@@ -18791,10 +18791,10 @@ export namespace Prisma {
     telefone?: StringWithAggregatesFilter<"Usuario"> | string
     perfil?: EnumPerfilWithAggregatesFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableWithAggregatesFilter<"Usuario"> | string | null
-    criadoEm?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
-    atualizadoEm?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableWithAggregatesFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableWithAggregatesFilter<"Usuario"> | string | null
+    criadoEm?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Usuario"> | Date | string
   }
 
   export type AlunoWhereInput = {
@@ -19099,9 +19099,9 @@ export namespace Prisma {
     conteudo?: StringFilter<"Mensagem"> | string
     remetenteId?: IntFilter<"Mensagem"> | number
     destinatarioId?: IntFilter<"Mensagem"> | number
+    editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     criadoEm?: DateTimeFilter<"Mensagem"> | Date | string
     atualizadoEm?: DateTimeFilter<"Mensagem"> | Date | string
-    editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolFilter<"Mensagem"> | boolean
     arquivoUrl?: StringNullableFilter<"Mensagem"> | string | null
@@ -19117,9 +19117,9 @@ export namespace Prisma {
     conteudo?: SortOrder
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
+    editadoEm?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
     atualizadoEm?: SortOrder
-    editadoEm?: SortOrderInput | SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
     arquivoUrl?: SortOrderInput | SortOrder
@@ -19138,9 +19138,9 @@ export namespace Prisma {
     conteudo?: StringFilter<"Mensagem"> | string
     remetenteId?: IntFilter<"Mensagem"> | number
     destinatarioId?: IntFilter<"Mensagem"> | number
+    editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     criadoEm?: DateTimeFilter<"Mensagem"> | Date | string
     atualizadoEm?: DateTimeFilter<"Mensagem"> | Date | string
-    editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolFilter<"Mensagem"> | boolean
     arquivoUrl?: StringNullableFilter<"Mensagem"> | string | null
@@ -19156,9 +19156,9 @@ export namespace Prisma {
     conteudo?: SortOrder
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
+    editadoEm?: SortOrderInput | SortOrder
     criadoEm?: SortOrder
     atualizadoEm?: SortOrder
-    editadoEm?: SortOrderInput | SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
     arquivoUrl?: SortOrderInput | SortOrder
@@ -19180,9 +19180,9 @@ export namespace Prisma {
     conteudo?: StringWithAggregatesFilter<"Mensagem"> | string
     remetenteId?: IntWithAggregatesFilter<"Mensagem"> | number
     destinatarioId?: IntWithAggregatesFilter<"Mensagem"> | number
+    editadoEm?: DateTimeNullableWithAggregatesFilter<"Mensagem"> | Date | string | null
     criadoEm?: DateTimeWithAggregatesFilter<"Mensagem"> | Date | string
     atualizadoEm?: DateTimeWithAggregatesFilter<"Mensagem"> | Date | string
-    editadoEm?: DateTimeNullableWithAggregatesFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolWithAggregatesFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolWithAggregatesFilter<"Mensagem"> | boolean
     arquivoUrl?: StringNullableWithAggregatesFilter<"Mensagem"> | string | null
@@ -19248,60 +19248,6 @@ export namespace Prisma {
     imagem?: StringNullableWithAggregatesFilter<"Aviso"> | string | null
     criadoEm?: DateTimeWithAggregatesFilter<"Aviso"> | Date | string
     atualizadoEm?: DateTimeWithAggregatesFilter<"Aviso"> | Date | string
-  }
-
-  export type RelatorioWhereInput = {
-    AND?: RelatorioWhereInput | RelatorioWhereInput[]
-    OR?: RelatorioWhereInput[]
-    NOT?: RelatorioWhereInput | RelatorioWhereInput[]
-    id?: IntFilter<"Relatorio"> | number
-    titulo?: StringFilter<"Relatorio"> | string
-    conteudo?: StringFilter<"Relatorio"> | string
-    criadoEm?: DateTimeFilter<"Relatorio"> | Date | string
-    atualizadoEm?: DateTimeFilter<"Relatorio"> | Date | string
-  }
-
-  export type RelatorioOrderByWithRelationInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    conteudo?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-  }
-
-  export type RelatorioWhereUniqueInput = Prisma.AtLeast<{
-    id?: number
-    AND?: RelatorioWhereInput | RelatorioWhereInput[]
-    OR?: RelatorioWhereInput[]
-    NOT?: RelatorioWhereInput | RelatorioWhereInput[]
-    titulo?: StringFilter<"Relatorio"> | string
-    conteudo?: StringFilter<"Relatorio"> | string
-    criadoEm?: DateTimeFilter<"Relatorio"> | Date | string
-    atualizadoEm?: DateTimeFilter<"Relatorio"> | Date | string
-  }, "id">
-
-  export type RelatorioOrderByWithAggregationInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    conteudo?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-    _count?: RelatorioCountOrderByAggregateInput
-    _avg?: RelatorioAvgOrderByAggregateInput
-    _max?: RelatorioMaxOrderByAggregateInput
-    _min?: RelatorioMinOrderByAggregateInput
-    _sum?: RelatorioSumOrderByAggregateInput
-  }
-
-  export type RelatorioScalarWhereWithAggregatesInput = {
-    AND?: RelatorioScalarWhereWithAggregatesInput | RelatorioScalarWhereWithAggregatesInput[]
-    OR?: RelatorioScalarWhereWithAggregatesInput[]
-    NOT?: RelatorioScalarWhereWithAggregatesInput | RelatorioScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"Relatorio"> | number
-    titulo?: StringWithAggregatesFilter<"Relatorio"> | string
-    conteudo?: StringWithAggregatesFilter<"Relatorio"> | string
-    criadoEm?: DateTimeWithAggregatesFilter<"Relatorio"> | Date | string
-    atualizadoEm?: DateTimeWithAggregatesFilter<"Relatorio"> | Date | string
   }
 
   export type EventoWhereInput = {
@@ -19438,6 +19384,57 @@ export namespace Prisma {
     atualizadoEm?: DateTimeWithAggregatesFilter<"Reuniao"> | Date | string
   }
 
+  export type ReuniaoParticipanteWhereInput = {
+    AND?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
+    OR?: ReuniaoParticipanteWhereInput[]
+    NOT?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
+    id?: IntFilter<"ReuniaoParticipante"> | number
+    reuniaoId?: IntFilter<"ReuniaoParticipante"> | number
+    usuarioId?: IntFilter<"ReuniaoParticipante"> | number
+    reuniao?: XOR<ReuniaoScalarRelationFilter, ReuniaoWhereInput>
+    usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
+  }
+
+  export type ReuniaoParticipanteOrderByWithRelationInput = {
+    id?: SortOrder
+    reuniaoId?: SortOrder
+    usuarioId?: SortOrder
+    reuniao?: ReuniaoOrderByWithRelationInput
+    usuario?: UsuarioOrderByWithRelationInput
+  }
+
+  export type ReuniaoParticipanteWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    reuniaoId_usuarioId?: ReuniaoParticipanteReuniaoIdUsuarioIdCompoundUniqueInput
+    AND?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
+    OR?: ReuniaoParticipanteWhereInput[]
+    NOT?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
+    reuniaoId?: IntFilter<"ReuniaoParticipante"> | number
+    usuarioId?: IntFilter<"ReuniaoParticipante"> | number
+    reuniao?: XOR<ReuniaoScalarRelationFilter, ReuniaoWhereInput>
+    usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
+  }, "id" | "reuniaoId_usuarioId">
+
+  export type ReuniaoParticipanteOrderByWithAggregationInput = {
+    id?: SortOrder
+    reuniaoId?: SortOrder
+    usuarioId?: SortOrder
+    _count?: ReuniaoParticipanteCountOrderByAggregateInput
+    _avg?: ReuniaoParticipanteAvgOrderByAggregateInput
+    _max?: ReuniaoParticipanteMaxOrderByAggregateInput
+    _min?: ReuniaoParticipanteMinOrderByAggregateInput
+    _sum?: ReuniaoParticipanteSumOrderByAggregateInput
+  }
+
+  export type ReuniaoParticipanteScalarWhereWithAggregatesInput = {
+    AND?: ReuniaoParticipanteScalarWhereWithAggregatesInput | ReuniaoParticipanteScalarWhereWithAggregatesInput[]
+    OR?: ReuniaoParticipanteScalarWhereWithAggregatesInput[]
+    NOT?: ReuniaoParticipanteScalarWhereWithAggregatesInput | ReuniaoParticipanteScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ReuniaoParticipante"> | number
+    reuniaoId?: IntWithAggregatesFilter<"ReuniaoParticipante"> | number
+    usuarioId?: IntWithAggregatesFilter<"ReuniaoParticipante"> | number
+  }
+
   export type CursoWhereInput = {
     AND?: CursoWhereInput | CursoWhereInput[]
     OR?: CursoWhereInput[]
@@ -19501,55 +19498,58 @@ export namespace Prisma {
     atualizadoEm?: DateTimeWithAggregatesFilter<"Curso"> | Date | string
   }
 
-  export type ReuniaoParticipanteWhereInput = {
-    AND?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
-    OR?: ReuniaoParticipanteWhereInput[]
-    NOT?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
-    id?: IntFilter<"ReuniaoParticipante"> | number
-    reuniaoId?: IntFilter<"ReuniaoParticipante"> | number
-    usuarioId?: IntFilter<"ReuniaoParticipante"> | number
-    reuniao?: XOR<ReuniaoScalarRelationFilter, ReuniaoWhereInput>
-    usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
+  export type RelatorioWhereInput = {
+    AND?: RelatorioWhereInput | RelatorioWhereInput[]
+    OR?: RelatorioWhereInput[]
+    NOT?: RelatorioWhereInput | RelatorioWhereInput[]
+    id?: IntFilter<"Relatorio"> | number
+    titulo?: StringFilter<"Relatorio"> | string
+    conteudo?: StringFilter<"Relatorio"> | string
+    criadoEm?: DateTimeFilter<"Relatorio"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Relatorio"> | Date | string
   }
 
-  export type ReuniaoParticipanteOrderByWithRelationInput = {
+  export type RelatorioOrderByWithRelationInput = {
     id?: SortOrder
-    reuniaoId?: SortOrder
-    usuarioId?: SortOrder
-    reuniao?: ReuniaoOrderByWithRelationInput
-    usuario?: UsuarioOrderByWithRelationInput
+    titulo?: SortOrder
+    conteudo?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
-  export type ReuniaoParticipanteWhereUniqueInput = Prisma.AtLeast<{
+  export type RelatorioWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    reuniaoId_usuarioId?: ReuniaoParticipanteReuniaoIdUsuarioIdCompoundUniqueInput
-    AND?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
-    OR?: ReuniaoParticipanteWhereInput[]
-    NOT?: ReuniaoParticipanteWhereInput | ReuniaoParticipanteWhereInput[]
-    reuniaoId?: IntFilter<"ReuniaoParticipante"> | number
-    usuarioId?: IntFilter<"ReuniaoParticipante"> | number
-    reuniao?: XOR<ReuniaoScalarRelationFilter, ReuniaoWhereInput>
-    usuario?: XOR<UsuarioScalarRelationFilter, UsuarioWhereInput>
-  }, "id" | "reuniaoId_usuarioId">
+    AND?: RelatorioWhereInput | RelatorioWhereInput[]
+    OR?: RelatorioWhereInput[]
+    NOT?: RelatorioWhereInput | RelatorioWhereInput[]
+    titulo?: StringFilter<"Relatorio"> | string
+    conteudo?: StringFilter<"Relatorio"> | string
+    criadoEm?: DateTimeFilter<"Relatorio"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Relatorio"> | Date | string
+  }, "id">
 
-  export type ReuniaoParticipanteOrderByWithAggregationInput = {
+  export type RelatorioOrderByWithAggregationInput = {
     id?: SortOrder
-    reuniaoId?: SortOrder
-    usuarioId?: SortOrder
-    _count?: ReuniaoParticipanteCountOrderByAggregateInput
-    _avg?: ReuniaoParticipanteAvgOrderByAggregateInput
-    _max?: ReuniaoParticipanteMaxOrderByAggregateInput
-    _min?: ReuniaoParticipanteMinOrderByAggregateInput
-    _sum?: ReuniaoParticipanteSumOrderByAggregateInput
+    titulo?: SortOrder
+    conteudo?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
+    _count?: RelatorioCountOrderByAggregateInput
+    _avg?: RelatorioAvgOrderByAggregateInput
+    _max?: RelatorioMaxOrderByAggregateInput
+    _min?: RelatorioMinOrderByAggregateInput
+    _sum?: RelatorioSumOrderByAggregateInput
   }
 
-  export type ReuniaoParticipanteScalarWhereWithAggregatesInput = {
-    AND?: ReuniaoParticipanteScalarWhereWithAggregatesInput | ReuniaoParticipanteScalarWhereWithAggregatesInput[]
-    OR?: ReuniaoParticipanteScalarWhereWithAggregatesInput[]
-    NOT?: ReuniaoParticipanteScalarWhereWithAggregatesInput | ReuniaoParticipanteScalarWhereWithAggregatesInput[]
-    id?: IntWithAggregatesFilter<"ReuniaoParticipante"> | number
-    reuniaoId?: IntWithAggregatesFilter<"ReuniaoParticipante"> | number
-    usuarioId?: IntWithAggregatesFilter<"ReuniaoParticipante"> | number
+  export type RelatorioScalarWhereWithAggregatesInput = {
+    AND?: RelatorioScalarWhereWithAggregatesInput | RelatorioScalarWhereWithAggregatesInput[]
+    OR?: RelatorioScalarWhereWithAggregatesInput[]
+    NOT?: RelatorioScalarWhereWithAggregatesInput | RelatorioScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Relatorio"> | number
+    titulo?: StringWithAggregatesFilter<"Relatorio"> | string
+    conteudo?: StringWithAggregatesFilter<"Relatorio"> | string
+    criadoEm?: DateTimeWithAggregatesFilter<"Relatorio"> | Date | string
+    atualizadoEm?: DateTimeWithAggregatesFilter<"Relatorio"> | Date | string
   }
 
   export type FeedbackWhereInput = {
@@ -19680,10 +19680,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
@@ -19703,10 +19703,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
@@ -19725,10 +19725,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
@@ -19748,10 +19748,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -19771,10 +19771,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
   }
 
   export type UsuarioUpdateManyMutationInput = {
@@ -19784,10 +19784,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UsuarioUncheckedUpdateManyInput = {
@@ -19798,10 +19798,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type AlunoCreateInput = {
@@ -20090,9 +20090,9 @@ export namespace Prisma {
 
   export type MensagemCreateInput = {
     conteudo: string
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -20108,9 +20108,9 @@ export namespace Prisma {
     conteudo: string
     remetenteId: number
     destinatarioId: number
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -20121,9 +20121,9 @@ export namespace Prisma {
 
   export type MensagemUpdateInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20139,9 +20139,9 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     remetenteId?: IntFieldUpdateOperationsInput | number
     destinatarioId?: IntFieldUpdateOperationsInput | number
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20155,9 +20155,9 @@ export namespace Prisma {
     conteudo: string
     remetenteId: number
     destinatarioId: number
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -20168,9 +20168,9 @@ export namespace Prisma {
 
   export type MensagemUpdateManyMutationInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20184,9 +20184,9 @@ export namespace Prisma {
     conteudo?: StringFieldUpdateOperationsInput | string
     remetenteId?: IntFieldUpdateOperationsInput | number
     destinatarioId?: IntFieldUpdateOperationsInput | number
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -20251,59 +20251,6 @@ export namespace Prisma {
     titulo?: StringFieldUpdateOperationsInput | string
     conteudo?: StringFieldUpdateOperationsInput | string
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RelatorioCreateInput = {
-    titulo: string
-    conteudo: string
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
-  }
-
-  export type RelatorioUncheckedCreateInput = {
-    id?: number
-    titulo: string
-    conteudo: string
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
-  }
-
-  export type RelatorioUpdateInput = {
-    titulo?: StringFieldUpdateOperationsInput | string
-    conteudo?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RelatorioUncheckedUpdateInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    conteudo?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RelatorioCreateManyInput = {
-    id?: number
-    titulo: string
-    conteudo: string
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
-  }
-
-  export type RelatorioUpdateManyMutationInput = {
-    titulo?: StringFieldUpdateOperationsInput | string
-    conteudo?: StringFieldUpdateOperationsInput | string
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type RelatorioUncheckedUpdateManyInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    conteudo?: StringFieldUpdateOperationsInput | string
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -20445,6 +20392,44 @@ export namespace Prisma {
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type ReuniaoParticipanteCreateInput = {
+    reuniao: ReuniaoCreateNestedOneWithoutParticipantesInput
+    usuario: UsuarioCreateNestedOneWithoutReunioesInput
+  }
+
+  export type ReuniaoParticipanteUncheckedCreateInput = {
+    id?: number
+    reuniaoId: number
+    usuarioId: number
+  }
+
+  export type ReuniaoParticipanteUpdateInput = {
+    reuniao?: ReuniaoUpdateOneRequiredWithoutParticipantesNestedInput
+    usuario?: UsuarioUpdateOneRequiredWithoutReunioesNestedInput
+  }
+
+  export type ReuniaoParticipanteUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    reuniaoId?: IntFieldUpdateOperationsInput | number
+    usuarioId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ReuniaoParticipanteCreateManyInput = {
+    id?: number
+    reuniaoId: number
+    usuarioId: number
+  }
+
+  export type ReuniaoParticipanteUpdateManyMutationInput = {
+
+  }
+
+  export type ReuniaoParticipanteUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    reuniaoId?: IntFieldUpdateOperationsInput | number
+    usuarioId?: IntFieldUpdateOperationsInput | number
+  }
+
   export type CursoCreateInput = {
     nome: string
     descricao: string
@@ -20510,42 +20495,57 @@ export namespace Prisma {
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReuniaoParticipanteCreateInput = {
-    reuniao: ReuniaoCreateNestedOneWithoutParticipantesInput
-    usuario: UsuarioCreateNestedOneWithoutReunioesInput
+  export type RelatorioCreateInput = {
+    titulo: string
+    conteudo: string
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
   }
 
-  export type ReuniaoParticipanteUncheckedCreateInput = {
+  export type RelatorioUncheckedCreateInput = {
     id?: number
-    reuniaoId: number
-    usuarioId: number
+    titulo: string
+    conteudo: string
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
   }
 
-  export type ReuniaoParticipanteUpdateInput = {
-    reuniao?: ReuniaoUpdateOneRequiredWithoutParticipantesNestedInput
-    usuario?: UsuarioUpdateOneRequiredWithoutReunioesNestedInput
+  export type RelatorioUpdateInput = {
+    titulo?: StringFieldUpdateOperationsInput | string
+    conteudo?: StringFieldUpdateOperationsInput | string
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReuniaoParticipanteUncheckedUpdateInput = {
+  export type RelatorioUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    reuniaoId?: IntFieldUpdateOperationsInput | number
-    usuarioId?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    conteudo?: StringFieldUpdateOperationsInput | string
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReuniaoParticipanteCreateManyInput = {
+  export type RelatorioCreateManyInput = {
     id?: number
-    reuniaoId: number
-    usuarioId: number
+    titulo: string
+    conteudo: string
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
   }
 
-  export type ReuniaoParticipanteUpdateManyMutationInput = {
-
+  export type RelatorioUpdateManyMutationInput = {
+    titulo?: StringFieldUpdateOperationsInput | string
+    conteudo?: StringFieldUpdateOperationsInput | string
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ReuniaoParticipanteUncheckedUpdateManyInput = {
+  export type RelatorioUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    reuniaoId?: IntFieldUpdateOperationsInput | number
-    usuarioId?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    conteudo?: StringFieldUpdateOperationsInput | string
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type FeedbackCreateInput = {
@@ -20713,6 +20713,13 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type EnumRelacaoNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Relacao[] | null
+    notIn?: $Enums.Relacao[] | null
+    not?: NestedEnumRelacaoNullableFilter<$PrismaModel> | $Enums.Relacao | null
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -20722,13 +20729,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type EnumRelacaoNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
-    in?: $Enums.Relacao[] | null
-    notIn?: $Enums.Relacao[] | null
-    not?: NestedEnumRelacaoNullableFilter<$PrismaModel> | $Enums.Relacao | null
   }
 
   export type AlunoListRelationFilter = {
@@ -20819,10 +20819,10 @@ export namespace Prisma {
     telefone?: SortOrder
     perfil?: SortOrder
     imagem?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrder
     codigoVerificacao?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type UsuarioAvgOrderByAggregateInput = {
@@ -20837,10 +20837,10 @@ export namespace Prisma {
     telefone?: SortOrder
     perfil?: SortOrder
     imagem?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrder
     codigoVerificacao?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type UsuarioMinOrderByAggregateInput = {
@@ -20851,10 +20851,10 @@ export namespace Prisma {
     telefone?: SortOrder
     perfil?: SortOrder
     imagem?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
     relacaoEducando?: SortOrder
     codigoVerificacao?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
   }
 
   export type UsuarioSumOrderByAggregateInput = {
@@ -20921,6 +20921,16 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type EnumRelacaoNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Relacao[] | null
+    notIn?: $Enums.Relacao[] | null
+    not?: NestedEnumRelacaoNullableWithAggregatesFilter<$PrismaModel> | $Enums.Relacao | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRelacaoNullableFilter<$PrismaModel>
+    _max?: NestedEnumRelacaoNullableFilter<$PrismaModel>
+  }
+
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -20933,16 +20943,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type EnumRelacaoNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
-    in?: $Enums.Relacao[] | null
-    notIn?: $Enums.Relacao[] | null
-    not?: NestedEnumRelacaoNullableWithAggregatesFilter<$PrismaModel> | $Enums.Relacao | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumRelacaoNullableFilter<$PrismaModel>
-    _max?: NestedEnumRelacaoNullableFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -21241,9 +21241,9 @@ export namespace Prisma {
     conteudo?: SortOrder
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
+    editadoEm?: SortOrder
     criadoEm?: SortOrder
     atualizadoEm?: SortOrder
-    editadoEm?: SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
     arquivoUrl?: SortOrder
@@ -21264,9 +21264,9 @@ export namespace Prisma {
     conteudo?: SortOrder
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
+    editadoEm?: SortOrder
     criadoEm?: SortOrder
     atualizadoEm?: SortOrder
-    editadoEm?: SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
     arquivoUrl?: SortOrder
@@ -21280,9 +21280,9 @@ export namespace Prisma {
     conteudo?: SortOrder
     remetenteId?: SortOrder
     destinatarioId?: SortOrder
+    editadoEm?: SortOrder
     criadoEm?: SortOrder
     atualizadoEm?: SortOrder
-    editadoEm?: SortOrder
     deletadoParaRemetente?: SortOrder
     deletadoParaDestinatario?: SortOrder
     arquivoUrl?: SortOrder
@@ -21352,38 +21352,6 @@ export namespace Prisma {
   }
 
   export type AvisoSumOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
-  export type RelatorioCountOrderByAggregateInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    conteudo?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-  }
-
-  export type RelatorioAvgOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
-  export type RelatorioMaxOrderByAggregateInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    conteudo?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-  }
-
-  export type RelatorioMinOrderByAggregateInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    conteudo?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-  }
-
-  export type RelatorioSumOrderByAggregateInput = {
     id?: SortOrder
   }
 
@@ -21465,38 +21433,6 @@ export namespace Prisma {
     criadoPorId?: SortOrder
   }
 
-  export type CursoCountOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    descricao?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-  }
-
-  export type CursoAvgOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
-  export type CursoMaxOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    descricao?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-  }
-
-  export type CursoMinOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    descricao?: SortOrder
-    criadoEm?: SortOrder
-    atualizadoEm?: SortOrder
-  }
-
-  export type CursoSumOrderByAggregateInput = {
-    id?: SortOrder
-  }
-
   export type ReuniaoScalarRelationFilter = {
     is?: ReuniaoWhereInput
     isNot?: ReuniaoWhereInput
@@ -21535,6 +21471,70 @@ export namespace Prisma {
     id?: SortOrder
     reuniaoId?: SortOrder
     usuarioId?: SortOrder
+  }
+
+  export type CursoCountOrderByAggregateInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    descricao?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
+  }
+
+  export type CursoAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type CursoMaxOrderByAggregateInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    descricao?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
+  }
+
+  export type CursoMinOrderByAggregateInput = {
+    id?: SortOrder
+    nome?: SortOrder
+    descricao?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
+  }
+
+  export type CursoSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type RelatorioCountOrderByAggregateInput = {
+    id?: SortOrder
+    titulo?: SortOrder
+    conteudo?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
+  }
+
+  export type RelatorioAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type RelatorioMaxOrderByAggregateInput = {
+    id?: SortOrder
+    titulo?: SortOrder
+    conteudo?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
+  }
+
+  export type RelatorioMinOrderByAggregateInput = {
+    id?: SortOrder
+    titulo?: SortOrder
+    conteudo?: SortOrder
+    criadoEm?: SortOrder
+    atualizadoEm?: SortOrder
+  }
+
+  export type RelatorioSumOrderByAggregateInput = {
+    id?: SortOrder
   }
 
   export type FeedbackCountOrderByAggregateInput = {
@@ -21741,12 +21741,12 @@ export namespace Prisma {
     set?: string | null
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
-  }
-
   export type NullableEnumRelacaoFieldUpdateOperationsInput = {
     set?: $Enums.Relacao | null
+  }
+
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
   }
 
   export type AlunoUpdateManyWithoutEncarregadoNestedInput = {
@@ -22373,6 +22373,34 @@ export namespace Prisma {
     deleteMany?: ReuniaoParticipanteScalarWhereInput | ReuniaoParticipanteScalarWhereInput[]
   }
 
+  export type ReuniaoCreateNestedOneWithoutParticipantesInput = {
+    create?: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
+    connectOrCreate?: ReuniaoCreateOrConnectWithoutParticipantesInput
+    connect?: ReuniaoWhereUniqueInput
+  }
+
+  export type UsuarioCreateNestedOneWithoutReunioesInput = {
+    create?: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
+    connectOrCreate?: UsuarioCreateOrConnectWithoutReunioesInput
+    connect?: UsuarioWhereUniqueInput
+  }
+
+  export type ReuniaoUpdateOneRequiredWithoutParticipantesNestedInput = {
+    create?: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
+    connectOrCreate?: ReuniaoCreateOrConnectWithoutParticipantesInput
+    upsert?: ReuniaoUpsertWithoutParticipantesInput
+    connect?: ReuniaoWhereUniqueInput
+    update?: XOR<XOR<ReuniaoUpdateToOneWithWhereWithoutParticipantesInput, ReuniaoUpdateWithoutParticipantesInput>, ReuniaoUncheckedUpdateWithoutParticipantesInput>
+  }
+
+  export type UsuarioUpdateOneRequiredWithoutReunioesNestedInput = {
+    create?: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
+    connectOrCreate?: UsuarioCreateOrConnectWithoutReunioesInput
+    upsert?: UsuarioUpsertWithoutReunioesInput
+    connect?: UsuarioWhereUniqueInput
+    update?: XOR<XOR<UsuarioUpdateToOneWithWhereWithoutReunioesInput, UsuarioUpdateWithoutReunioesInput>, UsuarioUncheckedUpdateWithoutReunioesInput>
+  }
+
   export type DisciplinaCreateNestedManyWithoutCursoInput = {
     create?: XOR<DisciplinaCreateWithoutCursoInput, DisciplinaUncheckedCreateWithoutCursoInput> | DisciplinaCreateWithoutCursoInput[] | DisciplinaUncheckedCreateWithoutCursoInput[]
     connectOrCreate?: DisciplinaCreateOrConnectWithoutCursoInput | DisciplinaCreateOrConnectWithoutCursoInput[]
@@ -22495,34 +22523,6 @@ export namespace Prisma {
     deleteMany?: UsuarioScalarWhereInput | UsuarioScalarWhereInput[]
   }
 
-  export type ReuniaoCreateNestedOneWithoutParticipantesInput = {
-    create?: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
-    connectOrCreate?: ReuniaoCreateOrConnectWithoutParticipantesInput
-    connect?: ReuniaoWhereUniqueInput
-  }
-
-  export type UsuarioCreateNestedOneWithoutReunioesInput = {
-    create?: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
-    connectOrCreate?: UsuarioCreateOrConnectWithoutReunioesInput
-    connect?: UsuarioWhereUniqueInput
-  }
-
-  export type ReuniaoUpdateOneRequiredWithoutParticipantesNestedInput = {
-    create?: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
-    connectOrCreate?: ReuniaoCreateOrConnectWithoutParticipantesInput
-    upsert?: ReuniaoUpsertWithoutParticipantesInput
-    connect?: ReuniaoWhereUniqueInput
-    update?: XOR<XOR<ReuniaoUpdateToOneWithWhereWithoutParticipantesInput, ReuniaoUpdateWithoutParticipantesInput>, ReuniaoUncheckedUpdateWithoutParticipantesInput>
-  }
-
-  export type UsuarioUpdateOneRequiredWithoutReunioesNestedInput = {
-    create?: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
-    connectOrCreate?: UsuarioCreateOrConnectWithoutReunioesInput
-    upsert?: UsuarioUpsertWithoutReunioesInput
-    connect?: UsuarioWhereUniqueInput
-    update?: XOR<XOR<UsuarioUpdateToOneWithWhereWithoutReunioesInput, UsuarioUpdateWithoutReunioesInput>, UsuarioUncheckedUpdateWithoutReunioesInput>
-  }
-
   export type UsuarioCreateNestedOneWithoutCodigoProfessorInput = {
     create?: XOR<UsuarioCreateWithoutCodigoProfessorInput, UsuarioUncheckedCreateWithoutCodigoProfessorInput>
     connectOrCreate?: UsuarioCreateOrConnectWithoutCodigoProfessorInput
@@ -22585,6 +22585,13 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type NestedEnumRelacaoNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Relacao[] | null
+    notIn?: $Enums.Relacao[] | null
+    not?: NestedEnumRelacaoNullableFilter<$PrismaModel> | $Enums.Relacao | null
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -22594,13 +22601,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type NestedEnumRelacaoNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
-    in?: $Enums.Relacao[] | null
-    notIn?: $Enums.Relacao[] | null
-    not?: NestedEnumRelacaoNullableFilter<$PrismaModel> | $Enums.Relacao | null
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -22685,6 +22685,16 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumRelacaoNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
+    in?: $Enums.Relacao[] | null
+    notIn?: $Enums.Relacao[] | null
+    not?: NestedEnumRelacaoNullableWithAggregatesFilter<$PrismaModel> | $Enums.Relacao | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRelacaoNullableFilter<$PrismaModel>
+    _max?: NestedEnumRelacaoNullableFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -22697,16 +22707,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedEnumRelacaoNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.Relacao | EnumRelacaoFieldRefInput<$PrismaModel> | null
-    in?: $Enums.Relacao[] | null
-    notIn?: $Enums.Relacao[] | null
-    not?: NestedEnumRelacaoNullableWithAggregatesFilter<$PrismaModel> | $Enums.Relacao | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumRelacaoNullableFilter<$PrismaModel>
-    _max?: NestedEnumRelacaoNullableFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -22900,9 +22900,9 @@ export namespace Prisma {
 
   export type MensagemCreateWithoutRemetenteInput = {
     conteudo: string
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -22916,9 +22916,9 @@ export namespace Prisma {
     id?: number
     conteudo: string
     destinatarioId: number
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -22938,9 +22938,9 @@ export namespace Prisma {
 
   export type MensagemCreateWithoutDestinatarioInput = {
     conteudo: string
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -22954,9 +22954,9 @@ export namespace Prisma {
     id?: number
     conteudo: string
     remetenteId: number
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -23181,9 +23181,9 @@ export namespace Prisma {
     conteudo?: StringFilter<"Mensagem"> | string
     remetenteId?: IntFilter<"Mensagem"> | number
     destinatarioId?: IntFilter<"Mensagem"> | number
+    editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     criadoEm?: DateTimeFilter<"Mensagem"> | Date | string
     atualizadoEm?: DateTimeFilter<"Mensagem"> | Date | string
-    editadoEm?: DateTimeNullableFilter<"Mensagem"> | Date | string | null
     deletadoParaRemetente?: BoolFilter<"Mensagem"> | boolean
     deletadoParaDestinatario?: BoolFilter<"Mensagem"> | boolean
     arquivoUrl?: StringNullableFilter<"Mensagem"> | string | null
@@ -23316,10 +23316,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
     cursos?: CursoCreateNestedManyWithoutProfessoresInput
@@ -23338,10 +23338,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
     cursos?: CursoUncheckedCreateNestedManyWithoutProfessoresInput
@@ -23451,10 +23451,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
     cursos?: CursoUpdateManyWithoutProfessoresNestedInput
@@ -23473,10 +23473,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
     cursos?: CursoUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -23553,10 +23553,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
     cursos?: CursoCreateNestedManyWithoutProfessoresInput
@@ -23575,10 +23575,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
     cursos?: CursoUncheckedCreateNestedManyWithoutProfessoresInput
@@ -23648,10 +23648,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
     cursos?: CursoUpdateManyWithoutProfessoresNestedInput
@@ -23670,10 +23670,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
     cursos?: CursoUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -23731,10 +23731,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     cursos?: CursoCreateNestedManyWithoutProfessoresInput
@@ -23753,10 +23753,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     cursos?: CursoUncheckedCreateNestedManyWithoutProfessoresInput
@@ -23855,10 +23855,10 @@ export namespace Prisma {
     telefone?: StringFilter<"Usuario"> | string
     perfil?: EnumPerfilFilter<"Usuario"> | $Enums.Perfil
     imagem?: StringNullableFilter<"Usuario"> | string | null
-    criadoEm?: DateTimeFilter<"Usuario"> | Date | string
-    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
     relacaoEducando?: EnumRelacaoNullableFilter<"Usuario"> | $Enums.Relacao | null
     codigoVerificacao?: StringNullableFilter<"Usuario"> | string | null
+    criadoEm?: DateTimeFilter<"Usuario"> | Date | string
+    atualizadoEm?: DateTimeFilter<"Usuario"> | Date | string
   }
 
   export type NotaUpsertWithWhereUniqueWithoutDisciplinaInput = {
@@ -24008,10 +24008,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
@@ -24030,10 +24030,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
@@ -24056,10 +24056,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
@@ -24078,10 +24078,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
@@ -24115,10 +24115,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
@@ -24137,10 +24137,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -24169,10 +24169,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
@@ -24191,10 +24191,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -24212,10 +24212,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
@@ -24234,10 +24234,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
@@ -24289,10 +24289,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
@@ -24311,10 +24311,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -24339,6 +24339,166 @@ export namespace Prisma {
   export type ReuniaoParticipanteUpdateManyWithWhereWithoutReuniaoInput = {
     where: ReuniaoParticipanteScalarWhereInput
     data: XOR<ReuniaoParticipanteUpdateManyMutationInput, ReuniaoParticipanteUncheckedUpdateManyWithoutReuniaoInput>
+  }
+
+  export type ReuniaoCreateWithoutParticipantesInput = {
+    titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
+    criadoPor?: UsuarioCreateNestedOneWithoutReunioesAgendadasInput
+  }
+
+  export type ReuniaoUncheckedCreateWithoutParticipantesInput = {
+    id?: number
+    titulo: string
+    local: string
+    linkMeeting?: string | null
+    dataHora?: Date | string | null
+    criadoPorId?: number | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
+  }
+
+  export type ReuniaoCreateOrConnectWithoutParticipantesInput = {
+    where: ReuniaoWhereUniqueInput
+    create: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
+  }
+
+  export type UsuarioCreateWithoutReunioesInput = {
+    nome: string
+    email: string
+    senha: string
+    telefone: string
+    perfil: $Enums.Perfil
+    imagem?: string | null
+    relacaoEducando?: $Enums.Relacao | null
+    codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
+    alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
+    turmas?: TurmaCreateNestedManyWithoutProfessorInput
+    disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
+    cursos?: CursoCreateNestedManyWithoutProfessoresInput
+    mensagensEnviadas?: MensagemCreateNestedManyWithoutRemetenteInput
+    mensagensRecebidas?: MensagemCreateNestedManyWithoutDestinatarioInput
+    reunioesAgendadas?: ReuniaoCreateNestedManyWithoutCriadoPorInput
+    codigoProfessor?: CodigoProfessorCreateNestedOneWithoutProfessorInput
+  }
+
+  export type UsuarioUncheckedCreateWithoutReunioesInput = {
+    id?: number
+    nome: string
+    email: string
+    senha: string
+    telefone: string
+    perfil: $Enums.Perfil
+    imagem?: string | null
+    relacaoEducando?: $Enums.Relacao | null
+    codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
+    alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
+    turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
+    disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
+    cursos?: CursoUncheckedCreateNestedManyWithoutProfessoresInput
+    mensagensEnviadas?: MensagemUncheckedCreateNestedManyWithoutRemetenteInput
+    mensagensRecebidas?: MensagemUncheckedCreateNestedManyWithoutDestinatarioInput
+    reunioesAgendadas?: ReuniaoUncheckedCreateNestedManyWithoutCriadoPorInput
+    codigoProfessor?: CodigoProfessorUncheckedCreateNestedOneWithoutProfessorInput
+  }
+
+  export type UsuarioCreateOrConnectWithoutReunioesInput = {
+    where: UsuarioWhereUniqueInput
+    create: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
+  }
+
+  export type ReuniaoUpsertWithoutParticipantesInput = {
+    update: XOR<ReuniaoUpdateWithoutParticipantesInput, ReuniaoUncheckedUpdateWithoutParticipantesInput>
+    create: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
+    where?: ReuniaoWhereInput
+  }
+
+  export type ReuniaoUpdateToOneWithWhereWithoutParticipantesInput = {
+    where?: ReuniaoWhereInput
+    data: XOR<ReuniaoUpdateWithoutParticipantesInput, ReuniaoUncheckedUpdateWithoutParticipantesInput>
+  }
+
+  export type ReuniaoUpdateWithoutParticipantesInput = {
+    titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    criadoPor?: UsuarioUpdateOneWithoutReunioesAgendadasNestedInput
+  }
+
+  export type ReuniaoUncheckedUpdateWithoutParticipantesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    local?: StringFieldUpdateOperationsInput | string
+    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
+    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    criadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UsuarioUpsertWithoutReunioesInput = {
+    update: XOR<UsuarioUpdateWithoutReunioesInput, UsuarioUncheckedUpdateWithoutReunioesInput>
+    create: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
+    where?: UsuarioWhereInput
+  }
+
+  export type UsuarioUpdateToOneWithWhereWithoutReunioesInput = {
+    where?: UsuarioWhereInput
+    data: XOR<UsuarioUpdateWithoutReunioesInput, UsuarioUncheckedUpdateWithoutReunioesInput>
+  }
+
+  export type UsuarioUpdateWithoutReunioesInput = {
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
+    telefone?: StringFieldUpdateOperationsInput | string
+    perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
+    imagem?: NullableStringFieldUpdateOperationsInput | string | null
+    relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
+    codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
+    turmas?: TurmaUpdateManyWithoutProfessorNestedInput
+    disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
+    cursos?: CursoUpdateManyWithoutProfessoresNestedInput
+    mensagensEnviadas?: MensagemUpdateManyWithoutRemetenteNestedInput
+    mensagensRecebidas?: MensagemUpdateManyWithoutDestinatarioNestedInput
+    reunioesAgendadas?: ReuniaoUpdateManyWithoutCriadoPorNestedInput
+    codigoProfessor?: CodigoProfessorUpdateOneWithoutProfessorNestedInput
+  }
+
+  export type UsuarioUncheckedUpdateWithoutReunioesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    senha?: StringFieldUpdateOperationsInput | string
+    telefone?: StringFieldUpdateOperationsInput | string
+    perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
+    imagem?: NullableStringFieldUpdateOperationsInput | string | null
+    relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
+    codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
+    turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
+    disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
+    cursos?: CursoUncheckedUpdateManyWithoutProfessoresNestedInput
+    mensagensEnviadas?: MensagemUncheckedUpdateManyWithoutRemetenteNestedInput
+    mensagensRecebidas?: MensagemUncheckedUpdateManyWithoutDestinatarioNestedInput
+    reunioesAgendadas?: ReuniaoUncheckedUpdateManyWithoutCriadoPorNestedInput
+    codigoProfessor?: CodigoProfessorUncheckedUpdateOneWithoutProfessorNestedInput
   }
 
   export type DisciplinaCreateWithoutCursoInput = {
@@ -24412,10 +24572,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
@@ -24434,10 +24594,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
@@ -24501,166 +24661,6 @@ export namespace Prisma {
     data: XOR<UsuarioUpdateManyMutationInput, UsuarioUncheckedUpdateManyWithoutCursosInput>
   }
 
-  export type ReuniaoCreateWithoutParticipantesInput = {
-    titulo: string
-    local: string
-    linkMeeting?: string | null
-    dataHora?: Date | string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
-    criadoPor?: UsuarioCreateNestedOneWithoutReunioesAgendadasInput
-  }
-
-  export type ReuniaoUncheckedCreateWithoutParticipantesInput = {
-    id?: number
-    titulo: string
-    local: string
-    linkMeeting?: string | null
-    dataHora?: Date | string | null
-    criadoPorId?: number | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
-  }
-
-  export type ReuniaoCreateOrConnectWithoutParticipantesInput = {
-    where: ReuniaoWhereUniqueInput
-    create: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
-  }
-
-  export type UsuarioCreateWithoutReunioesInput = {
-    nome: string
-    email: string
-    senha: string
-    telefone: string
-    perfil: $Enums.Perfil
-    imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
-    relacaoEducando?: $Enums.Relacao | null
-    codigoVerificacao?: string | null
-    alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
-    turmas?: TurmaCreateNestedManyWithoutProfessorInput
-    disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
-    cursos?: CursoCreateNestedManyWithoutProfessoresInput
-    mensagensEnviadas?: MensagemCreateNestedManyWithoutRemetenteInput
-    mensagensRecebidas?: MensagemCreateNestedManyWithoutDestinatarioInput
-    reunioesAgendadas?: ReuniaoCreateNestedManyWithoutCriadoPorInput
-    codigoProfessor?: CodigoProfessorCreateNestedOneWithoutProfessorInput
-  }
-
-  export type UsuarioUncheckedCreateWithoutReunioesInput = {
-    id?: number
-    nome: string
-    email: string
-    senha: string
-    telefone: string
-    perfil: $Enums.Perfil
-    imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
-    relacaoEducando?: $Enums.Relacao | null
-    codigoVerificacao?: string | null
-    alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
-    turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
-    disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
-    cursos?: CursoUncheckedCreateNestedManyWithoutProfessoresInput
-    mensagensEnviadas?: MensagemUncheckedCreateNestedManyWithoutRemetenteInput
-    mensagensRecebidas?: MensagemUncheckedCreateNestedManyWithoutDestinatarioInput
-    reunioesAgendadas?: ReuniaoUncheckedCreateNestedManyWithoutCriadoPorInput
-    codigoProfessor?: CodigoProfessorUncheckedCreateNestedOneWithoutProfessorInput
-  }
-
-  export type UsuarioCreateOrConnectWithoutReunioesInput = {
-    where: UsuarioWhereUniqueInput
-    create: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
-  }
-
-  export type ReuniaoUpsertWithoutParticipantesInput = {
-    update: XOR<ReuniaoUpdateWithoutParticipantesInput, ReuniaoUncheckedUpdateWithoutParticipantesInput>
-    create: XOR<ReuniaoCreateWithoutParticipantesInput, ReuniaoUncheckedCreateWithoutParticipantesInput>
-    where?: ReuniaoWhereInput
-  }
-
-  export type ReuniaoUpdateToOneWithWhereWithoutParticipantesInput = {
-    where?: ReuniaoWhereInput
-    data: XOR<ReuniaoUpdateWithoutParticipantesInput, ReuniaoUncheckedUpdateWithoutParticipantesInput>
-  }
-
-  export type ReuniaoUpdateWithoutParticipantesInput = {
-    titulo?: StringFieldUpdateOperationsInput | string
-    local?: StringFieldUpdateOperationsInput | string
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    criadoPor?: UsuarioUpdateOneWithoutReunioesAgendadasNestedInput
-  }
-
-  export type ReuniaoUncheckedUpdateWithoutParticipantesInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    local?: StringFieldUpdateOperationsInput | string
-    linkMeeting?: NullableStringFieldUpdateOperationsInput | string | null
-    dataHora?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    criadoPorId?: NullableIntFieldUpdateOperationsInput | number | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type UsuarioUpsertWithoutReunioesInput = {
-    update: XOR<UsuarioUpdateWithoutReunioesInput, UsuarioUncheckedUpdateWithoutReunioesInput>
-    create: XOR<UsuarioCreateWithoutReunioesInput, UsuarioUncheckedCreateWithoutReunioesInput>
-    where?: UsuarioWhereInput
-  }
-
-  export type UsuarioUpdateToOneWithWhereWithoutReunioesInput = {
-    where?: UsuarioWhereInput
-    data: XOR<UsuarioUpdateWithoutReunioesInput, UsuarioUncheckedUpdateWithoutReunioesInput>
-  }
-
-  export type UsuarioUpdateWithoutReunioesInput = {
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    senha?: StringFieldUpdateOperationsInput | string
-    telefone?: StringFieldUpdateOperationsInput | string
-    perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
-    imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
-    codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
-    alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
-    turmas?: TurmaUpdateManyWithoutProfessorNestedInput
-    disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
-    cursos?: CursoUpdateManyWithoutProfessoresNestedInput
-    mensagensEnviadas?: MensagemUpdateManyWithoutRemetenteNestedInput
-    mensagensRecebidas?: MensagemUpdateManyWithoutDestinatarioNestedInput
-    reunioesAgendadas?: ReuniaoUpdateManyWithoutCriadoPorNestedInput
-    codigoProfessor?: CodigoProfessorUpdateOneWithoutProfessorNestedInput
-  }
-
-  export type UsuarioUncheckedUpdateWithoutReunioesInput = {
-    id?: IntFieldUpdateOperationsInput | number
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    senha?: StringFieldUpdateOperationsInput | string
-    telefone?: StringFieldUpdateOperationsInput | string
-    perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
-    imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
-    codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
-    alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
-    turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
-    disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
-    cursos?: CursoUncheckedUpdateManyWithoutProfessoresNestedInput
-    mensagensEnviadas?: MensagemUncheckedUpdateManyWithoutRemetenteNestedInput
-    mensagensRecebidas?: MensagemUncheckedUpdateManyWithoutDestinatarioNestedInput
-    reunioesAgendadas?: ReuniaoUncheckedUpdateManyWithoutCriadoPorNestedInput
-    codigoProfessor?: CodigoProfessorUncheckedUpdateOneWithoutProfessorNestedInput
-  }
-
   export type UsuarioCreateWithoutCodigoProfessorInput = {
     nome: string
     email: string
@@ -24668,10 +24668,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaCreateNestedManyWithoutProfessoresInput
@@ -24690,10 +24690,10 @@ export namespace Prisma {
     telefone: string
     perfil: $Enums.Perfil
     imagem?: string | null
-    criadoEm?: Date | string
-    atualizadoEm?: Date | string
     relacaoEducando?: $Enums.Relacao | null
     codigoVerificacao?: string | null
+    criadoEm?: Date | string
+    atualizadoEm?: Date | string
     alunos?: AlunoUncheckedCreateNestedManyWithoutEncarregadoInput
     turmas?: TurmaUncheckedCreateNestedManyWithoutProfessorInput
     disciplinas?: DisciplinaUncheckedCreateNestedManyWithoutProfessoresInput
@@ -24727,10 +24727,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
@@ -24749,10 +24749,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -24787,9 +24787,9 @@ export namespace Prisma {
     id?: number
     conteudo: string
     destinatarioId: number
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -24802,9 +24802,9 @@ export namespace Prisma {
     id?: number
     conteudo: string
     remetenteId: number
+    editadoEm?: Date | string | null
     criadoEm?: Date | string
     atualizadoEm?: Date | string
-    editadoEm?: Date | string | null
     deletadoParaRemetente?: boolean
     deletadoParaDestinatario?: boolean
     arquivoUrl?: string | null
@@ -24947,9 +24947,9 @@ export namespace Prisma {
 
   export type MensagemUpdateWithoutRemetenteInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24963,9 +24963,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     conteudo?: StringFieldUpdateOperationsInput | string
     destinatarioId?: IntFieldUpdateOperationsInput | number
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24978,9 +24978,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     conteudo?: StringFieldUpdateOperationsInput | string
     destinatarioId?: IntFieldUpdateOperationsInput | number
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24991,9 +24991,9 @@ export namespace Prisma {
 
   export type MensagemUpdateWithoutDestinatarioInput = {
     conteudo?: StringFieldUpdateOperationsInput | string
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25007,9 +25007,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     conteudo?: StringFieldUpdateOperationsInput | string
     remetenteId?: IntFieldUpdateOperationsInput | number
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25022,9 +25022,9 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     conteudo?: StringFieldUpdateOperationsInput | string
     remetenteId?: IntFieldUpdateOperationsInput | number
+    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    editadoEm?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletadoParaRemetente?: BoolFieldUpdateOperationsInput | boolean
     deletadoParaDestinatario?: BoolFieldUpdateOperationsInput | boolean
     arquivoUrl?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25182,10 +25182,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     cursos?: CursoUpdateManyWithoutProfessoresNestedInput
@@ -25204,10 +25204,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     cursos?: CursoUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -25226,10 +25226,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type NotaUpdateWithoutDisciplinaInput = {
@@ -25372,10 +25372,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUpdateManyWithoutProfessoresNestedInput
@@ -25394,10 +25394,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     alunos?: AlunoUncheckedUpdateManyWithoutEncarregadoNestedInput
     turmas?: TurmaUncheckedUpdateManyWithoutProfessorNestedInput
     disciplinas?: DisciplinaUncheckedUpdateManyWithoutProfessoresNestedInput
@@ -25416,10 +25416,10 @@ export namespace Prisma {
     telefone?: StringFieldUpdateOperationsInput | string
     perfil?: EnumPerfilFieldUpdateOperationsInput | $Enums.Perfil
     imagem?: NullableStringFieldUpdateOperationsInput | string | null
-    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
-    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
     relacaoEducando?: NullableEnumRelacaoFieldUpdateOperationsInput | $Enums.Relacao | null
     codigoVerificacao?: NullableStringFieldUpdateOperationsInput | string | null
+    criadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
+    atualizadoEm?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

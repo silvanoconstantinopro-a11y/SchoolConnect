@@ -8,6 +8,10 @@ datasource db {
   provider = "sqlite"
 }
 
+// ════════════════════════════════════════
+// ENUMS
+// ════════════════════════════════════════
+
 enum Perfil {
   ADMIN
   PROFESSOR
@@ -20,20 +24,24 @@ enum Relacao {
   TUTOR
 }
 
-model Usuario {
-  id           Int      @id @default(autoincrement())
-  nome         String
-  email        String   @unique
-  senha        String
-  telefone     String   @unique
-  perfil       Perfil
-  imagem       String?
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+// ════════════════════════════════════════
+// MODELOS
+// ════════════════════════════════════════
 
+model Usuario {
+  id                Int      @id @default(autoincrement())
+  nome              String
+  email             String   @unique
+  senha             String
+  telefone          String   @unique
+  perfil            Perfil
+  imagem            String?
   relacaoEducando   Relacao?
   codigoVerificacao String?
+  criadoEm          DateTime @default(now())
+  atualizadoEm      DateTime @updatedAt
 
+  // Relações
   alunos             Aluno[]               @relation("EncarregadoAlunos")
   turmas             Turma[]
   disciplinas        Disciplina[]          @relation("ProfessorDisciplinas")
@@ -116,9 +124,9 @@ model Mensagem {
   conteudo       String
   remetenteId    Int
   destinatarioId Int
+  editadoEm      DateTime?
   criadoEm       DateTime  @default(now())
   atualizadoEm   DateTime  @updatedAt
-  editadoEm      DateTime?
 
   deletadoParaRemetente    Boolean @default(false)
   deletadoParaDestinatario Boolean @default(false)
@@ -143,16 +151,6 @@ model Aviso {
   atualizadoEm DateTime @updatedAt
 
   @@map("avisos")
-}
-
-model Relatorio {
-  id           Int      @id @default(autoincrement())
-  titulo       String
-  conteudo     String
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
-
-  @@map("relatorios")
 }
 
 model Evento {
@@ -182,6 +180,18 @@ model Reuniao {
   @@map("reunioes")
 }
 
+model ReuniaoParticipante {
+  id        Int @id @default(autoincrement())
+  reuniaoId Int
+  usuarioId Int
+
+  reuniao Reuniao @relation(fields: [reuniaoId], references: [id])
+  usuario Usuario @relation(fields: [usuarioId], references: [id])
+
+  @@unique([reuniaoId, usuarioId])
+  @@map("reuniao_participantes")
+}
+
 model Curso {
   id           Int      @id @default(autoincrement())
   nome         String
@@ -196,25 +206,22 @@ model Curso {
   @@map("cursos")
 }
 
-model ReuniaoParticipante {
-  id        Int @id @default(autoincrement())
-  reuniaoId Int
-  usuarioId Int
+model Relatorio {
+  id           Int      @id @default(autoincrement())
+  titulo       String
+  conteudo     String
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 
-  reuniao Reuniao @relation(fields: [reuniaoId], references: [id])
-  usuario Usuario @relation(fields: [usuarioId], references: [id])
-
-  @@unique([reuniaoId, usuarioId])
-  @@map("reuniao_participantes")
+  @@map("relatorios")
 }
 
 model Feedback {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   nome     String
   email    String
   assunto  String
   mensagem String
-
   criadoEm DateTime @default(now())
 
   @@map("feedbacks")

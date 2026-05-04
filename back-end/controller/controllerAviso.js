@@ -1,63 +1,38 @@
+
 import { ServiceAviso } from "../service/serviceAviso.js";
+import { upload }        from "../middlewares/upload.js";
 
 export class ControllerAviso {
-
-    static async criarAviso(req, res) {
-    try {
-        const avisoCriado = await ServiceAviso.criarAviso(req.body);
-        res.status(201).json(avisoCriado);
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-}
-
-
-    static async listarAvisos(req, res) {
-        try {
-            const avisos = await ServiceAviso.listarAvisos();
-            res.status(200).json(avisos);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-
-    static async obterAvisoPorId(req, res) {
-        try {
-            const { id } = req.params;
-            const aviso = await ServiceAviso.obterAvisoPorId(id);
-            res.status(200).json(aviso);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }   
-    }
-
-    static async atualizarAviso(req, res) {
-  try {
-    const { id } = req.params;
-
-    const { titulo, conteudo, imagem } = req.body;
-
-    const avisoAtualizado = await ServiceAviso.atualizarAviso(id, {
-      titulo,
-      conteudo,
-      imagem
-    });
-
-    res.status(200).json(avisoAtualizado);
-
-  } catch (error) {
-    res.status(400).json({ error: error.message });
+  static criarAviso = [
+    upload.single("imagem"),
+    async (req, res) => {
+      try {
+        const dados = { ...req.body };
+        if (req.file) dados.imagem = `/uploads/arquivos/${req.file.filename}`;
+        return res.status(201).json(await ServiceAviso.criarAviso(dados));
+      } catch (e) { return res.status(400).json({ error: e.message }); }
+    },
+  ];
+  static async listarAvisos(req, res) {
+    try { return res.json(await ServiceAviso.listarAvisos()); }
+    catch (e) { return res.status(500).json({ error: e.message }); }
   }
-}
-
-    static async deletarAviso(req, res) {
-        try {
-            const { id } = req.params;
-            const avisoDeletado = await ServiceAviso.deletarAviso(id);
-            res.status(200).json(avisoDeletado);
-        } catch (error) {
-            res.status(400).json({ error: error.message });
-        }
-    }
-
+  static async obterAvisoPorId(req, res) {
+    try { return res.json(await ServiceAviso.obterAvisoPorId(req.params.id)); }
+    catch (e) { return res.status(404).json({ error: e.message }); }
+  }
+  static atualizarAviso = [
+    upload.single("imagem"),
+    async (req, res) => {
+      try {
+        const dados = { ...req.body };
+        if (req.file) dados.imagem = `/uploads/arquivos/${req.file.filename}`;
+        return res.json(await ServiceAviso.atualizarAviso(req.params.id, dados));
+      } catch (e) { return res.status(400).json({ error: e.message }); }
+    },
+  ];
+  static async deletarAviso(req, res) {
+    try { return res.json(await ServiceAviso.deletarAviso(req.params.id)); }
+    catch (e) { return res.status(400).json({ error: e.message }); }
+  }
 }

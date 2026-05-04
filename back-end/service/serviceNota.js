@@ -1,92 +1,45 @@
 import { prisma } from "../prismaClient/prismaClient.js";
 
+const INCLUDE = {
+  aluno:      { select: { id:true, nome:true, matricula:true } },
+  disciplina: { select: { id:true, nome:true } },
+};
 
 export class ServiceNota {
-    static async criarNota(dados) {
-        try {
-            const { alunoId, disciplinaId, valor, tipo } = dados;
-            if (!alunoId || !disciplinaId || typeof valor !== 'number' || !tipo) {
-                throw new Error("O aluno, a disciplina, o tipo e o valor da nota são obrigatórios.");
-            }
 
-            const novaNota = await prisma.nota.create({
-                data: {
-                    alunoId,
-                    disciplinaId,
-                    valor,
-                    tipo
-                }
-            });
-            return novaNota;
-        } catch (error) {
-            throw new Error(`Erro ao criar nota: ${error.message}`);
-        }
-    }
+  static async criarNota({ valor, tipo, alunoId, disciplinaId }) {
+    if (!valor || !tipo || !alunoId || !disciplinaId)
+      throw new Error("Campos obrigatórios: valor, tipo, alunoId, disciplinaId.");
+    return prisma.nota.create({
+      data: { valor: Number(valor), tipo, alunoId: Number(alunoId), disciplinaId: Number(disciplinaId) },
+      include: INCLUDE,
+    });
+  }
 
-    static async listarNotas() {
-        try {
-            const notas = await prisma.nota.findMany({
-                include: {
-                    aluno: true,
-                    disciplina: true
-                }
-            });
-            return notas;
-        } catch (error) {
-            throw new Error(`Erro ao listar notas: ${error.message}`);
-        }
-    }
+  static async listarNotas() {
+    return prisma.nota.findMany({ include: INCLUDE, orderBy: { criadoEm: "desc" } });
+  }
 
-    static async obterNotaPorId(id) {
-        try {
-            const nota = await prisma.nota.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!nota) {
-                throw new Error("Nota não encontrada.");
-            }
-            return nota;
-        } catch (error) {
-            throw new Error(`Erro ao obter nota: ${error.message}`);
-        }
-    }
+  static async obterNotaPorId(id) {
+    const n = await prisma.nota.findUnique({ where: { id: Number(id) }, include: INCLUDE });
+    if (!n) throw new Error("Nota não encontrada.");
+    return n;
+  }
 
-    static async atualizarNota(id, dados) {
-        try {
-            const { alunoId, disciplinaId, valor, tipo } = dados;
-            if (!alunoId || !disciplinaId || typeof valor !== 'number' || !tipo) {
-                throw new Error("O aluno, a disciplina, o tipo e o valor da nota são obrigatórios.");
-            }
-            const notaExistente = await prisma.nota.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!notaExistente) {
-                throw new Error("Nota não encontrada.");
-            }
-            const notaAtualizada = await prisma.nota.update({
-                where: { id: parseInt(id) },
-                data: { alunoId, disciplinaId, valor, tipo }
-            });
-            return notaAtualizada;
-        } catch (error) {
-            throw new Error(`Erro ao atualizar nota: ${error.message}`);
-        }
-    }
+  static async atualizarNota(id, { valor, tipo }) {
+    const n = await prisma.nota.findUnique({ where: { id: Number(id) } });
+    if (!n) throw new Error("Nota não encontrada.");
+    return prisma.nota.update({
+      where: { id: Number(id) },
+      data:  { valor: valor ? Number(valor) : n.valor, tipo: tipo ?? n.tipo },
+      include: INCLUDE,
+    });
+  }
 
-    static async deletarNota(id) {
-        try {
-            const notaExistente = await prisma.nota.findUnique({
-                where: { id: parseInt(id) }
-            });
-            if (!notaExistente) {
-                throw new Error("Nota não encontrada.");
-            }
-            const notaDeletada = await prisma.nota.delete({
-                where: { id: parseInt(id) }
-            });
-            return notaDeletada;
-        } catch (error) {
-            throw new Error(`Erro ao deletar nota: ${error.message}`);
-        }
-    }
+  static async deletarNota(id) {
+    const n = await prisma.nota.findUnique({ where: { id: Number(id) } });
+    if (!n) throw new Error("Nota não encontrada.");
+    await prisma.nota.delete({ where: { id: Number(id) } });
+    return { mensagem: "Nota deletada com sucesso." };
+  }
 }

@@ -8,6 +8,10 @@ datasource db {
   provider = "sqlite"
 }
 
+// ════════════════════════════════════════
+// ENUMS
+// ════════════════════════════════════════
+
 enum Perfil {
   ADMIN
   PROFESSOR
@@ -20,20 +24,24 @@ enum Relacao {
   TUTOR
 }
 
-model Usuario {
-  id           Int      @id @default(autoincrement())
-  nome         String
-  email        String   @unique
-  senha        String
-  telefone     String   @unique
-  perfil       Perfil
-  imagem       String?
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
+// ════════════════════════════════════════
+// MODELOS
+// ════════════════════════════════════════
 
+model Usuario {
+  id                Int       @id @default(autoincrement())
+  nome              String
+  email             String    @unique
+  senha             String
+  telefone          String    @unique
+  perfil            Perfil
+  imagem            String?
   relacaoEducando   Relacao?
   codigoVerificacao String?
+  criadoEm          DateTime  @default(now())
+  atualizadoEm      DateTime  @updatedAt
 
+  // Relações
   alunos             Aluno[]               @relation("EncarregadoAlunos")
   turmas             Turma[]
   disciplinas        Disciplina[]          @relation("ProfessorDisciplinas")
@@ -60,9 +68,9 @@ model Aluno {
   criadoEm      DateTime @default(now())
   atualizadoEm  DateTime @updatedAt
 
-  turma       Turma    @relation(fields: [turmaId], references: [id])
-  encarregado Usuario? @relation("EncarregadoAlunos", fields: [encarregadoId], references: [id])
-  curso       Curso    @relation(fields: [cursoId], references: [id])
+  turma       Turma    @relation(fields: [turmaId],       references: [id])
+  encarregado Usuario? @relation("EncarregadoAlunos",     fields: [encarregadoId], references: [id])
+  curso       Curso    @relation(fields: [cursoId],       references: [id])
   notas       Nota[]
 
   @@map("alunos")
@@ -105,7 +113,7 @@ model Nota {
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
 
-  aluno      Aluno      @relation(fields: [alunoId], references: [id])
+  aluno      Aluno      @relation(fields: [alunoId],      references: [id])
   disciplina Disciplina @relation(fields: [disciplinaId], references: [id])
 
   @@map("notas")
@@ -116,9 +124,9 @@ model Mensagem {
   conteudo       String
   remetenteId    Int
   destinatarioId Int
+  editadoEm      DateTime?
   criadoEm       DateTime  @default(now())
   atualizadoEm   DateTime  @updatedAt
-  editadoEm      DateTime?
 
   deletadoParaRemetente    Boolean @default(false)
   deletadoParaDestinatario Boolean @default(false)
@@ -128,7 +136,7 @@ model Mensagem {
   arquivoTipo    String?
   arquivoTamanho Int?
 
-  remetente    Usuario @relation("Remetente", fields: [remetenteId], references: [id])
+  remetente    Usuario @relation("Remetente",    fields: [remetenteId],    references: [id])
   destinatario Usuario @relation("Destinatario", fields: [destinatarioId], references: [id])
 
   @@map("mensagens")
@@ -143,16 +151,6 @@ model Aviso {
   atualizadoEm DateTime @updatedAt
 
   @@map("avisos")
-}
-
-model Relatorio {
-  id           Int      @id @default(autoincrement())
-  titulo       String
-  conteudo     String
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
-
-  @@map("relatorios")
 }
 
 model Evento {
@@ -182,20 +180,6 @@ model Reuniao {
   @@map("reunioes")
 }
 
-model Curso {
-  id           Int      @id @default(autoincrement())
-  nome         String
-  descricao    String
-  criadoEm     DateTime @default(now())
-  atualizadoEm DateTime @updatedAt
-
-  disciplinas Disciplina[]
-  alunos      Aluno[]
-  professores Usuario[]   @relation("ProfessorCursos")
-
-  @@map("cursos")
-}
-
 model ReuniaoParticipante {
   id        Int @id @default(autoincrement())
   reuniaoId Int
@@ -208,13 +192,36 @@ model ReuniaoParticipante {
   @@map("reuniao_participantes")
 }
 
+model Curso {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  descricao    String
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  disciplinas Disciplina[]
+  alunos      Aluno[]
+  professores Usuario[] @relation("ProfessorCursos")
+
+  @@map("cursos")
+}
+
+model Relatorio {
+  id           Int      @id @default(autoincrement())
+  titulo       String
+  conteudo     String
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@map("relatorios")
+}
+
 model Feedback {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   nome     String
   email    String
   assunto  String
   mensagem String
-
   criadoEm DateTime @default(now())
 
   @@map("feedbacks")

@@ -1,40 +1,18 @@
-import serviceFeedback from '../service/serviceFeedback.js';
 
-class ControllerFeedback {
-  // Criar feedback
+import { ServiceFeedback } from "../service/serviceFeedback.js";
+const controllerFeedback = {
   async criarFeedback(req, res) {
-    try {
-      const { nome, email, assunto, mensagem } = req.body;
-      if (!nome || !email || !assunto || !mensagem) {
-        return res.status(400).json({ error: 'Todos os campos são obrigatórios.' });
-      }
-      const feedback = await serviceFeedback.criarFeedback({ nome, email, assunto, mensagem });
-      res.status(201).json(feedback);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-
-  // Listar feedbacks
+    try { return res.status(201).json(await ServiceFeedback.criarFeedback(req.body)); }
+    catch (e) { return res.status(400).json({ error: e.message }); }
+  },
   async listarFeedbacks(req, res) {
-    try {
-      const feedbacks = await serviceFeedback.listarFeedbacks();
-      res.json(feedbacks);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-
-  // Remover feedback
+    try { return res.json(await ServiceFeedback.listarFeedbacks()); }
+    catch (e) { return res.status(500).json({ error: e.message }); }
+  },
   async removerFeedback(req, res) {
-    try {
-      const { id } = req.params;
-      await serviceFeedback.removerFeedback(id);
-      res.json({ message: 'Feedback removido com sucesso.' });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  }
-}
-
-export default new ControllerFeedback();
+    try { return res.json(await ServiceFeedback.removerFeedback(req.params.id)); }
+    catch (e) { return res.status(400).json({ error: e.message }); }
+  },
+ 
+};
+ export default controllerFeedback;

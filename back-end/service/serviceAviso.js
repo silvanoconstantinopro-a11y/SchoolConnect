@@ -2,56 +2,34 @@ import { prisma } from "../prismaClient/prismaClient.js";
 
 export class ServiceAviso {
 
-    static async criarAviso(dados) {
-        try {
-            const { titulo, conteudo, imagem } = dados;
+  static async criarAviso({ titulo, conteudo, imagem }) {
+    if (!titulo || !conteudo) throw new Error("Título e conteúdo são obrigatórios.");
+    return prisma.aviso.create({ data: { titulo, conteudo, imagem: imagem || null } });
+  }
 
-            if (!titulo || !conteudo || !imagem) {
-                throw new Error("Todos os campos são obrigatórios.");
-            }
+  static async listarAvisos() {
+    return prisma.aviso.findMany({ orderBy: { criadoEm: "desc" } });
+  }
 
-            const novoAviso = await prisma.aviso.create({
-                data: {
-                    titulo,
-                    conteudo,
-                    imagem
-                }
-            });
+  static async obterAvisoPorId(id) {
+    const a = await prisma.aviso.findUnique({ where: { id: Number(id) } });
+    if (!a) throw new Error("Aviso não encontrado.");
+    return a;
+  }
 
-            return novoAviso;
+  static async atualizarAviso(id, { titulo, conteudo, imagem }) {
+    const a = await prisma.aviso.findUnique({ where: { id: Number(id) } });
+    if (!a) throw new Error("Aviso não encontrado.");
+    return prisma.aviso.update({
+      where: { id: Number(id) },
+      data:  { titulo: titulo ?? a.titulo, conteudo: conteudo ?? a.conteudo, imagem: imagem ?? a.imagem },
+    });
+  }
 
-        } catch (error) {
-            throw new Error(`Erro ao criar aviso: ${error.message}`);
-        }
-    }
-
-    static async listarAvisos() {
-        return await prisma.aviso.findMany();
-    }
-
-    static async obterAvisoPorId(id) {
-        return await prisma.aviso.findUnique({
-            where: { id: parseInt(id) }
-        });
-    }
-static async atualizarAviso(id, dados) {
-  const { titulo, conteudo, imagem } = dados;
-
-  const data = {};
-
-  if (titulo !== undefined) data.titulo = titulo;
-  if (conteudo !== undefined) data.conteudo = conteudo;
-  if (imagem !== undefined) data.imagem = imagem;
-
-  return await prisma.aviso.update({
-    where: { id: parseInt(id) },
-    data
-  });
-}
-
-    static async deletarAviso(id) {
-        return await prisma.aviso.delete({
-            where: { id: parseInt(id) }
-        });
-    }
+  static async deletarAviso(id) {
+    const a = await prisma.aviso.findUnique({ where: { id: Number(id) } });
+    if (!a) throw new Error("Aviso não encontrado.");
+    await prisma.aviso.delete({ where: { id: Number(id) } });
+    return { mensagem: "Aviso deletado com sucesso." };
+  }
 }
