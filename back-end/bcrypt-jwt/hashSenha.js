@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-const ROUNDS = 10;
+const ROUNDS = 12;
 
 export async function hashSenha(senha) {
   return bcrypt.hash(senha, ROUNDS);

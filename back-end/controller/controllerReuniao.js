@@ -1,34 +1,14 @@
 import { ServiceReuniao } from "../service/serviceReuniao.js";
+import { handle }          from "./_base.js";
 
 export class ControllerReuniao {
-  static async criarReuniao(req, res) {
-    try {
-      const { titulo, linkMeeting, local, participantesIds, dataHora } = req.body;
-      const criadoPorId = req.user?.id || null;
-      return res.status(201).json(
-        await ServiceReuniao.criarReuniao(titulo, linkMeeting, local, participantesIds, criadoPorId, dataHora)
-      );
-    } catch (e) { return res.status(400).json({ error: e.message }); }
-  }
-  static async listarReunioes(req, res) {
-    try { return res.json(await ServiceReuniao.listarReunioes(req.query.usuarioId)); }
-    catch (e) { return res.status(500).json({ error: e.message }); }
-  }
-  static async obterReuniaoPorId(req, res) {
-    try { return res.json(await ServiceReuniao.obterReuniaoPorId(req.params.id)); }
-    catch (e) { return res.status(404).json({ error: e.message }); }
-  }
-  static async atualizarReuniao(req, res) {
-    try {
-      const { titulo, linkMeeting, local, participantesIds } = req.body;
-      return res.json(await ServiceReuniao.atualizarReuniao(req.params.id, titulo, linkMeeting, local, participantesIds));
-    } catch (e) { return res.status(400).json({ error: e.message }); }
-  }
-  static async deletarReuniao(req, res) {
-    try { return res.json(await ServiceReuniao.deletarReuniao(req.params.id)); }
-    catch (e) { return res.status(400).json({ error: e.message }); }
-  }
+  static criarReuniao = handle(async (req) => {
+    const criadoPorId = req.user?.id || null;
+    return ServiceReuniao.criarReuniao({ ...req.body, criadoPorId });
+  }, 201);
+
+  static listarReunioes    = handle(async (req) => ServiceReuniao.listarReunioes(req.query));
+  static obterReuniaoPorId = handle(async (req) => ServiceReuniao.obterReuniaoPorId(req.params.id));
+  static atualizarReuniao  = handle(async (req) => ServiceReuniao.atualizarReuniao(req.params.id, req.body));
+  static deletarReuniao    = handle(async (req) => ServiceReuniao.deletarReuniao(req.params.id));
 }
-
-
-

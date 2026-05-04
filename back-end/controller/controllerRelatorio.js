@@ -1,24 +1,10 @@
-
 import { ServiceRelatorio } from "../service/serviceRelatorio.js";
+import { handle }            from "./_base.js";
+
 export class ControllerRelatorio {
-  static async criarRelatorio(req, res) {
-    try { return res.status(201).json(await ServiceRelatorio.criarRelatorio(req.body)); }
-    catch (e) { return res.status(400).json({ error: e.message }); }
-  }
-  static async listarRelatorios(req, res) {
-    try { return res.json(await ServiceRelatorio.listarRelatorios()); }
-    catch (e) { return res.status(500).json({ error: e.message }); }
-  }
-  static async obterRelatorioPorId(req, res) {
-    try { return res.json(await ServiceRelatorio.obterRelatorioPorId(req.params.id)); }
-    catch (e) { return res.status(404).json({ error: e.message }); }
-  }
-  static async atualizarRelatorio(req, res) {
-    try { return res.json(await ServiceRelatorio.atualizarRelatorio(req.params.id, req.body)); }
-    catch (e) { return res.status(400).json({ error: e.message }); }
-  }
-  static async deletarRelatorio(req, res) {
-    try { return res.json(await ServiceRelatorio.deletarRelatorio(req.params.id)); }
-    catch (e) { return res.status(400).json({ error: e.message }); }
-  }
+  static criarRelatorio      = handle(async (req) => ServiceRelatorio.criarRelatorio(req.body), 201);
+  static listarRelatorios    = handle(async ()    => ServiceRelatorio.listarRelatorios());
+  static obterRelatorioPorId = handle(async (req) => ServiceRelatorio.obterRelatorioPorId(req.params.id));
+  static atualizarRelatorio  = handle(async (req) => ServiceRelatorio.atualizarRelatorio(req.params.id, req.body));
+  static deletarRelatorio    = handle(async (req) => ServiceRelatorio.deletarRelatorio(req.params.id));
 }

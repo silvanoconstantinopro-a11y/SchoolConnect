@@ -3,8 +3,9 @@ import { prisma } from "../prismaClient/prismaClient.js";
 export class ServiceCurso {
 
   static async criarCurso({ nome, descricao }) {
-    if (!nome || !descricao) throw new Error("Nome e descrição são obrigatórios.");
-    return prisma.curso.create({ data: { nome, descricao } });
+    if (!nome?.trim() || !descricao?.trim())
+      throw new Error("Nome e descrição são obrigatórios.");
+    return prisma.curso.create({ data: { nome: nome.trim(), descricao: descricao.trim() } });
   }
 
   static async listarCursos() {
@@ -13,13 +14,25 @@ export class ServiceCurso {
 
   static async listarCursosComDisciplinas() {
     return prisma.curso.findMany({
-      include: { disciplinas: true, professores: { select:{ id:true, nome:true } } },
+      include: {
+        disciplinas: { orderBy: { nome: "asc" } },
+        professores: { select: { id: true, nome: true, email: true, imagem: true } },
+        alunos:      { select: { id: true, nome: true, matricula: true } },
+        _count:      { select: { alunos: true, disciplinas: true } },
+      },
       orderBy: { nome: "asc" },
     });
   }
 
   static async obterCursoPorId(id) {
-    const c = await prisma.curso.findUnique({ where: { id: Number(id) }, include: { disciplinas: true } });
+    const c = await prisma.curso.findUnique({
+      where:   { id: Number(id) },
+      include: {
+        disciplinas: true,
+        professores: { select: { id: true, nome: true, email: true } },
+        _count:      { select: { alunos: true } },
+      },
+    });
     if (!c) throw new Error("Curso não encontrado.");
     return c;
   }
@@ -29,7 +42,7 @@ export class ServiceCurso {
     if (!c) throw new Error("Curso não encontrado.");
     return prisma.curso.update({
       where: { id: Number(id) },
-      data:  { nome: nome ?? c.nome, descricao: descricao ?? c.descricao },
+      data:  { nome: nome?.trim() ?? c.nome, descricao: descricao?.trim() ?? c.descricao },
     });
   }
 
@@ -37,6 +50,6 @@ export class ServiceCurso {
     const c = await prisma.curso.findUnique({ where: { id: Number(id) } });
     if (!c) throw new Error("Curso não encontrado.");
     await prisma.curso.delete({ where: { id: Number(id) } });
-    return { mensagem: "Curso deletado com sucesso." };
+    return { mensagem: "Curso removido com sucesso." };
   }
 }

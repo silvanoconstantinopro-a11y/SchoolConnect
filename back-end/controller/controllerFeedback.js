@@ -1,18 +1,10 @@
-
 import { ServiceFeedback } from "../service/serviceFeedback.js";
+import { handle }           from "./_base.js";
+
 const controllerFeedback = {
-  async criarFeedback(req, res) {
-    try { return res.status(201).json(await ServiceFeedback.criarFeedback(req.body)); }
-    catch (e) { return res.status(400).json({ error: e.message }); }
-  },
-  async listarFeedbacks(req, res) {
-    try { return res.json(await ServiceFeedback.listarFeedbacks()); }
-    catch (e) { return res.status(500).json({ error: e.message }); }
-  },
-  async removerFeedback(req, res) {
-    try { return res.json(await ServiceFeedback.removerFeedback(req.params.id)); }
-    catch (e) { return res.status(400).json({ error: e.message }); }
-  },
- 
+  criarFeedback:   handle(async (req) => ServiceFeedback.criarFeedback(req.body), 201),
+  listarFeedbacks: handle(async ()    => ServiceFeedback.listarFeedbacks()),
+  removerFeedback: handle(async (req) => ServiceFeedback.removerFeedback(req.params.id)),
 };
- export default controllerFeedback;
+
+export default controllerFeedback;

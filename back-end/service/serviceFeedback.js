@@ -3,9 +3,16 @@ import { prisma } from "../prismaClient/prismaClient.js";
 export class ServiceFeedback {
 
   static async criarFeedback({ nome, email, assunto, mensagem }) {
-    if (!nome || !email || !assunto || !mensagem)
-      throw new Error("Todos os campos são obrigatórios.");
-    return prisma.feedback.create({ data: { nome, email, assunto, mensagem } });
+    if (!nome?.trim() || !email?.trim() || !assunto?.trim() || !mensagem?.trim())
+      throw new Error("Todos os campos são obrigatórios: nome, email, assunto, mensagem.");
+    return prisma.feedback.create({
+      data: {
+        nome:     nome.trim(),
+        email:    email.trim().toLowerCase(),
+        assunto:  assunto.trim(),
+        mensagem: mensagem.trim(),
+      },
+    });
   }
 
   static async listarFeedbacks() {
@@ -16,6 +23,6 @@ export class ServiceFeedback {
     const f = await prisma.feedback.findUnique({ where: { id: Number(id) } });
     if (!f) throw new Error("Feedback não encontrado.");
     await prisma.feedback.delete({ where: { id: Number(id) } });
-    return { mensagem: "Feedback removido." };
+    return { mensagem: "Feedback removido com sucesso." };
   }
 }

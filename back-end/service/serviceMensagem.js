@@ -1,8 +1,8 @@
 import { prisma } from "../prismaClient/prismaClient.js";
 
 const INCLUDE = {
-  remetente:    { select: { id:true, nome:true, imagem:true, perfil:true } },
-  destinatario: { select: { id:true, nome:true, imagem:true, perfil:true } },
+  remetente:    { select: { id: true, nome: true, imagem: true, perfil: true } },
+  destinatario: { select: { id: true, nome: true, imagem: true, perfil: true } },
 };
 
 export class ServiceMensagem {
@@ -14,7 +14,7 @@ export class ServiceMensagem {
     const temTexto   = conteudo?.trim();
     const temArquivo = arquivoUrl && arquivoNome;
     if (!temTexto && !temArquivo)
-      throw new Error("A mensagem deve ter texto ou ficheiro.");
+      throw new Error("A mensagem deve conter texto ou ficheiro.");
 
     const [rem, dest] = await Promise.all([
       prisma.usuario.findUnique({ where: { id: Number(remetenteId) } }),
@@ -25,26 +25,73 @@ export class ServiceMensagem {
 
     return prisma.mensagem.create({
       data: {
-        conteudo:      temTexto || "",
-        remetenteId:   Number(remetenteId),
-        destinatarioId:Number(destinatarioId),
-        arquivoUrl:    arquivoUrl    || null,
-        arquivoNome:   arquivoNome   || null,
-        arquivoTipo:   arquivoTipo   || null,
+        conteudo:       temTexto || "",
+        remetenteId:    Number(remetenteId),
+        destinatarioId: Number(destinatarioId),
+        arquivoUrl:     arquivoUrl    || null,
+        arquivoNome:    arquivoNome   || null,
+        arquivoTipo:    arquivoTipo   || null,
         arquivoTamanho: arquivoTamanho ? Number(arquivoTamanho) : null,
       },
       include: INCLUDE,
     });
   }
 
-  static async listarMensagens(usuarioId) {
-    const where = usuarioId
-      ? { OR: [
-          { remetenteId:    Number(usuarioId), deletadoParaRemetente:    false },
-          { destinatarioId: Number(usuarioId), deletadoParaDestinatario: false },
-        ] }
-      : undefined;
-    return prisma.mensagem.findMany({ where, include: INCLUDE, orderBy: { criadoEm: "asc" } });
+  /**
+   * Lista mensagens de uma conversa entre dois utilizadores,
+   * ou todas as mensagens do utilizador (para inbox).
+   */
+  static async listarMensagens(usuarioId, comUsuarioId) {
+    if (!usuarioId) {
+      return prisma.mensagem.findMany({ include: INCLUDE, orderBy: { criadoEm: "asc" } });
+    }
+
+    const uid = Number(usuarioId);
+
+    if (comUsuarioId) {
+      const cid = Number(comUsuarioId);
+      return prisma.mensagem.findMany({
+        where: {
+          OR: [
+            { remetenteId: uid, destinatarioId: cid, deletadoParaRemetente:    false },
+            { remetenteId: cid, destinatarioId: uid, deletadoParaDestinatario: false },
+          ],
+        },
+        include: INCLUDE,
+        orderBy: { criadoEm: "asc" },
+      });
+    }
+
+    return prisma.mensagem.findMany({
+      where: {
+        OR: [
+          { remetenteId:    uid, deletadoParaRemetente:    false },
+          { destinatarioId: uid, deletadoParaDestinatario: false },
+        ],
+      },
+      include: INCLUDE,
+      orderBy: { criadoEm: "desc" },
+    });
+  }
+
+  /** Retorna os contactos únicos com quem o utilizador trocou mensagens */
+  static async listarContactos(usuarioId) {
+    const uid = Number(usuarioId);
+    const mensagens = await prisma.mensagem.findMany({
+      where: {
+        OR: [{ remetenteId: uid }, { destinatarioId: uid }],
+      },
+      include: INCLUDE,
+      orderBy: { criadoEm: "desc" },
+    });
+
+    const mapa = new Map();
+    for (const m of mensagens) {
+      const outro = m.remetenteId === uid ? m.destinatario : m.remetente;
+      if (!mapa.has(outro.id)) mapa.set(outro.id, { usuario: outro, ultima: m });
+    }
+
+    return [...mapa.values()];
   }
 
   static async obterMensagemPorId(id) {
@@ -57,7 +104,7 @@ export class ServiceMensagem {
     if (!conteudo?.trim()) throw new Error("Conteúdo não pode ser vazio.");
     const m = await prisma.mensagem.findUnique({ where: { id: Number(id) } });
     if (!m) throw new Error("Mensagem não encontrada.");
-    if (m.remetenteId !== Number(usuarioId)) throw new Error("Apenas o remetente pode editar.");
+    if (m.remetenteId !== Number(usuarioId)) throw new Error("Apenas o remetente pode editar a mensagem.");
     return prisma.mensagem.update({
       where: { id: Number(id) },
       data:  { conteudo: conteudo.trim(), editadoEm: new Date() },
@@ -75,7 +122,7 @@ export class ServiceMensagem {
     if (!isRem && !isDest) throw new Error("Não autorizado.");
 
     if (tipo === "para_todos") {
-      if (!isRem) throw new Error("Só o remetente pode apagar para todos.");
+      if (!isRem) throw new Error("Apenas o remetente pode apagar para todos.");
       await prisma.mensagem.delete({ where: { id: Number(id) } });
       return { mensagem: "Mensagem apagada para todos." };
     }

@@ -3,8 +3,9 @@ import { prisma } from "../prismaClient/prismaClient.js";
 export class ServiceRelatorio {
 
   static async criarRelatorio({ titulo, conteudo }) {
-    if (!titulo || !conteudo) throw new Error("Título e conteúdo são obrigatórios.");
-    return prisma.relatorio.create({ data: { titulo, conteudo } });
+    if (!titulo?.trim() || !conteudo?.trim())
+      throw new Error("Título e conteúdo são obrigatórios.");
+    return prisma.relatorio.create({ data: { titulo: titulo.trim(), conteudo: conteudo.trim() } });
   }
 
   static async listarRelatorios() {
@@ -22,7 +23,7 @@ export class ServiceRelatorio {
     if (!r) throw new Error("Relatório não encontrado.");
     return prisma.relatorio.update({
       where: { id: Number(id) },
-      data:  { titulo: titulo ?? r.titulo, conteudo: conteudo ?? r.conteudo },
+      data:  { titulo: titulo?.trim() ?? r.titulo, conteudo: conteudo?.trim() ?? r.conteudo },
     });
   }
 
@@ -30,6 +31,6 @@ export class ServiceRelatorio {
     const r = await prisma.relatorio.findUnique({ where: { id: Number(id) } });
     if (!r) throw new Error("Relatório não encontrado.");
     await prisma.relatorio.delete({ where: { id: Number(id) } });
-    return { mensagem: "Relatório deletado com sucesso." };
+    return { mensagem: "Relatório removido com sucesso." };
   }
 }

@@ -1,38 +1,28 @@
-
 import { ServiceAviso } from "../service/serviceAviso.js";
-import { upload }        from "../middlewares/upload.js";
+import { uploadImagem }  from "../middlewares/upload.js";
+import { handle }        from "./_base.js";
 
 export class ControllerAviso {
   static criarAviso = [
-    upload.single("imagem"),
-    async (req, res) => {
-      try {
-        const dados = { ...req.body };
-        if (req.file) dados.imagem = `/uploads/arquivos/${req.file.filename}`;
-        return res.status(201).json(await ServiceAviso.criarAviso(dados));
-      } catch (e) { return res.status(400).json({ error: e.message }); }
-    },
+    uploadImagem.single("imagem"),
+    handle(async (req) => {
+      const dados = { ...req.body };
+      if (req.file) dados.imagem = `/uploads/imagens/${req.file.filename}`;
+      return ServiceAviso.criarAviso(dados);
+    }, 201),
   ];
-  static async listarAvisos(req, res) {
-    try { return res.json(await ServiceAviso.listarAvisos()); }
-    catch (e) { return res.status(500).json({ error: e.message }); }
-  }
-  static async obterAvisoPorId(req, res) {
-    try { return res.json(await ServiceAviso.obterAvisoPorId(req.params.id)); }
-    catch (e) { return res.status(404).json({ error: e.message }); }
-  }
+
+  static listarAvisos    = handle(async (req) => ServiceAviso.listarAvisos(req.query));
+  static obterAvisoPorId = handle(async (req) => ServiceAviso.obterAvisoPorId(req.params.id));
+
   static atualizarAviso = [
-    upload.single("imagem"),
-    async (req, res) => {
-      try {
-        const dados = { ...req.body };
-        if (req.file) dados.imagem = `/uploads/arquivos/${req.file.filename}`;
-        return res.json(await ServiceAviso.atualizarAviso(req.params.id, dados));
-      } catch (e) { return res.status(400).json({ error: e.message }); }
-    },
+    uploadImagem.single("imagem"),
+    handle(async (req) => {
+      const dados = { ...req.body };
+      if (req.file) dados.imagem = `/uploads/imagens/${req.file.filename}`;
+      return ServiceAviso.atualizarAviso(req.params.id, dados);
+    }),
   ];
-  static async deletarAviso(req, res) {
-    try { return res.json(await ServiceAviso.deletarAviso(req.params.id)); }
-    catch (e) { return res.status(400).json({ error: e.message }); }
-  }
+
+  static deletarAviso = handle(async (req) => ServiceAviso.deletarAviso(req.params.id));
 }
