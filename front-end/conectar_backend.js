@@ -1,200 +1,152 @@
-// ============================================
-// CONECTAR_BACKEND.js - Conecta automaticamente
-// Cole este arquivo na pasta do seu projeto
-// E adicione no HTML: <script src="CONECTAR_BACKEND.js"></script>
-// ============================================
+(function () {
+    console.log("🚀 Iniciando conexão com backend...");
 
-(function() {
-    console.log("🚀 Iniciando conexão com o backend...");
-    
-    // ========================================
+    // ===============================
     // 1. CONFIGURAÇÃO AUTOMÁTICA
-    // ========================================
-    
-    // Detecta automaticamente o backend
+    // ===============================
     const BACKEND_URL = (() => {
-        // Se estiver no Render
         if (window.location.hostname.includes('onrender.com')) {
             return 'https://schoolconnect-0ud2.onrender.com';
         }
-        // Se estiver no localhost
-        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            return 'http://localhost:3000';
+
+        if (
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1'
+        ) {
+            return 'http://localhost:3002';
         }
-        // Qualquer outro lugar, usa a mesma origem
+
         return window.location.origin;
     })();
-    
-    // Configurações globais
+
     window.API_URL = BACKEND_URL;
-    window.WS_URL = BACKEND_URL.replace('http', 'ws');
-    
-    console.log(`✅ Backend configurado: ${window.API_URL}`);
-    
-    // ========================================
-    // 2. FUNÇÃO PRINCIPAL DE FETCH
-    // ========================================
-    
-    window.apiFetch = async function(endpoint, options = {}) {
-        const url = window.API_URL + endpoint;
-        const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
-        
-        const config = {
-            ...options,
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token && { 'Authorization': `Bearer ${token}` }),
-                ...(options.headers || {})
-            }
-        };
-        
+
+    // 🔥 WebSocket seguro (HTTP / HTTPS automático)
+    window.WS_URL = window.location.protocol === "https:"
+        ? BACKEND_URL.replace("https", "wss")
+        : BACKEND_URL.replace("http", "ws");
+
+    console.log(`✅ API: ${window.API_URL}`);
+    console.log(`🔌 WS: ${window.WS_URL}`);
+
+    // ===============================
+    // 2. FETCH BASE
+    // ===============================
+    window.apiFetch = async function (endpoint, options = {}) {
         try {
-            const response = await fetch(url, config);
-            
+            const token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+
+            const response = await fetch(window.API_URL + endpoint, {
+                ...options,
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(token && { Authorization: `Bearer ${token}` }),
+                    ...(options.headers || {})
+                }
+            });
+
+            const data = await response.json().catch(() => ({}));
+
             if (!response.ok) {
-                const error = await response.json().catch(() => ({}));
-                throw new Error(error.message || error.error || `HTTP ${response.status}`);
+                throw new Error(data.message || data.error || "Erro na requisição");
             }
-            
-            return response;
+
+            return data;
         } catch (error) {
-            console.error(`❌ Erro na API (${endpoint}):`, error);
+            console.error("❌ API error:", error);
             throw error;
         }
     };
-    
-    // ========================================
-    // 3. FUNÇÃO PARA OBTER DADOS
-    // ========================================
-    
-    window.apiGet = async function(endpoint) {
-        const response = await window.apiFetch(endpoint);
-        return response.json();
-    };
-    
-    // ========================================
-    // 4. FUNÇÃO PARA ENVIAR DADOS
-    // ========================================
-    
-    window.apiPost = async function(endpoint, data) {
-        const response = await window.apiFetch(endpoint, {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-        return response.json();
-    };
-    
-    window.apiPut = async function(endpoint, data) {
-        const response = await window.apiFetch(endpoint, {
-            method: 'PUT',
-            body: JSON.stringify(data)
-        });
-        return response.json();
-    };
-    
-    window.apiDelete = async function(endpoint) {
-        const response = await window.apiFetch(endpoint, {
-            method: 'DELETE'
-        });
-        return response.json();
-    };
-    
-    // ========================================
-    // 5. FUNÇÃO DE LOGIN PRONTA
-    // ========================================
-    
-    window.fazerLogin = async function(email, senha) {
+
+    // ===============================
+    // 3. HELPERS
+    // ===============================
+    window.apiGet = (e) => window.apiFetch(e);
+    window.apiPost = (e, d) => window.apiFetch(e, { method: "POST", body: JSON.stringify(d) });
+    window.apiPut = (e, d) => window.apiFetch(e, { method: "PUT", body: JSON.stringify(d) });
+    window.apiDelete = (e) => window.apiFetch(e, { method: "DELETE" });
+
+    // ===============================
+    // 4. LOGIN FLEXÍVEL
+    // ===============================
+    window.fazerLogin = async function (endpoint, email, senha) {
         try {
-            const response = await window.apiFetch('/api/admin/login', {
-                method: 'POST',
+            const data = await window.apiFetch(endpoint, {
+                method: "POST",
                 body: JSON.stringify({ email, senha })
             });
-            
-            const data = await response.json();
-            
+
             if (data.token) {
-                localStorage.setItem('adminToken', data.token);
-                localStorage.setItem('adminLogado', 'true');
+                localStorage.setItem("token", data.token);
                 return { success: true, data };
             }
-            
-            return { success: false, error: data.error || 'Login falhou' };
+
+            return { success: false, error: data.message || "Login falhou" };
         } catch (error) {
             return { success: false, error: error.message };
         }
     };
-    
-    // ========================================
-    // 6. FUNÇÃO PARA VERIFICAR SE ESTÁ LOGADO
-    // ========================================
-    
-    window.estaLogado = function() {
-        const token = localStorage.getItem('adminToken');
-        return !!token;
+
+    // ===============================
+    // 5. LOGIN CHECK
+    // ===============================
+    window.estaLogado = () => !!localStorage.getItem("token");
+
+    window.sair = function () {
+        localStorage.clear();
+        window.location.href = "login.html";
     };
-    
-    window.sair = function() {
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminLogado');
-        window.location.href = 'login-admin.html';
-    };
-    
-    // ========================================
-    // 7. TESTAR CONEXÃO
-    // ========================================
-    
-    window.testarConexao = async function() {
+
+    // ===============================
+    // 6. TESTE DE CONEXÃO
+    // ===============================
+    window.testarConexao = async function () {
         try {
-            const resultado = await window.apiGet('/api/usuarios').catch(() => null);
-            console.log('✅ Conexão com backend: OK');
+            await window.apiGet("/api");
+            console.log("✅ Backend conectado");
             return true;
-        } catch (error) {
-            console.error('❌ Conexão com backend: FALHOU');
+        } catch {
+            console.error("❌ Backend offline");
             return false;
         }
     };
-    
-    // ========================================
-    // 8. CONFIGURAR FORMULÁRIOS DE LOGIN
-    // ========================================
-    
-    // Auto-configura qualquer formulário com class="login-form"
-    document.addEventListener('DOMContentLoaded', function() {
-        const loginForms = document.querySelectorAll('.login-form');
-        
-        loginForms.forEach(form => {
-            form.addEventListener('submit', async (e) => {
+
+    // ===============================
+    // 7. AUTO LOGIN FORM
+    // ===============================
+    document.addEventListener("DOMContentLoaded", () => {
+        const forms = document.querySelectorAll(".login-form");
+
+        forms.forEach((form) => {
+            form.addEventListener("submit", async (e) => {
                 e.preventDefault();
-                
-                const email = form.querySelector('[name="email"], [name="username"]')?.value;
+
+                const email = form.querySelector('[name="email"]')?.value;
                 const senha = form.querySelector('[name="password"]')?.value;
-                const btn = form.querySelector('button[type="submit"]');
-                const originalText = btn?.textContent;
-                
+                const btn = form.querySelector("button");
+
                 if (btn) {
                     btn.disabled = true;
-                    btn.textContent = 'A entrar...';
+                    btn.textContent = "A entrar...";
                 }
-                
-                const resultado = await window.fazerLogin(email, senha);
-                
-                if (resultado.success) {
-                    // Redireciona para o admin
-                    window.location.href = 'admin.html';
+
+                const result = await window.fazerLogin("/api/admin/login", email, senha);
+
+                if (result.success) {
+                    window.location.href = "admin.html";
                 } else {
-                    alert('Erro: ' + resultado.error);
+                    alert(result.error);
+
                     if (btn) {
                         btn.disabled = false;
-                        btn.textContent = originalText;
+                        btn.textContent = "Entrar";
                     }
                 }
             });
         });
-        
-        // Testa conexão automaticamente
+
         setTimeout(() => window.testarConexao(), 1000);
     });
-    
-    console.log("✅ CONECTAR_BACKEND.js carregado com sucesso!");
-    console.log(`📡 API em: ${window.API_URL}`);
+
+    console.log("✅ Backend connector pronto!");
 })();
