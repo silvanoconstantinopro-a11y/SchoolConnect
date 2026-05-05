@@ -6,7 +6,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
 
-// Rotas
+// ROTAS
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
 import { routerAviso } from "./rotas/rotasAviso.js";
 import { routerAluno } from "./rotas/rotasAluno.js";
@@ -25,56 +25,49 @@ import routerFeedback from "./rotas/rotasFeedback.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const PORTA = process.env.PORT || 3000;
-
 const app = express();
 const server = http.createServer(app);
 
-// =====================================
-// CORS (PRODUÇÃO SEGURA)
-// =====================================
+const PORTA = process.env.PORT || 3000;
+
+// =========================
+// CORS
+// =========================
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://schoolconnect-0ud2.onrender.com"
-  ],
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// =====================================
-// BODY PARSER
-// =====================================
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true }));
+// =========================
+// BODY
+// =========================
+app.use(express.json());
 
-// =====================================
+// =========================
 // STATIC FRONTEND
-// =====================================
+// =========================
 app.use(express.static(path.join(__dirname, "../front-end")));
 app.use("/img", express.static(path.join(__dirname, "../img")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// =====================================
+// =========================
 // HEALTH CHECK
-// =====================================
+// =========================
 app.get("/api/health", (req, res) => {
-    res.json({ status: "ok" });
+  res.json({ status: "ok" });
 });
 
-// =====================================
-// API TEST
-// =====================================
+// =========================
+// TESTE API
+// =========================
 app.get("/api", (req, res) => {
-    res.json({
-        mensagem: "Seja bem-vindo à API SchoolConnect 🚀"
-    });
+  res.json({ mensagem: "SchoolConnect API 🚀" });
 });
 
-// =====================================
+// =========================
 // ROTAS API
-// =====================================
+// =========================
 app.use("/api", routerUsuarios);
 app.use("/api", routerAviso);
 app.use("/api", routerAluno);
@@ -90,44 +83,33 @@ app.use("/api", routerMensagem);
 app.use("/api", statsRoutes);
 app.use("/api/feedbacks", routerFeedback);
 
-// =====================================
-// FRONTEND ROUTES (SEGURAS)
-// =====================================
+// =========================
+// FRONT PAGES (SEM FALLBACK GLOBAL)
+// =========================
 const pages = [
-    "index.html",
-    "login-admin.html",
-    "login.html",
-    "registro.html",
-    "dashboard-encarregado.html",
-    "dashboard-professor.html",
-    "admin.html"
+  "index.html",
+  "login.html",
+  "login-admin.html",
+  "registro.html",
+  "dashboard-encarregado.html",
+  "dashboard-professor.html",
+  "admin.html"
 ];
 
 pages.forEach(page => {
-    app.get(`/${page.replace(".html", "")}`, (req, res) => {
-        res.sendFile(path.join(__dirname, "../front-end", page));
-    });
+  app.get(`/${page.replace(".html", "")}`, (req, res) => {
+    res.sendFile(path.join(__dirname, "../front-end", page));
+  });
 });
 
-// =====================================
-// FALLBACK SPA (CORRIGIDO)
-// NÃO USA "*", EVITA ERRO path-to-regexp
-// =====================================
-app.use((req, res) => {
-    if (!req.originalUrl.startsWith("/api")) {
-        res.sendFile(path.join(__dirname, "../front-end", "index.html"));
-    }
-});
-
-// =====================================
+// =========================
 // WEBSOCKET
-// =====================================
+// =========================
 configurarWebSocket(server);
 
-// =====================================
+// =========================
 // START
-// =====================================
+// =========================
 server.listen(PORTA, () => {
-    console.log(`🚀 Servidor rodando em http://localhost:${PORTA}`);
-    console.log(`📡 API: http://localhost:${PORTA}/api`);
+  console.log(`🚀 Servidor: http://localhost:${PORTA}`);
 });
