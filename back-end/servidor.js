@@ -31,10 +31,14 @@ const app = express();
 const server = http.createServer(app);
 
 // =====================================
-// CORS
+// CORS (PRODUÇÃO SEGURA)
 // =====================================
 app.use(cors({
-  origin: "*",
+  origin: [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://schoolconnect-0ud2.onrender.com"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
@@ -46,20 +50,22 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 // =====================================
-// STATIC FILES
+// STATIC FRONTEND
 // =====================================
 app.use(express.static(path.join(__dirname, "../front-end")));
 app.use("/img", express.static(path.join(__dirname, "../img")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // =====================================
-// HEALTH CHECK (Render)
+// HEALTH CHECK
+// =====================================
 app.get("/api/health", (req, res) => {
     res.json({ status: "ok" });
 });
 
 // =====================================
 // API TEST
+// =====================================
 app.get("/api", (req, res) => {
     res.json({
         mensagem: "Seja bem-vindo à API SchoolConnect 🚀"
@@ -67,7 +73,8 @@ app.get("/api", (req, res) => {
 });
 
 // =====================================
-// ROTAS API (IMPORTANTE: ANTES DO FALLBACK)
+// ROTAS API
+// =====================================
 app.use("/api", routerUsuarios);
 app.use("/api", routerAviso);
 app.use("/api", routerAluno);
@@ -84,7 +91,8 @@ app.use("/api", statsRoutes);
 app.use("/api/feedbacks", routerFeedback);
 
 // =====================================
-// PÁGINAS FRONTEND
+// FRONTEND ROUTES (SEGURAS)
+// =====================================
 const pages = [
     "index.html",
     "login-admin.html",
@@ -102,17 +110,23 @@ pages.forEach(page => {
 });
 
 // =====================================
-// FALLBACK CORRETO (SEMPRE POR ÚLTIMO)
-app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end", "index.html"));
+// FALLBACK SPA (CORRIGIDO)
+// NÃO USA "*", EVITA ERRO path-to-regexp
+// =====================================
+app.use((req, res) => {
+    if (!req.originalUrl.startsWith("/api")) {
+        res.sendFile(path.join(__dirname, "../front-end", "index.html"));
+    }
 });
 
 // =====================================
 // WEBSOCKET
+// =====================================
 configurarWebSocket(server);
 
 // =====================================
 // START
+// =====================================
 server.listen(PORTA, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${PORTA}`);
     console.log(`📡 API: http://localhost:${PORTA}/api`);
