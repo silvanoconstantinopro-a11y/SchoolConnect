@@ -2,60 +2,61 @@
     console.log("🚀 SchoolConnect: Conector iniciado");
 
     // ============================================
-    // CONFIGURAÇÃO AUTOMÁTICA
+    // BASE URL (MESMO DOMÍNIO DO BACKEND)
     // ============================================
-    const BACKEND_URL =
-        window.location.hostname.includes("onrender.com")
-            ? "https://schoolconnect-0ud2.onrender.com"
-            : "http://localhost:3000";
+    const API_BASE = window.location.origin;
 
-    window.API = BACKEND_URL;
-
-    console.log("📍 API:", window.API);
+    window.API = API_BASE;
+    console.log("📍 API base:", window.API);
 
     // ============================================
-    // FETCH BASE ROBUSTO
+    // TOKEN HELPER
     // ============================================
     const getToken = () =>
         localStorage.getItem("adminToken") ||
         localStorage.getItem("token");
 
-    async function safeJson(response) {
+    // ============================================
+    // SAFE JSON PARSER
+    // ============================================
+    async function parseJsonSafe(response) {
         const text = await response.text();
 
         try {
             return JSON.parse(text);
-        } catch (e) {
+        } catch (err) {
             console.error("❌ Resposta inválida do backend:", text);
-            throw new Error("Backend não devolveu JSON válido");
+            throw new Error("Resposta do backend não é JSON válido");
         }
     }
 
+    // ============================================
+    // FETCH CENTRAL (ROBUSTO)
+    // ============================================
     window.apiFetch = async function (endpoint, options = {}) {
         const url = endpoint.startsWith("http")
             ? endpoint
-            : window.API + endpoint;
+            : `${window.API}${endpoint}`;
 
         const token = getToken();
 
         const config = {
             ...options,
             headers: {
-                "Content-Type": "application/json",
+                ...(options.body instanceof FormData
+                    ? {}
+                    : { "Content-Type": "application/json" }),
+
                 ...(token && { Authorization: `Bearer ${token}` }),
                 ...(options.headers || {})
             }
         };
 
-        if (options.body instanceof FormData) {
-            delete config.headers["Content-Type"];
-        }
-
         try {
-            const res = await fetch(url, config);
-            const data = await safeJson(res);
+            const response = await fetch(url, config);
+            const data = await parseJsonSafe(response);
 
-            if (!res.ok) {
+            if (!response.ok) {
                 throw new Error(data.error || data.message || "Erro na API");
             }
 
@@ -67,7 +68,7 @@
     };
 
     // ============================================
-    // MÉTODOS
+    // HELPERS HTTP
     // ============================================
     window.apiGet = (e) => window.apiFetch(e);
 
@@ -87,7 +88,7 @@
         window.apiFetch(e, { method: "DELETE" });
 
     // ============================================
-    // LOGIN NORMAL (IMPORTANTE)
+    // LOGIN NORMAL
     // ============================================
     window.fazerLogin = async function (email, senha) {
         try {
@@ -102,8 +103,8 @@
             }
 
             return { success: false, error: "Token não recebido" };
-        } catch (e) {
-            return { success: false, error: e.message };
+        } catch (err) {
+            return { success: false, error: err.message };
         }
     };
 
@@ -123,22 +124,23 @@
             }
 
             return { success: false, error: "Token não recebido" };
-        } catch (e) {
-            return { success: false, error: e.message };
+        } catch (err) {
+            return { success: false, error: err.message };
         }
     };
 
     // ============================================
-    // TESTE BACKEND
+    // TESTE DE CONEXÃO
     // ============================================
     window.testarConexao = async function () {
         try {
-            const res = await fetch(window.API + "/api");
+            const res = await fetch(`${window.API}/api`);
             const data = await res.json();
+
             console.log("✅ Backend OK:", data);
             return true;
-        } catch {
-            console.error("❌ Backend offline");
+        } catch (err) {
+            console.error("❌ Backend offline:", err.message);
             return false;
         }
     };
@@ -155,7 +157,7 @@
     };
 
     // ============================================
-    // INIT
+    // INIT AUTOMÁTICO
     // ============================================
     document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => window.testarConexao(), 800);
