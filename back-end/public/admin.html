@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="img/logo.png" type="image/x-icon">
   <title>Painel Administrativo - SchoolConnect</title>
   <script defer src="../front-end/utils.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -233,9 +234,9 @@
           Relatórios
         </a>
 
-        <a href="index.html"
-          class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <a href="#" onclick="showSection('noticias');return false;" id="nav-noticias"
+          class="nav-link flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-secondary transition text-sm">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
           </svg>
@@ -1650,6 +1651,13 @@
       </div>
     </div>
 
+    <!-- NOTÍCIAS -->
+    <section id="noticiasSection" class="hidden fade-in p-5">
+      <div class="bg-white rounded-2xl shadow p-6 text-center">
+        <p class="text-gray-500">Funcionalidade em desenvolvimento</p>
+      </div>
+    </section>
+
   </div>
 
 
@@ -1674,6 +1682,18 @@
       return fetch(API + url, { ...opts, headers: { ...(opts.headers || {}), ...(t ? { "Authorization": "Bearer " + t } : {}) } });
     }
 
+    // Função global para terminar sessão
+    window.terminarSessao = function() {
+      abrirModalConfirmacao("Terminar Sessão", "Tem a certeza que deseja terminar a sessão?", () => {
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminLogado");
+        localStorage.removeItem("token");
+        localStorage.removeItem("usuario");
+        toast("Sessão terminada com sucesso");
+        setTimeout(() => window.location.href = "login-admin.html", 1000);
+      });
+    };
+
     function fecharModal(id) {
       document.getElementById(id).style.display = "none";
       document.getElementById(id).classList.add("hidden");
@@ -1683,18 +1703,30 @@
       document.getElementById(id).classList.remove("hidden");
     }
 
+    // Função auxiliar para abrir modal de confirmação genérica
+    function abrirModalConfirmacao(titulo, mensagem, aoConfirmar) {
+      document.getElementById("modalTitulo").innerHTML = titulo;
+      document.getElementById("mensagemConfirmar").innerHTML = mensagem;
+      const confirmBtn = document.getElementById("btnConfirmarRemocao");
+      // Remove listeners antigos clonando e substituindo
+      const novoBtn = confirmBtn.cloneNode(true);
+      confirmBtn.parentNode.replaceChild(novoBtn, confirmBtn);
+      novoBtn.id = "btnConfirmarRemocao";
+      novoBtn.onclick = () => {
+        aoConfirmar();
+        fecharModalConfirmar();
+      };
+      abrirModal("modalConfirmar");
+    }
+
     function abrirModalEditarDisciplina() {
       const modal = document.getElementById("modalEditarDisciplina");
-
-
       modal.classList.remove("hidden");
       modal.classList.add("flex");
     }
 
     function abrirModalEditarTurma() {
       const modal = document.getElementById("modalEditarTurma");
-
-
       modal.classList.remove("hidden");
       modal.classList.add("flex");
     }
@@ -1711,7 +1743,7 @@
     }
 
     // NAVEGAÇÃO 
-    const SECS = ["dashboard", "users", "codigos", "feedbacks", "cad-aluno", "cad-curso", "cad-disciplina", "cad-turma", "avisos", "eventos", "reunioes", "relatorios"];
+    const SECS = ["dashboard", "users", "codigos", "feedbacks", "cad-aluno", "cad-curso", "cad-disciplina", "cad-turma", "avisos", "eventos", "reunioes", "relatorios", "noticias"];
     const TITULOS = {
       dashboard: ["Início", "Visão geral do sistema"],
       users: ["Utilizadores", "Gestão de todos os utilizadores"],
@@ -1725,15 +1757,18 @@
       eventos: ["Eventos", "Gerir eventos da escola"],
       reunioes: ["Reuniões", "Agendar e gerir reuniões"],
       relatorios: ["Relatórios", "Estatísticas e exportação"],
+      noticias: ["Notícias", "Funcionalidade em desenvolvimento"]
     };
 
     function showSection(sec) {
       SECS.forEach(s => {
-        document.getElementById(s + "Section").classList.add("hidden");
+        const secEl = document.getElementById(s + "Section");
+        if (secEl) secEl.classList.add("hidden");
         const n = document.getElementById("nav-" + s);
         if (n) { n.classList.remove("bg-secondary", "font-semibold"); n.classList.add("hover:bg-secondary"); }
       });
-      document.getElementById(sec + "Section").classList.remove("hidden");
+      const activeSec = document.getElementById(sec + "Section");
+      if (activeSec) activeSec.classList.remove("hidden");
       const an = document.getElementById("nav-" + sec);
       if (an) { an.classList.add("bg-secondary", "font-semibold"); an.classList.remove("hover:bg-secondary"); }
       document.getElementById("pageTitle").textContent = TITULOS[sec]?.[0] || sec;
@@ -1745,7 +1780,7 @@
       if (sec === "feedbacks") carregarFeedbacks();
       if (sec === "avisos") carregarAvisos();
       if (sec === "eventos") carregarEventos();
-      if (sec === "reunioes") { const badgeReunioes = document.getElementById("badgeReunioes"); badgeReunioes.classList.add("hidden"); carregarReunioes(); }
+      if (sec === "reunioes") { const badgeReunioes = document.getElementById("badgeReunioes"); if (badgeReunioes) badgeReunioes.classList.add("hidden"); carregarReunioes(); }
       if (sec === "relatorios") gerarRelatorio();
       if (sec === "cad-aluno") iniciarCadAluno();
       if (sec === "cad-curso") carregarCursos(true);
@@ -2311,7 +2346,7 @@
                   </div>
                 </td>
 
-              </tr>
+              </td>
             `).join("")}
           </tbody>
 
@@ -2690,8 +2725,9 @@
                         class="text-blue-600 hover:text-blue-800 font-semibold text-xs mr-3 transition">Editar</button>
                 <button onclick="removerCurso(${c.id},'${c.nome}')"
                         class="text-red-500 hover:text-red-700 font-semibold text-xs transition">Remover</button>
-              </td>
-            </tr>`).join("")}</tbody></table></div>`
+                           </tr>
+            `).join("")}</tbody>
+            </table></div>`
             : '<p class="text-gray-400 text-center py-4">Nenhum curso cadastrado</p>';
         }
       } catch { }
@@ -3593,7 +3629,7 @@ fileInputEvento.addEventListener("change", () => {
           <td class="p-3"><span class="px-2 py-1 rounded-full text-xs font-semibold ${u.perfil === "PROFESSOR" ? "bg-yellow-100 text-yellow-700" : u.perfil === "ENCARREGADO" ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-600"}">${u.perfil}</span></td>
           <td class="p-3 text-gray-600 text-sm">${u.email}</td>
           <td class="p-3 text-gray-600 text-sm">${u.telefone || "-"}</td>
-        </tr>`).join("")
+        </table>`).join("")
           : '<tr><td colspan="4" class="p-4 text-center text-gray-400">Sem resultados</td></tr>';
       } catch { toast("Erro ao gerar relatório", "erro"); }
     }
@@ -3612,17 +3648,6 @@ fileInputEvento.addEventListener("change", () => {
       e.stopPropagation(); document.getElementById("accountMenu").classList.toggle("hidden");
     });
     document.addEventListener("click", () => document.getElementById("accountMenu").classList.add("hidden"));
-
-    function terminarSessao() {
-      abrirModalConfirmacao("Terminar Sessão", "Tem a certeza que deseja terminar a sessão?", () => {
-        localStorage.removeItem("adminToken"); 
-        localStorage.removeItem("adminLogado");
-        localStorage.removeItem("token");
-        localStorage.removeItem("usuario");
-        toast("Sessão terminada com sucesso");
-        setTimeout(() => window.location.href = "login-admin.html", 1000);
-      });
-    }
 
     //  HELPERS DE UPLOAD 
     function fileToBase64(file) {
@@ -3730,6 +3755,7 @@ fileInputEvento.addEventListener("change", () => {
     setupUpload("imagemEventoFile", "labelEventoFile", "previewEvento", "uploadZoneEvento");
     setupUpload("fotoUser", "labelUserFile", "previewUser", "uploadZoneUser");
     setupUpload("editImagemAvisoFile", "editLabelAvisoFile", "editPreviewAviso", "editUploadZoneAviso");
+    setupUpload("editImagemEventoFile", "editLabelEventoFile", "editPreviewEvento", "editUploadZoneEvento");
 
     //  MENU RESPONSIVO 
     const sidebar = document.getElementById('sidebar');
