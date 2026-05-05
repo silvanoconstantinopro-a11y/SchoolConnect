@@ -167,70 +167,137 @@
       </div>
     </div>
 
-    <script>
-      
+    
+      <script>
+// Toggle password visibility
+document.getElementById("toggleSenha").addEventListener("click", () => {
+    const input = document.getElementById("adminSenha");
+    input.type = input.type === "password" ? "text" : "password";
+});
 
-      document.getElementById("toggleSenha").addEventListener("click", () => {
-        const input = document.getElementById("adminSenha");
-        input.type = input.type === "password" ? "text" : "password";
-      });
+// Enter key support
+document.getElementById("adminSenha").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") fazerLoginAdmin();
+});
+document.getElementById("adminUser").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") fazerLoginAdmin();
+});
 
-      document.getElementById("adminSenha").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") fazerLoginAdmin();
-      });
+// Login button
+document.getElementById("btnAdmin").addEventListener("click", fazerLoginAdmin);
 
-      document
-        .getElementById("btnAdmin")
-        .addEventListener("click", fazerLoginAdmin);
+function mostrarErro(msg) {
+    const errorBox = document.getElementById("errorBox");
+    const errorMsg = document.getElementById("errorMsg");
+    errorMsg.textContent = msg;
+    errorBox.classList.remove("hidden");
+}
 
-      function mostrarErro(msg) {
-        document.getElementById("errorMsg").textContent = msg;
-        document.getElementById("errorBox").classList.remove("hidden");
-      }
+function esconderErro() {
+    document.getElementById("errorBox").classList.add("hidden");
+}
 
-      async function fazerLoginAdmin() {
-        const utilizador = document.getElementById("adminUser").value.trim();
-        const senha = document.getElementById("adminSenha").value;
+async function fazerLoginAdmin() {
+    esconderErro();
+    
+    const utilizador = document.getElementById("adminUser").value.trim();
+    const senha = document.getElementById("adminSenha").value;
 
-        if (!utilizador || !senha) {
-          mostrarErro("Preencha o utilizador e a palavra-passe.");
-          return;
-        }
+    if (!utilizador || !senha) {
+        mostrarErro("Preencha o utilizador e a palavra-passe.");
+        return;
+    }
 
-        const btn = document.getElementById("btnAdmin");
-        const text = document.getElementById("btnAdminText");
-        btn.disabled = true;
-        text.textContent = "A verificar...";
+    const btn = document.getElementById("btnAdmin");
+    const text = document.getElementById("btnAdminText");
+    btn.disabled = true;
+    text.textContent = "A verificar...";
 
-        try {
-          const res = await fetch(API + "/api/admin/login", {
+    try {
+        // Usar a URL correta (porta 3000)
+        const API_URL = window.location.origin === 'file://' 
+            ? 'http://localhost:3000' 
+            : window.location.origin;
+        
+        const response = await fetch(`${API_URL}/api/admin/login`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ utilizador, senha }),
-          });
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ utilizador, senha })
+        });
 
-          const data = await res.json();
-
-          if (!res.ok) throw new Error(data.error || "Credenciais inválidas");
-
-          // Guardar token admin
-          localStorage.setItem("adminToken", data.token);
-          localStorage.setItem("adminLogado", "true");
-          
-          // Limpar tokens de usuário regular para evitar conflitos
-          localStorage.removeItem("token");
-          localStorage.removeItem("usuario");
-
-          toast("Login realizado com sucesso");
-          setTimeout(() => window.location.href = "admin.html", 1000);
-        } catch (err) {
-          mostrarErro(err.message);
-        } finally {
-          btn.disabled = false;
-          text.textContent = "Entrar como Administrador";
+        // Verificar se a resposta é JSON
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error("Resposta não é JSON:", text.substring(0, 200));
+            throw new Error("Servidor não respondeu com JSON. Verifique se o backend está a correr.");
         }
-      }
-    </script>
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || data.message || "Credenciais inválidas");
+        }
+
+        if (data.token) {
+            // Guardar token de admin
+            localStorage.setItem("adminToken", data.token);
+            localStorage.setItem("adminLogado", "true");
+            
+            // Limpar tokens de usuário normal
+            localStorage.removeItem("token");
+            localStorage.removeItem("usuario");
+            
+            // Mostrar sucesso e redirecionar
+            mostrarToast("Login realizado com sucesso!");
+            
+            setTimeout(() => {
+                window.location.href = "admin.html";
+            }, 1000);
+        } else {
+            throw new Error("Token não recebido do servidor");
+        }
+    } catch (err) {
+        console.error("Erro no login admin:", err);
+        mostrarErro(err.message || "Erro ao conectar ao servidor. Verifique se o backend está a correr na porta 3000.");
+    } finally {
+        btn.disabled = false;
+        text.textContent = "Entrar como Administrador";
+    }
+}
+
+// Função auxiliar para mostrar toast
+function mostrarToast(mensagem, tipo = "sucesso") {
+    const toast = document.createElement("div");
+    toast.textContent = mensagem;
+    toast.className = `fixed bottom-5 right-5 z-50 px-4 py-2 rounded-lg shadow-lg text-white text-sm font-semibold ${
+        tipo === "sucesso" ? "bg-green-600" : "bg-red-600"
+    } animate-bounce`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+// Testar conexão ao carregar a página
+document.addEventListener("DOMContentLoaded", async () => {
+    const API_URL = window.location.origin === 'file://' 
+        ? 'http://localhost:3000' 
+        : window.location.origin;
+    
+    try {
+        const response = await fetch(`${API_URL}/api/health`);
+        if (response.ok) {
+            console.log("✅ Backend conectado em", API_URL);
+        } else {
+            console.warn("⚠️ Backend pode não estar a responder em", API_URL);
+        }
+    } catch (error) {
+        console.warn("⚠️ Não foi possível conectar ao backend:", error.message);
+    }
+});
+</script>
+    
     <script src="conectar_backend.js"></script>
   </body>
 </html>
