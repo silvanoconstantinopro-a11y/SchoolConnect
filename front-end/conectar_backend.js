@@ -1,12 +1,12 @@
-// conectar_backend.js - Versão DEFINITIVA (sem erros)
+// conectar_backend.js - Versão CORRIGIDA (porta 3000)
 (function () {
     console.log("🚀 SchoolConnect: Inicializando conector do backend...");
 
     // ============================================
-    // 1. CONFIGURAÇÃO AUTOMÁTICA DA URL (NUNCA FALHA)
+    // 1. CONFIGURAÇÃO AUTOMÁTICA DA URL (PORTA 3000)
     // ============================================
     const getBackendURL = () => {
-        // Se já estiver definido globalmente, usa
+        // Se já estiver definido, usa
         if (window.__BACKEND_URL__) return window.__BACKEND_URL__;
         
         const host = window.location.hostname;
@@ -16,33 +16,36 @@
             return 'https://schoolconnect-0ud2.onrender.com';
         }
         
-        // Localhost (desenvolvimento)
+        // Localhost (desenvolvimento) - PORTA 3000
         if (host === 'localhost' || host === '127.0.0.1') {
-            return 'http://localhost:3002';
+            // Se a página veio da porta 3000, usa a mesma origem
+            if (window.location.port === '3000') {
+                return window.location.origin;
+            }
+            return 'http://localhost:3000';  // <--- PORTACORRIGIDA: 3000
         }
         
-        // Fallback: mesma origem + porta 3002
-        return `${window.location.protocol}//${host}:3002`;
+        return window.location.origin;
     };
 
     const BACKEND_URL = getBackendURL();
     
-    // DEFINE TODAS AS VARIÁVEIS QUE OS DIFERENTES FICHEIROS USAM
-    window.API = BACKEND_URL;           // Para dashboard-professor.html, dashboard-encarregado.html
-    window.API_URL = BACKEND_URL;       // Para login.html, registro.html, index.html
-    window.BACKEND_URL = BACKEND_URL;   // Para consistência
-    window.__BACKEND_URL__ = BACKEND_URL; // Cache
+    // Define todas as variáveis
+    window.API = BACKEND_URL;
+    window.API_URL = BACKEND_URL;
+    window.BACKEND_URL = BACKEND_URL;
+    window.__BACKEND_URL__ = BACKEND_URL;
     
-    // WebSocket URL
+    // WebSocket URL (porta 3000)
     window.WS_URL = window.location.protocol === "https:"
         ? BACKEND_URL.replace("https", "wss")
         : BACKEND_URL.replace("http", "ws");
     
-    console.log(`📍 API: ${window.API}`);
-    console.log(`🔌 WS: ${window.WS_URL}`);
+    console.log(`📍 API Configurada: ${window.API}`);
+    console.log(`🔌 WS Configurado: ${window.WS_URL}`);
 
     // ============================================
-    // 2. FUNÇÃO DE FETCH ROBUSTA (compatível com todos)
+    // 2. FUNÇÃO DE FETCH ROBUSTA
     // ============================================
     const getToken = () => {
         return localStorage.getItem('adminToken') || localStorage.getItem('token') || null;
@@ -61,25 +64,29 @@
             }
         };
         
-        // Se for FormData, remove o Content-Type para o browser definir corretamente
+        // Se for FormData, remove o Content-Type
         if (options.body instanceof FormData) {
             delete config.headers['Content-Type'];
         }
         
         try {
+            console.log(`📡 Requisição: ${url}`);
             const response = await fetch(url, config);
             
-            // Tenta fazer parse do JSON
-            let data = {};
+            // Verifica se a resposta é HTML (erro comum)
             const contentType = response.headers.get('content-type');
-            if (contentType && contentType.includes('application/json')) {
-                try {
-                    data = await response.json();
-                } catch (e) {
-                    data = { message: await response.text() };
-                }
-            } else {
-                data = { message: await response.text() };
+            if (contentType && contentType.includes('text/html')) {
+                throw new Error(`Servidor retornou HTML. Verifique se o backend está a correr em ${window.API}`);
+            }
+            
+            // Tenta fazer parse do JSON
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                const text = await response.text();
+                console.error('Resposta não é JSON:', text.substring(0, 200));
+                throw new Error(`Resposta inválida do servidor. Esperado JSON.`);
             }
             
             if (!response.ok) {
@@ -108,72 +115,99 @@
     });
     
     // ============================================
-    // 3. FUNÇÕES DE LOGIN (compatíveis com todos os ficheiros)
+    // 3. FUNÇÃO DE LOGIN ADMIN
     // ============================================
-    window.fazerLogin = async function(email, senha, tipo = 'usuario') {
-        const endpoint = tipo === 'admin' ? '/api/admin/login' : '/api/login';
+    window.fazerLoginAdmin = async function(utilizador, senha) {
+        console.log(`🔐 Login admin em: ${window.API}/api/admin/login`);
         
         try {
-            const data = await window.apiFetch(endpoint, {
+            const response = await fetch(`${window.API}/api/admin/login`, {
                 method: 'POST',
-                body: JSON.stringify({ 
-                    email: email, 
-                    senha: senha,
-                    ...(tipo === 'admin' && { utilizador: email })
-                })
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ utilizador, senha })
             });
             
+            // Verifica se a resposta é HTML
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+                const text = await response.text();
+                console.error('Resposta HTML:', text.substring(0, 200));
+                throw new Error(`Backend não está a responder corretamente. Verifique se o servidor está a correr em ${window.API}`);
+            }
+            
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                throw new Error('Resposta inválida do servidor. O endpoint /api/admin/login pode não existir.');
+            }
+            
+            if (!response.ok) {
+                throw new Error(data.error || data.message || 'Credenciais inválidas');
+            }
+            
             if (data.token) {
-                if (tipo === 'admin') {
-                    localStorage.setItem('adminToken', data.token);
-                    localStorage.setItem('adminLogado', 'true');
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('usuario');
-                } else {
-                    localStorage.setItem('token', data.token);
-                    if (data.usuario) {
-                        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-                    }
-                    localStorage.removeItem('adminToken');
-                    localStorage.removeItem('adminLogado');
-                }
+                localStorage.setItem('adminToken', data.token);
+                localStorage.setItem('adminLogado', 'true');
+                localStorage.removeItem('token');
+                localStorage.removeItem('usuario');
                 return { success: true, data };
             }
             
-            return { success: false, error: data.message || 'Login falhou' };
+            return { success: false, error: 'Token não recebido' };
         } catch (error) {
+            console.error('Erro no login admin:', error);
             return { success: false, error: error.message };
         }
     };
     
     // ============================================
-    // 4. FUNÇÕES DE SESSÃO
+    // 4. FUNÇÃO DE LOGIN NORMAL
     // ============================================
-    window.estaLogado = function() {
-        return !!(localStorage.getItem('token') || localStorage.getItem('adminToken'));
-    };
-    
-    window.getUsuarioLogado = function() {
-        const adminToken = localStorage.getItem('adminToken');
-        if (adminToken) {
-            return { perfil: 'ADMIN', nome: 'Administrador' };
-        }
+    window.fazerLogin = async function(email, senha) {
+        console.log(`🔐 Login em: ${window.API}/api/login`);
         
-        const usuarioStr = localStorage.getItem('usuario');
-        if (usuarioStr) {
-            try {
-                return JSON.parse(usuarioStr);
-            } catch (e) {
-                return null;
+        try {
+            const response = await fetch(`${window.API}/api/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, senha })
+            });
+            
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('text/html')) {
+                throw new Error(`Backend não está a responder corretamente.`);
             }
-        }
-        return null;
-    };
-    
-    window.sair = function(redirectTo = 'login.html') {
-        localStorage.clear();
-        if (redirectTo) {
-            window.location.href = redirectTo;
+            
+            let data;
+            try {
+                data = await response.json();
+            } catch (e) {
+                throw new Error('Resposta inválida do servidor.');
+            }
+            
+            if (!response.ok) {
+                throw new Error(data.error || data.message || 'Credenciais inválidas');
+            }
+            
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                if (data.usuario) {
+                    localStorage.setItem('usuario', JSON.stringify(data.usuario));
+                }
+                localStorage.removeItem('adminToken');
+                localStorage.removeItem('adminLogado');
+                return { success: true, data };
+            }
+            
+            return { success: false, error: 'Token não recebido' };
+        } catch (error) {
+            console.error('Erro no login:', error);
+            return { success: false, error: error.message };
         }
     };
     
@@ -181,17 +215,27 @@
     // 5. TESTE DE CONEXÃO
     // ============================================
     window.testarConexao = async function() {
+        console.log(`🔍 Testando conexão com ${window.API}...`);
+        
         try {
-            const response = await fetch(`${window.API}/api/health`);
+            const response = await fetch(`${window.API}/api/health`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            
             if (response.ok) {
-                console.log('✅ Backend conectado!');
+                const data = await response.json();
+                console.log('✅ Backend conectado!', data);
                 return true;
             }
-            const fallback = await fetch(`${window.API}/api`);
-            if (fallback.ok) {
-                console.log('✅ Backend conectado!');
+            
+            // Fallback: tenta /api
+            const fallbackResponse = await fetch(`${window.API}/api`);
+            if (fallbackResponse.ok) {
+                console.log('✅ Backend conectado (via /api)!');
                 return true;
             }
+            
             throw new Error('Backend não responde');
         } catch (error) {
             console.error('❌ Backend offline:', error.message);
@@ -200,139 +244,34 @@
     };
     
     // ============================================
-    // 6. TOAST GLOBAL (compatível com utils.js)
+    // 6. VERIFICAR SESSÃO ADMIN
     // ============================================
-    window.toast = function(mensagem, tipo = 'sucesso') {
-        // Verifica se já existe um toast personalizado
-        if (typeof window.mostrarToast === 'function') {
-            window.mostrarToast(mensagem, tipo);
-            return;
-        }
+    window.verificarSessaoAdmin = function() {
+        const adminToken = localStorage.getItem('adminToken');
+        const adminLogado = localStorage.getItem('adminLogado');
         
-        // Cria toast temporário
-        const toast = document.createElement('div');
-        toast.textContent = mensagem;
-        toast.className = `fixed bottom-5 right-5 z-50 px-4 py-2 rounded-lg shadow-lg text-white text-sm font-semibold ${
-            tipo === 'sucesso' ? 'bg-green-600' : tipo === 'erro' ? 'bg-red-600' : 'bg-blue-600'
-        } animate-bounce`;
-        document.body.appendChild(toast);
-        setTimeout(() => toast.remove(), 3000);
-    };
-    
-    // ============================================
-    // 7. CONFIGURAR WEBSOCKET (se necessário)
-    // ============================================
-    let ws = null;
-    let wsCallbacks = {};
-    
-    window.initWebSocket = function(onMessageCallback) {
-        const token = getToken();
-        if (!token) {
-            console.warn('⚠️ Sem token, não é possível conectar WebSocket');
-            return null;
-        }
-        
-        ws = new WebSocket(`${window.WS_URL}?token=${token}`);
-        
-        ws.onopen = () => {
-            console.log('🔌 WebSocket conectado');
-            if (wsCallbacks.onopen) wsCallbacks.onopen();
-        };
-        
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                if (onMessageCallback) onMessageCallback(data);
-                if (wsCallbacks.onmessage) wsCallbacks.onmessage(data);
-            } catch (e) {
-                console.error('Erro ao processar mensagem WS:', e);
+        if (!adminToken || adminLogado !== 'true') {
+            if (window.location.pathname.includes('admin.html') && 
+                !window.location.pathname.includes('login-admin.html')) {
+                window.location.href = 'login-admin.html';
             }
-        };
-        
-        ws.onclose = () => {
-            console.log('🔌 WebSocket desconectado');
-            if (wsCallbacks.onclose) wsCallbacks.onclose();
-            // Tenta reconectar após 5 segundos
-            setTimeout(() => window.initWebSocket(onMessageCallback), 5000);
-        };
-        
-        ws.onerror = (error) => {
-            console.error('❌ WebSocket erro:', error);
-            if (wsCallbacks.onerror) wsCallbacks.onerror(error);
-        };
-        
-        return ws;
-    };
-    
-    window.enviarWS = function(payload) {
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(payload));
-            return true;
+            return false;
         }
-        return false;
-    };
-    
-    window.onWS = function(event, callback) {
-        wsCallbacks[event] = callback;
+        return true;
     };
     
     // ============================================
-    // 8. AUTO-INICIALIZAÇÃO DE FORMULÁRIOS DE LOGIN
+    // 7. AUTO-INICIALIZAÇÃO
     // ============================================
     document.addEventListener('DOMContentLoaded', () => {
-        // Procura por formulários de login em todas as páginas
-        const loginForms = document.querySelectorAll('#loginForm, .login-form, form[action*="login"]');
+        setTimeout(() => {
+            window.testarConexao();
+        }, 1000);
         
-        loginForms.forEach(form => {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const emailInput = form.querySelector('input[type="email"], input[name="email"]');
-                const senhaInput = form.querySelector('input[type="password"], input[name="password"]');
-                
-                if (!emailInput || !senhaInput) return;
-                
-                const email = emailInput.value;
-                const senha = senhaInput.value;
-                const submitBtn = form.querySelector('button[type="submit"], button:not([type="button"])');
-                
-                if (!email || !senha) {
-                    window.toast('Preencha email e palavra-passe', 'erro');
-                    return;
-                }
-                
-                if (submitBtn) {
-                    const originalText = submitBtn.textContent;
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'A entrar...';
-                    
-                    const isAdmin = window.location.pathname.includes('admin') || form.id === 'adminForm';
-                    const result = await window.fazerLogin(email, senha, isAdmin ? 'admin' : 'usuario');
-                    
-                    if (result.success) {
-                        window.toast('Login realizado com sucesso!');
-                        
-                        // Redireciona baseado no perfil
-                        if (isAdmin || result.data.usuario?.perfil === 'ADMIN') {
-                            setTimeout(() => window.location.href = 'admin.html', 500);
-                        } else if (result.data.usuario?.perfil === 'PROFESSOR') {
-                            setTimeout(() => window.location.href = 'dashboard-professor.html', 500);
-                        } else if (result.data.usuario?.perfil === 'ENCARREGADO') {
-                            setTimeout(() => window.location.href = 'dashboard-encarregado.html', 500);
-                        } else {
-                            setTimeout(() => window.location.href = 'index.html', 500);
-                        }
-                    } else {
-                        window.toast(result.error, 'erro');
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = originalText;
-                    }
-                }
-            });
-        });
-        
-        // Testa conexão com backend
-        setTimeout(() => window.testarConexao(), 1000);
+        if (window.location.pathname.includes('admin.html') && 
+            !window.location.pathname.includes('login-admin.html')) {
+            window.verificarSessaoAdmin();
+        }
     });
     
     console.log('✅ SchoolConnect: Backend connector pronto!');
