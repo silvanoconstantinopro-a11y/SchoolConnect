@@ -5,10 +5,10 @@
  */
 
 import "dotenv/config";
-import { readFileSync } from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
 import Database from "better-sqlite3";
+import fs from "fs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -21,7 +21,6 @@ console.log(`🔍  Banco de dados: ${dbPath}`);
 
 // Criar diretório se não existir
 const dbDir = path.dirname(dbPath);
-const fs = await import("fs");
 if (!fs.existsSync(dbDir) && dbDir !== ".") {
   fs.mkdirSync(dbDir, { recursive: true });
 }
@@ -187,12 +186,15 @@ const verificarAdmin = db.prepare("SELECT COUNT(*) as count FROM usuarios WHERE 
 
 if (verificarAdmin.count === 0) {
   console.log("📋  Criando utilizador admin padrão...");
+  
+  // Importar bcrypt dinamicamente
   const bcrypt = await import("bcrypt");
   const senhaHash = await bcrypt.hash(process.env.ADMIN_SENHA || "schoolconnect2026", 10);
+  const agora = new Date().toISOString();
   
   const stmt = db.prepare(`
-    INSERT INTO usuarios (nome, email, senha, telefone, perfil)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO usuarios (nome, email, senha, telefone, perfil, criadoEm, atualizadoEm)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `);
   
   stmt.run(
@@ -200,9 +202,13 @@ if (verificarAdmin.count === 0) {
     "admin@schoolconnect.com",
     senhaHash,
     "+244 900 000 000",
-    "ADMIN"
+    "ADMIN",
+    agora,
+    agora
   );
-  console.log("✅ Admin criado");
+  console.log("✅ Admin criado com sucesso");
+} else {
+  console.log("✅ Admin já existe");
 }
 
 // Criar índices para performance
