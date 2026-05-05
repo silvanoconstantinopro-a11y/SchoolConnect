@@ -1,46 +1,34 @@
-import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 
-const SECRET_KEY = process.env.SECRET_KEY || "schoolconnect-super-secret-key-change-in-production";
-const EXPIRATION = process.env.EXPIRATION_TIME || "24h";
+const SALT_ROUNDS = 12;
 
-export const JWT = {
-  gerarToken(payload) {
-    if (!payload || !payload.id) {
-      throw new Error("Payload inválido para geração de token.");
-    }
-    
-    return jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION });
-  },
-  
-  verificarToken(token) {
-    if (!token || typeof token !== "string") {
-      throw new Error("Token não fornecido.");
-    }
-    
-    try {
-      const decoded = jwt.verify(token, SECRET_KEY);
-      
-      if (!decoded.id || !decoded.perfil) {
-        throw new Error("Token mal formatado.");
-      }
-      
-      return decoded;
-    } catch (err) {
-      if (err.name === "TokenExpiredError") {
-        throw new Error("Token expirado. Faça login novamente.");
-      }
-      if (err.name === "JsonWebTokenError") {
-        throw new Error("Token inválido.");
-      }
-      throw err;
-    }
-  },
-  
-  decodificarToken(token) {
-    try {
-      return jwt.decode(token);
-    } catch {
-      return null;
-    }
+/**
+ * Gera hash de uma senha
+ * @param {string} senha - Senha em texto plano
+ * @returns {Promise<string>} - Hash da senha
+ */
+export async function hashSenha(senha) {
+  if (!senha || typeof senha !== "string") {
+    throw new Error("Senha inválida.");
   }
-};
+  
+  if (senha.length < 6) {
+    throw new Error("A senha deve ter pelo menos 6 caracteres.");
+  }
+  
+  return bcrypt.hash(senha, SALT_ROUNDS);
+}
+
+/**
+ * Compara senha com hash
+ * @param {string} senha - Senha em texto plano
+ * @param {string} hash - Hash armazenado
+ * @returns {Promise<boolean>} - true se coincidir
+ */
+export async function compareSenha(senha, hash) {
+  if (!senha || !hash) {
+    return false;
+  }
+  
+  return bcrypt.compare(senha, hash);
+}
