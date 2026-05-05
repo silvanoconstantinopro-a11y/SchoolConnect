@@ -44,6 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 📁 FRONT-END (IMPORTANTE)
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/img", express.static(path.join(process.cwd(), "img")));
 
 // 📡 API TESTE
 app.get("/api", (_, res) => {
