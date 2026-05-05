@@ -1,14 +1,22 @@
 let acaoConfirmada = null;
 
+// 🔥 abrir modal de confirmação
 function abrirModalConfirmacao(titulo, mensagem, callback) {
-  document.getElementById("modalTitulo").innerText = titulo;
-  document.getElementById("mensagemConfirmar").innerHTML = mensagem;
+  const modalTitulo = document.getElementById("modalTitulo");
+  const msg = document.getElementById("mensagemConfirmar");
+  const btn = document.getElementById("btnConfirmarRemocao");
+
+  if (!modalTitulo || !msg || !btn) return;
+
+  modalTitulo.innerText = titulo;
+  msg.innerHTML = mensagem;
 
   acaoConfirmada = callback;
 
-  const btn = document.getElementById("btnConfirmarRemocao");
   btn.onclick = () => {
-    if (acaoConfirmada) acaoConfirmada();
+    if (typeof acaoConfirmada === "function") {
+      acaoConfirmada();
+    }
     fecharModalConfirmar();
   };
 
@@ -20,9 +28,16 @@ function fecharModalConfirmar() {
   acaoConfirmada = null;
 }
 
+// 🔔 modal de notificação
 function abrirModalNotificacao(titulo, mensagem) {
-  document.getElementById("modalNotificacaoTitulo").innerText = titulo;
-  document.getElementById("mensagemNotificacao").innerHTML = mensagem;
+  const tituloEl = document.getElementById("modalNotificacaoTitulo");
+  const msgEl = document.getElementById("mensagemNotificacao");
+
+  if (!tituloEl || !msgEl) return;
+
+  tituloEl.innerText = titulo;
+  msgEl.innerHTML = mensagem;
+
   abrirModal("modalNotificacao");
 }
 
@@ -30,22 +45,31 @@ function fecharModalNotificacao() {
   fecharModal("modalNotificacao");
 }
 
+// 📦 controle genérico de modais
 function abrirModal(id) {
-  document.getElementById(id).style.display = "flex";
-  document.getElementById(id).classList.remove("hidden");
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.style.display = "flex";
+  el.classList.remove("hidden");
 }
 
 function fecharModal(id) {
-  document.getElementById(id).style.display = "none";
-  document.getElementById(id).classList.add("hidden");
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  el.style.display = "none";
+  el.classList.add("hidden");
 }
 
+// 🔥 toast mais seguro
 function toast(mensagem) {
   const div = document.createElement("div");
+
   div.textContent = mensagem;
 
   div.className =
-    "fixed bottom-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce";
+    "fixed bottom-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce z-50";
 
   document.body.appendChild(div);
 
