@@ -1,143 +1,55 @@
-/**
- * utils.js
- * Funções utilitárias compartilhadas entre todas as páginas
- */
+let acaoConfirmada = null;
 
-// API Base URL
-const API = "https://schoolconnect-0ud2.onrender.com";
-
-// Modal de Confirmação
-function abrirModalConfirmacao(titulo, mensagem, onConfirm) {
-  const modal = document.getElementById("modalConfirmar");
-  if (!modal) return;
-
-  document.getElementById("modalTitulo").textContent = titulo;
+function abrirModalConfirmacao(titulo, mensagem, callback) {
+  document.getElementById("modalTitulo").innerText = titulo;
   document.getElementById("mensagemConfirmar").innerHTML = mensagem;
-  
-  const btnConfirmar = document.getElementById("btnConfirmarRemocao");
-  btnConfirmar.onclick = () => {
+
+  acaoConfirmada = callback;
+
+  const btn = document.getElementById("btnConfirmarRemocao");
+  btn.onclick = () => {
+    if (acaoConfirmada) acaoConfirmada();
     fecharModalConfirmar();
-    if (onConfirm) onConfirm();
   };
-  
-  modal.classList.remove("hidden");
-  modal.style.display = "flex";
+
+  abrirModal("modalConfirmar");
 }
 
 function fecharModalConfirmar() {
-  const modal = document.getElementById("modalConfirmar");
-  if (modal) {
-    modal.classList.add("hidden");
-    modal.style.display = "none";
-  }
+  fecharModal("modalConfirmar");
+  acaoConfirmada = null;
 }
 
-// Modal de Notificação
 function abrirModalNotificacao(titulo, mensagem) {
-  const modal = document.getElementById("modalNotificacao");
-  if (!modal) {
-    alert(mensagem);
-    return;
-  }
-
-  document.getElementById("modalNotificacaoTitulo").textContent = titulo;
+  document.getElementById("modalNotificacaoTitulo").innerText = titulo;
   document.getElementById("mensagemNotificacao").innerHTML = mensagem;
-  
-  modal.classList.remove("hidden");
-  modal.style.display = "flex";
+  abrirModal("modalNotificacao");
 }
 
 function fecharModalNotificacao() {
-  const modal = document.getElementById("modalNotificacao");
-  if (modal) {
-    modal.classList.add("hidden");
-    modal.style.display = "none";
-  }
+  fecharModal("modalNotificacao");
 }
 
-// Função para obter token
-function getToken() {
-  return localStorage.getItem("token") || localStorage.getItem("adminToken") || "";
+function abrirModal(id) {
+  document.getElementById(id).style.display = "flex";
+  document.getElementById(id).classList.remove("hidden");
 }
 
-// Função para fazer fetch com autenticação
-async function apiFetch(url, opts = {}) {
-  const token = getToken();
-  const headers = {
-    "Content-Type": "application/json",
-    ...(opts.headers || {}),
-    ...(token ? { "Authorization": "Bearer " + token } : {})
-  };
-  
-  // Se for FormData, não definir Content-Type
-  if (opts.body instanceof FormData) {
-    delete headers["Content-Type"];
-  }
-  
-  return fetch(API + url, { ...opts, headers });
+function fecharModal(id) {
+  document.getElementById(id).style.display = "none";
+  document.getElementById(id).classList.add("hidden");
 }
 
-// Converter arquivo para Base64
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    if (file.size > 5 * 1024 * 1024) {
-      reject(new Error("Arquivo demasiado grande. Máximo 5MB."));
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = e => resolve(e.target.result);
-    reader.onerror = () => reject(new Error("Erro ao ler ficheiro"));
-    reader.readAsDataURL(file);
-  });
-}
+function toast(mensagem) {
+  const div = document.createElement("div");
+  div.textContent = mensagem;
 
-// Toast notification
-function toast(msg, tipo = "sucesso") {
-  const toastDiv = document.getElementById("toast");
-  if (!toastDiv) return;
-  
-  const inner = document.getElementById("toastInner");
-  inner.className = `flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in ${
-    tipo === "sucesso" ? "bg-green-600" : tipo === "erro" ? "bg-red-600" : "bg-blue-600"
-  }`;
-  
-  document.getElementById("toastIcon").textContent = tipo === "sucesso" ? "✓" : tipo === "erro" ? "✕" : "ℹ";
-  document.getElementById("toastMsg").textContent = msg;
-  
-  toastDiv.classList.remove("hidden");
-  setTimeout(() => toastDiv.classList.add("hidden"), 3500);
-}
+  div.className =
+    "fixed bottom-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg animate-bounce";
 
-// Terminar sessão
-function terminarSessao() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("usuario");
-  localStorage.removeItem("adminToken");
-  localStorage.removeItem("adminLogado");
-  window.location.href = "index.html";
-}
+  document.body.appendChild(div);
 
-// Validação de email
-function validarEmail(email) {
-  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return re.test(email);
-}
-
-// Formatar data
-function formatarData(data) {
-  return new Date(data).toLocaleDateString("pt-PT", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric"
-  });
-}
-
-// Verificar se está logado
-function verificarAutenticacao() {
-  const token = getToken();
-  if (!token) {
-    window.location.href = "login.html";
-    return false;
-  }
-  return true;
+  setTimeout(() => {
+    div.remove();
+  }, 3000);
 }

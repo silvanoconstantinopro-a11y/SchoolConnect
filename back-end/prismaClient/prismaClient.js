@@ -1,39 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import "dotenv/config";
+import {PrismaBetterSqlite3} from '@prisma/adapter-better-sqlite3';
+import {PrismaClient} from '../generated/prisma/client.js';
 
-// Criar instância única
-const prisma = new PrismaClient({
-  log: ["error", "warn"],
-});
+const conexaobanco = `${process.env.DATABASE_URL}`;
 
-// Função de conexão
-async function connect() {
-  try {
-    await prisma.$connect();
-    console.log("✅ Banco de dados conectado");
-  } catch (error) {
-    console.error("❌ Erro ao conectar:", error.message);
-    process.exit(1);
-  }
-}
 
-// Função de desconexão
-async function disconnect() {
-  await prisma.$disconnect();
-  console.log("✅ Banco desconectado");
-}
+const adapter = new PrismaBetterSqlite3({ url: conexaobanco });
+const prisma = new PrismaClient({ adapter });
 
-// Tratamento de sinais
-process.on("SIGINT", async () => {
-  await disconnect();
-  process.exit(0);
-});
-
-process.on("SIGTERM", async () => {
-  await disconnect();
-  process.exit(0);
-});
-
-// Conectar
-connect();
-
-export { prisma, disconnect };
+export {prisma};

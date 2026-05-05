@@ -1,217 +1,95 @@
-/**
- * controllerMensagem.js
- * Controlador para gestão de mensagens
- */
 import { ServiceMensagem } from "../service/serviceMensagem.js";
 import { enviarMensagemWS } from "../websocket.js";
-import { logger } from "../utils/logger.js";
-import { deleteFile } from "../middlewares/upload.js";
 
 export class ControllerMensagem {
-  
   static async criarMensagem(req, res) {
     try {
       const file = req.file;
-      
-      const msg = await ServiceMensagem.criarMensagem({
+      const payload = {
         ...req.body,
-        remetenteId: req.usuario.id,
         arquivoNome: file?.originalname,
         arquivoTipo: file?.mimetype,
         arquivoTamanho: file?.size,
         arquivoUrl: file ? `/uploads/arquivos/${file.filename}` : undefined,
-      });
-      
-      // Notificar destinatário via WebSocket
-      await enviarMensagemWS(msg.destinatarioId, { 
-        type: "nova_mensagem", 
-        mensagem: {
-          id: msg.id,
-          conteudo: msg.conteudo,
-          remetente: msg.remetente,
-          criadoEm: msg.criadoEm,
-          temArquivo: !!msg.arquivoUrl
-        }
-      });
-      
-      logger.info(`Mensagem criada: ${msg.id} de ${req.usuario.id} para ${msg.destinatarioId}`);
-      
-      return res.status(201).json({
-        success: true,
-        message: "Mensagem enviada com sucesso",
-        data: msg
-      });
+      };
+
+      const mensagem = await ServiceMensagem.criarMensagem(payload);
+      return res.status(201).json(mensagem);
     } catch (error) {
-      // Se houve upload e deu erro, deletar arquivo
-      if (req.file) {
-        deleteFile(req.file.filename);
-      }
-      
-      logger.error(`Erro ao criar mensagem: ${error.message}`);
-      return res.status(400).json({
-        success: false,
-        error: error.message,
-        code: "CREATE_MENSAGEM_ERROR"
-      });
+      return res.status(400).json({ error: error.message });
     }
   }
 
   static async listarMensagens(req, res) {
     try {
-      const usuarioId = req.query.usuarioId || req.usuario.id;
-      const { contatoId, search, dataInicio, dataFim, limit, offset } = req.query;
-      
-      const filtros = { contatoId, search, dataInicio, dataFim, limit, offset };
-      const mensagens = await ServiceMensagem.listarMensagens(usuarioId, filtros);
-      
-      return res.json({
-        success: true,
-        data: mensagens,
-        count: mensagens.length,
-        filters: filtros
-      });
+      const { usuarioId } = req.query;
+      const mensagens = await ServiceMensagem.listarMensagens(usuarioId);
+      return res.status(200).json(mensagens);
     } catch (error) {
-      logger.error(`Erro ao listar mensagens: ${error.message}`);
-      return res.status(500).json({
-        success: false,
-        error: error.message,
-        code: "LIST_MENSAGENS_ERROR"
-      });
-    }
-  }
-
-  static async listarConversas(req, res) {
-    try {
-      const usuarioId = req.usuario.id;
-      const conversas = await ServiceMensagem.listarConversas(usuarioId);
-      
-      return res.json({
-        success: true,
-        data: conversas,
-        count: conversas.length
-      });
-    } catch (error) {
-      logger.error(`Erro ao listar conversas: ${error.message}`);
-      return res.status(500).json({
-        success: false,
-        error: error.message,
-        code: "LIST_CONVERSAS_ERROR"
-      });
-    }
-  }
-
-  static async obterNaoLidas(req, res) {
-    try {
-      const usuarioId = req.usuario.id;
-      const result = await ServiceMensagem.getNaoLidas(usuarioId);
-      
-      return res.json({
-        success: true,
-        data: result
-      });
-    } catch (error) {
-      logger.error(`Erro ao obter mensagens não lidas: ${error.message}`);
-      return res.status(500).json({
-        success: false,
-        error: error.message,
-        code: "NAO_LIDAS_ERROR"
-      });
+      return res.status(400).json({ error: error.message });
     }
   }
 
   static async obterMensagemPorId(req, res) {
     try {
-      const mensagem = await ServiceMensagem.obterMensagemPorId(req.params.id, req.usuario.id);
-      
-      return res.json({
-        success: true,
-        data: mensagem
-      });
+      const { id } = req.params;
+      const mensagem = await ServiceMensagem.obterMensagemPorId(id);
+      return res.status(200).json(mensagem);
     } catch (error) {
-      logger.error(`Erro ao obter mensagem ${req.params.id}: ${error.message}`);
-      const status = error.message.includes("não encontrada") ? 404 : 500;
-      return res.status(status).json({
-        success: false,
-        error: error.message,
-        code: "GET_MENSAGEM_ERROR"
-      });
+      return res.status(404).json({ error: error.message });
     }
   }
 
   static async atualizarMensagem(req, res) {
     try {
-      const mensagem = await ServiceMensagem.atualizarMensagem(
-        req.params.id, 
-        { 
-          conteudo: req.body.conteudo, 
-          usuarioId: req.usuario.id 
-        }
-      );
+      const { id } = req.params;
+      const { conteudo } = req.body;
+      const usuarioId = req.user.id;
+      const mensagem = await ServiceMensagem.atualizarMensagem(id, { conteudo, usuarioId });
       
-      // Notificar destinatário sobre edição
-      await enviarMensagemWS(mensagem.destinatarioId, { 
-        type: "mensagem_editada", 
-        mensagem: {
-          id: mensagem.id,
-          conteudo: mensagem.conteudo,
-          editadoEm: mensagem.editadoEm
-        }
+      // Notificar o destinatário via WebSocket
+      enviarMensagemWS(mensagem.destinatarioId, {
+        tipo: 'mensagem_editada',
+        mensagemId: mensagem.id,
+        conteudo: mensagem.conteudo,
+        destinatarioId: mensagem.destinatarioId
       });
       
-      logger.info(`Mensagem ${req.params.id} editada pelo usuário ${req.usuario.id}`);
-      
-      return res.json({
-        success: true,
-        message: "Mensagem editada com sucesso",
-        data: mensagem
-      });
+      return res.status(200).json(mensagem);
     } catch (error) {
-      logger.error(`Erro ao atualizar mensagem ${req.params.id}: ${error.message}`);
-      const status = error.message.includes("não encontrada") ? 404 : 400;
-      return res.status(status).json({
-        success: false,
-        error: error.message,
-        code: "UPDATE_MENSAGEM_ERROR"
-      });
+      return res.status(400).json({ error: error.message });
     }
   }
 
   static async deletarMensagem(req, res) {
     try {
-      const tipo = req.query.tipo || req.body.tipo || "para_todos";
+      const { id } = req.params;
+      const { tipo } = req.body; // 'para_mim' ou 'para_todos'
+      const usuarioId = req.user?.id;
       
-      const mensagem = await ServiceMensagem.obterMensagemPorId(req.params.id);
-      const result = await ServiceMensagem.deletarMensagem(
-        req.params.id, 
-        req.usuario?.id, 
-        tipo
-      );
-      
-      // Notificar se foi deletado para todos
-      if (tipo === "para_todos") {
-        await enviarMensagemWS(mensagem.destinatarioId, { 
-          type: "mensagem_deletada", 
-          mensagemId: req.params.id 
-        });
+      if (!usuarioId) {
+        return res.status(401).json({ error: 'Usuário não autenticado' });
       }
       
-      logger.info(`Mensagem ${req.params.id} deletada (${tipo}) pelo usuário ${req.usuario?.id}`);
+      // Obter a mensagem antes de deletar para ter o destinatarioId
+      const mensagemExistente = await ServiceMensagem.obterMensagemPorId(id);
+      const resultado = await ServiceMensagem.deletarMensagem(id, usuarioId, tipo || 'para_todos');
       
-      return res.json({
-        success: true,
-        message: result.mensagem,
-        data: { id: req.params.id, tipo }
-      });
+      // Notificar o destinatário via WebSocket se deletado para todos
+      if (tipo === 'para_todos') {
+        enviarMensagemWS(mensagemExistente.destinatarioId, {
+          tipo: 'mensagem_deletada',
+          mensagemId: id,
+          destinatarioId: mensagemExistente.destinatarioId
+        });
+      } else if (tipo === 'para_mim') {
+        // Notificar o próprio usuário ou algo, mas talvez não necessário
+      }
+      
+      return res.status(200).json(resultado);
     } catch (error) {
-      logger.error(`Erro ao deletar mensagem ${req.params.id}: ${error.message}`);
-      const status = error.message.includes("não encontrada") ? 404 : 400;
-      return res.status(status).json({
-        success: false,
-        error: error.message,
-        code: "DELETE_MENSAGEM_ERROR"
-      });
+      console.error('Erro ao deletar mensagem:', error);
+      return res.status(400).json({ error: error.message });
     }
   }
 }
-
-export default ControllerMensagem;

@@ -340,11 +340,8 @@
 </div>
 
 <script>
-  // ALTERADO: Servidor remoto em vez de localhost
-  const API = "https://schoolconnect-0ud2.onrender.com";
-
-  // Configura o WebSocket para wss:// (seguro) no servidor remoto
-  const WS = (window.location.protocol === "https:" ? "wss://" : "ws://") + "schoolconnect-0ud2.onrender.com";
+  const API = "http://localhost:3002";
+  const WS  = "ws://localhost:3002";
 
   function getArquivoUrl(url) {
     if (!url) return undefined;
@@ -388,7 +385,6 @@
   let professorAtual = null;
   let professores    = [];
   let typingTimer    = null;
-  let mensagemParaEditar = null;
 
   function conectarWS() {
     ws = new WebSocket(WS + "?token=" + token);
@@ -406,20 +402,19 @@
       }
       if (data.tipo === "mensagem_editada") {
         if (professorAtual && data.destinatarioId === professorAtual.id) {
-          const msgElement = document.querySelector(`[data-msg-id="${data.mensagemId}"]`);
+          // Atualizar mensagem na UI
+          const msgElement = document.querySelector(`[onclick*="mostrarMenuMensagem(${data.mensagemId}"]`);
           if (msgElement) {
-            const msgDiv = msgElement.querySelector('.msg-own, .msg-other');
-            if (msgDiv) {
-              msgDiv.textContent = data.conteudo + ' (editado)';
-            }
+            msgElement.previousElementSibling.textContent = data.conteudo + ' (editado)';
           }
         }
       }
       if (data.tipo === "mensagem_deletada") {
         if (professorAtual && data.destinatarioId === professorAtual.id) {
-          const msgElement = document.querySelector(`[data-msg-id="${data.mensagemId}"]`);
+          // Remover mensagem da UI
+          const msgElement = document.querySelector(`[onclick*="mostrarMenuMensagem(${data.mensagemId}"]`);
           if (msgElement) {
-            msgElement.remove();
+            msgElement.closest('.flex').remove();
           }
         }
       }
@@ -479,10 +474,9 @@
   }
 
   //  DESEMPENHO 
-  let alunoAtual = null;
-
   async function carregarDesempenho() {
     try {
+      // Carregar alunos associados ao encarregado
       const res   = await apiFetch("/api/alunos");
       const todos = await res.json();
       const alunos = todos.filter(a => a.encarregadoId === encarregado.id);
@@ -493,13 +487,13 @@
         return;
       }
 
-      alunoAtual = alunos[0];
-      document.getElementById("cardAluno").textContent  = alunoAtual.nome;
-      document.getElementById("cardTurma").textContent  = alunoAtual.turma?.nome  || alunoAtual.classe || "-";
-      document.getElementById("cardClasse").textContent = alunoAtual.classe || "-";
+      const aluno = alunos[0]; // primeiro educando
+      document.getElementById("cardAluno").textContent  = aluno.nome;
+      document.getElementById("cardTurma").textContent  = aluno.turma?.nome  || aluno.classe || "-";
+      document.getElementById("cardClasse").textContent = aluno.classe || "-";
 
-      await carregarNotas();
-      await carregarAvisos();
+      // Carregar notas do aluno
+      await carregarNotas(aluno.id);
 
     } catch {
       document.getElementById("notasLoading").classList.add("hidden");
@@ -507,9 +501,7 @@
     }
   }
 
-  async function carregarNotas() {
-    if (!alunoAtual) return;
-    
+  async function carregarNotas(alunoId) {
     document.getElementById("notasLoading").classList.remove("hidden");
     document.getElementById("notasContainer").classList.add("hidden");
     document.getElementById("notasVazio").classList.add("hidden");
@@ -518,7 +510,7 @@
       const res   = await apiFetch("/api/notas");
       const todas = await res.json();
       const notas = Array.isArray(todas)
-        ? todas.filter(n => n.alunoId === alunoAtual.id)
+        ? todas.filter(n => alunoId ? n.alunoId === alunoId : true)
         : [];
 
       document.getElementById("notasLoading").classList.add("hidden");
@@ -805,6 +797,7 @@
   }
 
   function mostrarMenuMensagem(msgId, conteudo, element) {
+    // Remover menus anteriores
     document.querySelectorAll('.menu-mensagem').forEach(m => m.remove());
 
     const escapedContent = conteudo.replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
@@ -821,6 +814,7 @@
     menu.style.left = '0';
     menu.style.padding = '0.25rem 0';
 
+    // Fechar menu ao clicar fora
     setTimeout(() => {
       document.addEventListener('click', function closeMenu(e) {
         if (!menu.contains(e.target) && !element.contains(e.target)) {
@@ -831,17 +825,20 @@
     }, 0);
   }
 
-  function fecharModalEditar() {
-    document.getElementById("modalEditarMensagem").style.display = "none";
-    document.getElementById("modalEditarMensagem").classList.add("hidden");
-    document.getElementById("editMessageInput").value = "";
-  }
-
   async function editarMensagem(msgId, conteudoAtual) {
     mensagemParaEditar = msgId;
     document.getElementById("editMessageInput").value = conteudoAtual;
     document.getElementById("modalEditarMensagem").style.display = "flex";
     document.getElementById("modalEditarMensagem").classList.remove("hidden");
+  }
+
+
+  let mensagemParaDeletar = null;
+
+  function fecharModalEditar() {
+    document.getElementById("modalEditarMensagem").style.display = "none";
+    document.getElementById("modalEditarMensagem").classList.add("hidden");
+    document.getElementById("editMessageInput").value = "";
   }
 
   async function salvarEdicaoMensagem() {
@@ -860,6 +857,7 @@
         body: JSON.stringify({ conteudo: novoConteudo })
       });
       if (res.ok) {
+        // Atualizar UI
         const msgElement = document.querySelector(`[data-msg-id="${msgId}"]`);
         if (msgElement) {
           const msgDiv = msgElement.querySelector('.msg-own, .msg-other');
@@ -867,6 +865,7 @@
             msgDiv.textContent = novoConteudo + ' (editado)';
           }
         }
+        // Notificar via WS
         enviarWS({ tipo: 'mensagem_editada', mensagemId: msgId, conteudo: novoConteudo, destinatarioId: professorAtual.id });
         toast('Mensagem editada!');
       } else {
@@ -883,14 +882,6 @@
     mensagemParaDeletar = null;
   }
 
-  let mensagemParaDeletar = null;
-
-  async function deletarMensagem(msgId) {
-    mensagemParaDeletar = msgId;
-    document.getElementById("modalDeletarMensagem").style.display = "flex";
-    document.getElementById("modalDeletarMensagem").classList.remove("hidden");
-  }
-
   async function confirmarDelecaoMensagem(tipo) {
     if (!mensagemParaDeletar) return;
     const msgId = mensagemParaDeletar;
@@ -904,18 +895,24 @@
       if (res.ok) {
         const msgDiv = document.querySelector(`[data-msg-id="${msgId}"]`);
         if (tipo === 'para_mim') {
+          // Ocultar a mensagem para o usuário atual
           msgDiv.style.display = 'none';
         } else {
+          // Remover completamente
           msgDiv.remove();
         }
-        enviarWS({ tipo: 'mensagem_deletada', mensagemId: msgId, destinatarioId: professorAtual.id });
-        toast('Mensagem eliminada!');
       } else {
         toast('Erro ao eliminar mensagem', 'erro');
       }
     } catch (error) {
       toast('Erro ao eliminar mensagem', 'erro');
     }
+  }
+
+  async function deletarMensagem(msgId) {
+    mensagemParaDeletar = msgId;
+    document.getElementById("modalDeletarMensagem").style.display = "flex";
+    document.getElementById("modalDeletarMensagem").classList.remove("hidden");
   }
 
   async function enviarMensagem() {
@@ -1118,7 +1115,7 @@
       }
     }
     toast(`Mensagens eliminadas ${tipo === 'para_todos' ? 'para todos' : 'para você'}!`);
-    toggleModoSelecao();
+    toggleModoSelecao(); // Sair do modo seleção
   }
 
   function fecharModalEliminarSelecionadas() {
@@ -1130,7 +1127,8 @@
   (async () => {
     preencherPerfil();
     await carregarBadgeMensagens();
-    await carregarDesempenho();
+    carregarDesempenho();
+    carregarAvisos();
     showSection("desempenho");
   })();
 </script>
@@ -1240,6 +1238,7 @@
   menuToggle?.addEventListener('click', toggleSidebar);
   sidebarOverlay?.addEventListener('click', toggleSidebar);
   
+  // Fechar sidebar ao clicar em um link da nav
   document.querySelectorAll('#sidebar a').forEach(link => {
     link.addEventListener('click', () => {
       if (window.innerWidth < 768) {

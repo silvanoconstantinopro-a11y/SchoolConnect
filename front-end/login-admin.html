@@ -168,8 +168,7 @@
     </div>
 
     <script>
-      // ALTERADO: Servidor remoto em vez de localhost
-      const API = "https://schoolconnect-0ud2.onrender.com";
+      const API = "http://localhost:3002";
 
       document.getElementById("toggleSenha").addEventListener("click", () => {
         const input = document.getElementById("adminSenha");
@@ -189,16 +188,9 @@
         document.getElementById("errorBox").classList.remove("hidden");
       }
 
-      function esconderErro() {
-        document.getElementById("errorBox").classList.add("hidden");
-      }
-
       async function fazerLoginAdmin() {
-        esconderErro();
         const utilizador = document.getElementById("adminUser").value.trim();
         const senha = document.getElementById("adminSenha").value;
-
-        console.log("Tentando login admin com:", utilizador); // DEBUG
 
         if (!utilizador || !senha) {
           mostrarErro("Preencha o utilizador e a palavra-passe.");
@@ -211,38 +203,15 @@
         text.textContent = "A verificar...";
 
         try {
-          console.log("A enviar requisição para:", API + "/api/admin/login");
-          
           const res = await fetch(API + "/api/admin/login", {
             method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ utilizador, senha }),
           });
 
-          console.log("Status da resposta:", res.status);
-          
-          const texto = await res.text();
-          console.log("Resposta raw:", texto);
+          const data = await res.json();
 
-          let data;
-          try {
-            data = JSON.parse(texto);
-          } catch (e) {
-            console.error("Erro ao parsear JSON:", e);
-            throw new Error("Resposta inválida do servidor: " + texto.substring(0, 100));
-          }
-
-          if (!res.ok) {
-            throw new Error(data.error || `Erro ${res.status}: Credenciais inválidas`);
-          }
-
-          // Verificar se data.token existe
-          if (!data.token) {
-            throw new Error("Resposta do servidor incompleta - token não recebido");
-          }
+          if (!res.ok) throw new Error(data.error || "Credenciais inválidas");
 
           // Guardar token admin
           localStorage.setItem("adminToken", data.token);
@@ -252,16 +221,9 @@
           localStorage.removeItem("token");
           localStorage.removeItem("usuario");
 
-          console.log("Login admin bem sucedido!");
-          
-          if (typeof toast === 'function') {
-            toast("Login realizado com sucesso");
-          }
-
+          toast("Login realizado com sucesso");
           setTimeout(() => window.location.href = "admin.html", 1000);
-          
         } catch (err) {
-          console.error("Erro no login admin:", err);
           mostrarErro(err.message);
         } finally {
           btn.disabled = false;
