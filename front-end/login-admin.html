@@ -166,10 +166,9 @@
         </a>
       </div>
     </div>
-
-    
-      <script>
-// Toggle password visibility
+    <script src="conectar_backend.js"></script>
+ <script>
+// Toggle password
 document.getElementById("toggleSenha").addEventListener("click", () => {
     const input = document.getElementById("adminSenha");
     input.type = input.type === "password" ? "text" : "password";
@@ -214,90 +213,41 @@ async function fazerLoginAdmin() {
     text.textContent = "A verificar...";
 
     try {
-        // Usar a URL correta (porta 3000)
-        const API_URL = window.location.origin === 'file://' 
-            ? 'http://localhost:3000' 
-            : window.location.origin;
+        // Usar a função global do conectar_backend.js
+        const result = await window.fazerLoginAdmin(utilizador, senha);
         
-        const response = await fetch(`${API_URL}/api/admin/login`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ utilizador, senha })
-        });
-
-        // Verificar se a resposta é JSON
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            const text = await response.text();
-            console.error("Resposta não é JSON:", text.substring(0, 200));
-            throw new Error("Servidor não respondeu com JSON. Verifique se o backend está a correr.");
-        }
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || data.message || "Credenciais inválidas");
-        }
-
-        if (data.token) {
-            // Guardar token de admin
-            localStorage.setItem("adminToken", data.token);
-            localStorage.setItem("adminLogado", "true");
+        if (result.success) {
+            // Mostrar sucesso
+            const toast = document.createElement("div");
+            toast.textContent = "✅ Login realizado com sucesso!";
+            toast.style.cssText = "position:fixed;bottom:20px;right:20px;background:#15803D;color:white;padding:12px 20px;border-radius:8px;z-index:9999";
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
             
-            // Limpar tokens de usuário normal
-            localStorage.removeItem("token");
-            localStorage.removeItem("usuario");
-            
-            // Mostrar sucesso e redirecionar
-            mostrarToast("Login realizado com sucesso!");
-            
+            // Redirecionar
             setTimeout(() => {
                 window.location.href = "admin.html";
             }, 1000);
         } else {
-            throw new Error("Token não recebido do servidor");
+            mostrarErro(result.error);
         }
     } catch (err) {
-        console.error("Erro no login admin:", err);
-        mostrarErro(err.message || "Erro ao conectar ao servidor. Verifique se o backend está a correr na porta 3000.");
+        console.error("Erro:", err);
+        mostrarErro(err.message || "Erro ao conectar ao servidor.");
     } finally {
         btn.disabled = false;
         text.textContent = "Entrar como Administrador";
     }
 }
 
-// Função auxiliar para mostrar toast
-function mostrarToast(mensagem, tipo = "sucesso") {
-    const toast = document.createElement("div");
-    toast.textContent = mensagem;
-    toast.className = `fixed bottom-5 right-5 z-50 px-4 py-2 rounded-lg shadow-lg text-white text-sm font-semibold ${
-        tipo === "sucesso" ? "bg-green-600" : "bg-red-600"
-    } animate-bounce`;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-}
-
-// Testar conexão ao carregar a página
+// Testar conexão ao carregar
 document.addEventListener("DOMContentLoaded", async () => {
-    const API_URL = window.location.origin === 'file://' 
-        ? 'http://localhost:3000' 
-        : window.location.origin;
-    
-    try {
-        const response = await fetch(`${API_URL}/api/health`);
-        if (response.ok) {
-            console.log("✅ Backend conectado em", API_URL);
-        } else {
-            console.warn("⚠️ Backend pode não estar a responder em", API_URL);
-        }
-    } catch (error) {
-        console.warn("⚠️ Não foi possível conectar ao backend:", error.message);
+    if (typeof window.testarConexao === 'function') {
+        await window.testarConexao();
     }
 });
 </script>
     
-    <script src="conectar_backend.js"></script>
+    
   </body>
 </html>
