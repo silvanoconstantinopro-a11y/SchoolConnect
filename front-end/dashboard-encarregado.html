@@ -43,1211 +43,161 @@
 <body class="bg-gray-100">
 <div class="flex min-h-screen">
 
-  <!-- SIDEBAR -->
   <aside id="sidebar" class="fixed md:sticky top-0 left-0 w-64 bg-primary text-white p-6 flex flex-col h-screen transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40 md:z-auto overflow-y-auto">
-    <div class="mb-8 text-center">
+    <div class="mb-8 text-center border-b border-white/20 pb-6">
       <img src="../img/logo.png" class="h-14 mb-3 mx-auto" alt="Logo" />
       <h2 class="text-lg font-bold">Painel do Encarregado</h2>
       <p id="sidebarNome" class="text-green-200 text-xs mt-1 truncate">A carregar...</p>
     </div>
-
     <nav class="space-y-1 flex-1">
-      <a href="#" onclick="showSection('desempenho'); return false;" id="nav-desempenho"
-         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary font-semibold transition">
+      <a href="#" onclick="showSection('desempenho'); return false;" id="nav-desempenho" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary font-semibold transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
         Desempenho
       </a>
-      <a href="#" onclick="showSection('reunioes'); return false;" id="nav-reunioes"
-         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
+      <a href="#" onclick="showSection('reunioes'); return false;" id="nav-reunioes" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         Reuniões
         <span id="badgeReunioes" class="hidden ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
       </a>
-      <a href="#" onclick="showSection('mensagens'); return false;" id="nav-mensagens"
-         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
+      <a href="#" onclick="showSection('mensagens'); return false;" id="nav-mensagens" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
         Mensagens
         <span id="badgeMsgs" class="hidden ml-auto bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
       </a>
-      <a href="index.html"
-         class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
+      <a href="index.html" class="nav-link flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-secondary transition">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
         Notícias
       </a>
     </nav>
-
-    <button onclick="terminarSessao()"
-            class="w-full bg-accent text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition text-sm mt-4">
-      Terminar Sessão
-    </button>
+    <button onclick="terminarSessao()" class="w-full bg-accent text-black font-semibold px-4 py-2 rounded-lg hover:bg-yellow-400 transition text-sm mt-4">Terminar Sessão</button>
   </aside>
 
-  <!-- OVERLAY (Mobile) -->
   <div id="sidebarOverlay" class="hidden fixed inset-0 bg-black/50 z-30 md:hidden"></div>
 
-  <!-- CONTEÚDO -->
   <main class="flex-1 p-6 overflow-auto w-full">
-
-    <!-- TOPO -->
     <header class="flex justify-between items-center mb-6">
       <div class="flex items-center gap-4 flex-1">
-        <!-- Botão Hamburger (Mobile) -->
-        <button id="menuToggle" class="md:hidden text-primary hover:bg-gray-100 p-2 rounded-lg transition" aria-label="Menu">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
-        <div>
-          <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Desempenho</h1>
-          <p class="text-sm text-gray-500" id="pageSubtitle">Acompanhamento do seu educando</p>
-        </div>
+        <button id="menuToggle" class="md:hidden text-primary hover:bg-gray-100 p-2 rounded-lg transition"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+        <div><h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Desempenho</h1><p class="text-sm text-gray-500" id="pageSubtitle">Acompanhamento do seu educando</p></div>
       </div>
-
       <div class="relative">
-        <button id="accountButton"
-                class="bg-white text-primary px-3 py-2 rounded-lg font-semibold flex items-center gap-3 shadow hover:shadow-md transition focus:outline-none">
-          <div class="relative">
-            <span id="avatarInicial" class="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">?</span>
-            <span class="online-dot absolute -bottom-0.5 -right-0.5"></span>
-          </div>
+        <button id="accountButton" class="bg-white text-primary px-3 py-2 rounded-lg font-semibold flex items-center gap-3 shadow hover:shadow-md transition focus:outline-none">
+          <div class="relative"><span id="avatarInicial" class="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">?</span><span class="online-dot absolute -bottom-0.5 -right-0.5"></span></div>
           <span id="headerNome" class="hidden md:inline text-gray-700 text-sm max-w-32 truncate">A carregar...</span>
           <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div id="accountMenu" class="hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg ring-1 ring-black/5 z-50 overflow-hidden">
-          <div class="px-4 py-3 border-b bg-gray-50">
-            <p class="text-xs text-gray-500">Sessão activa · ENCARREGADO</p>
-            <p id="menuNome"  class="text-sm font-bold text-gray-800 truncate"></p>
-            <p id="menuEmail" class="text-xs text-gray-500 truncate"></p>
-          </div>
-          <button onclick="terminarSessao()" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium">
-            Terminar Sessão
-          </button>
+          <div class="px-4 py-3 border-b bg-gray-50"><p class="text-xs text-gray-500">Sessão activa · ENCARREGADO</p><p id="menuNome" class="text-sm font-bold text-gray-800 truncate"></p><p id="menuEmail" class="text-xs text-gray-500 truncate"></p></div>
+          <button onclick="terminarSessao()" class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50 font-medium">Terminar Sessão</button>
         </div>
       </div>
     </header>
 
-    <!-- TOAST -->
-    <div id="toast" class="fixed top-6 right-6 z-50 hidden">
-      <div id="toastInner" class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in">
-        <span id="toastIcon"></span><span id="toastMsg"></span>
-      </div>
-    </div>
+    <div id="toast" class="fixed top-6 right-6 z-50 hidden"><div id="toastInner" class="flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in"><span id="toastIcon"></span><span id="toastMsg"></span></div></div>
 
-    <!-- ===== DESEMPENHO ===== -->
+    <!-- DESEMPENHO -->
     <section id="desempenhoSection" class="fade-in space-y-6">
-
-      <!-- Cards resumo -->
       <div class="grid md:grid-cols-4 gap-5">
-        <div class="bg-white p-5 rounded-2xl shadow hover:shadow-md transition">
-          <p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Educando</p>
-          <p id="cardAluno" class="text-lg font-bold text-gray-800 truncate">-</p>
-        </div>
-        <div class="bg-white p-5 rounded-2xl shadow hover:shadow-md transition">
-          <p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Turma</p>
-          <p id="cardTurma" class="text-lg font-bold text-primary truncate">-</p>
-        </div>
-        <div class="bg-white p-5 rounded-2xl shadow hover:shadow-md transition">
-          <p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Classe</p>
-          <p id="cardClasse" class="text-lg font-bold text-gray-800 truncate">-</p>
-        </div>
-        <div class="bg-white p-5 rounded-2xl shadow hover:shadow-md transition">
-          <p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Média Geral</p>
-          <p id="cardMedia" class="text-3xl font-bold text-primary">-</p>
-        </div>
+        <div class="bg-white p-5 rounded-2xl shadow"><p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Educando</p><p id="cardAluno" class="text-lg font-bold text-gray-800 truncate">-</p></div>
+        <div class="bg-white p-5 rounded-2xl shadow"><p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Turma</p><p id="cardTurma" class="text-lg font-bold text-primary truncate">-</p></div>
+        <div class="bg-white p-5 rounded-2xl shadow"><p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Classe</p><p id="cardClasse" class="text-lg font-bold text-gray-800 truncate">-</p></div>
+        <div class="bg-white p-5 rounded-2xl shadow"><p class="text-gray-400 text-xs font-semibold uppercase tracking-wide mb-1">Média Geral</p><p id="cardMedia" class="text-3xl font-bold text-primary">-</p></div>
       </div>
-
-      <!-- Notas detalhadas -->
-      <div class="bg-white rounded-2xl shadow p-6">
-        <div class="flex items-center justify-between mb-6">
-          <h2 class="text-xl font-bold text-gray-800">Desempenho Académico</h2>
-          <button onclick="carregarNotas()" class="text-sm text-primary font-semibold hover:underline">Actualizar</button>
-        </div>
-
-        <div id="notasLoading" class="flex justify-center py-8"><div class="spinner"></div></div>
-
-        <div id="notasContainer" class="hidden space-y-4"></div>
-
-        <div id="notasVazio" class="hidden text-center py-12">
-          <svg class="w-14 h-14 text-gray-200 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-          </svg>
-          <p class="text-gray-400 font-medium">Nenhuma nota registada ainda</p>
-          <p class="text-gray-300 text-sm mt-1">As notas serão publicadas pelos professores</p>
-        </div>
-      </div>
-
-      <!-- Avisos da escola -->
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-4">Últimos Avisos da Escola</h2>
-        <div id="avisosContainer" class="space-y-3">
-          <div class="flex justify-center py-4"><div class="spinner"></div></div>
-        </div>
-      </div>
+      <div class="bg-white rounded-2xl shadow p-6"><div class="flex items-center justify-between mb-6"><h2 class="text-xl font-bold text-gray-800">Desempenho Académico</h2><button onclick="carregarNotas()" class="text-sm text-primary font-semibold hover:underline">Actualizar</button></div><div id="notasLoading" class="flex justify-center py-8"><div class="spinner"></div></div><div id="notasContainer" class="hidden space-y-4"></div><div id="notasVazio" class="hidden text-center py-12"><svg class="w-14 h-14 text-gray-200 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg><p class="text-gray-400 font-medium">Nenhuma nota registada ainda</p><p class="text-gray-300 text-sm mt-1">As notas serão publicadas pelos professores</p></div></div>
+      <div class="bg-white rounded-2xl shadow p-6"><h2 class="text-xl font-bold text-gray-800 mb-4">Últimos Avisos da Escola</h2><div id="avisosContainer" class="space-y-3"><div class="flex justify-center py-4"><div class="spinner"></div></div></div></div>
     </section>
 
-    <!-- ===== REUNIÕES ===== -->
+    <!-- REUNIÕES -->
     <section id="reunioesSection" class="hidden fade-in space-y-6">
-      <div class="grid md:grid-cols-3 gap-4">
-        <div class="bg-white p-5 rounded-2xl shadow">
-          <p class="text-gray-500 text-sm">Total</p>
-          <p id="statTotalR" class="text-3xl font-bold text-primary mt-1">-</p>
-        </div>
-        <div class="bg-white p-5 rounded-2xl shadow">
-          <p class="text-gray-500 text-sm">Online</p>
-          <p id="statOnlineR" class="text-3xl font-bold text-blue-600 mt-1">-</p>
-        </div>
-        <div class="bg-white p-5 rounded-2xl shadow">
-          <p class="text-gray-500 text-sm">Presenciais</p>
-          <p id="statPresencialR" class="text-3xl font-bold text-yellow-600 mt-1">-</p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-bold text-gray-800">Reuniões Agendadas</h2>
-          <button onclick="carregarReunioes()" class="text-sm text-primary font-semibold hover:underline">Actualizar</button>
-        </div>
-        <div id="listaReunioes" class="space-y-4">
-          <div class="flex justify-center py-8"><div class="spinner"></div></div>
-        </div>
-      </div>
+      <div class="grid md:grid-cols-3 gap-4"><div class="bg-white p-5 rounded-2xl shadow"><p class="text-gray-500 text-sm">Total</p><p id="statTotalR" class="text-3xl font-bold text-primary mt-1">-</p></div><div class="bg-white p-5 rounded-2xl shadow"><p class="text-gray-500 text-sm">Online</p><p id="statOnlineR" class="text-3xl font-bold text-blue-600 mt-1">-</p></div><div class="bg-white p-5 rounded-2xl shadow"><p class="text-gray-500 text-sm">Presenciais</p><p id="statPresencialR" class="text-3xl font-bold text-yellow-600 mt-1">-</p></div></div>
+      <div class="bg-white rounded-2xl shadow p-6"><div class="flex items-center justify-between mb-4"><h2 class="text-xl font-bold text-gray-800">Reuniões Agendadas</h2><button onclick="carregarReunioes()" class="text-sm text-primary font-semibold hover:underline">Actualizar</button></div><div id="listaReunioes" class="space-y-4"><div class="flex justify-center py-8"><div class="spinner"></div></div></div></div>
     </section>
 
-    <!-- ===== MENSAGENS (CHAT WEBSOCKET) ===== -->
-    <section id="mensagensSection" class="hidden fade-in">
-      <div class="bg-white rounded-2xl shadow overflow-hidden" style="height:calc(100vh - 160px);display:flex;">
-
-        <!-- Sidebar conversas -->
-        <div class="w-72 border-r border-gray-100 flex flex-col shrink-0">
-          <div class="p-4 border-b border-gray-100">
-            <h2 class="font-bold text-gray-800 mb-3">Mensagens</h2>
-            <input type="text" id="searchConversas" placeholder="Pesquisar professor..."
-                   oninput="filtrarConversas()"
-                   class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div class="p-3 border-b border-gray-100">
-            <button onclick="abrirModalNovaMsg()"
-                    class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition text-sm font-semibold">
-              + Nova Mensagem
-            </button>
-          </div>
-          <div id="listaConversas" class="flex-1 overflow-y-auto">
-            <div class="flex justify-center py-8"><div class="spinner"></div></div>
-          </div>
-        </div>
-
-        <!-- Área do chat -->
-        <div class="flex-1 flex flex-col">
-          <!-- Header -->
-          <div id="chatHeader" class="hidden border-b border-gray-100 p-4 flex items-center justify-between bg-white">
-            <div class="flex items-center gap-3">
-              <div class="relative">
-                <div id="chatAvatar" class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold"></div>
-                <span class="online-dot absolute -bottom-0.5 -right-0.5"></span>
-              </div>
-              <div>
-                <p id="chatNome" class="font-bold text-gray-800"></p>
-                <p class="text-xs text-green-600 font-medium">Online</p>
-              </div>
-            </div>
-            <button id="btnSelecionarMensagens" onclick="toggleModoSelecao()" class="text-sm text-gray-600 hover:text-gray-800">Selecionar mensagens</button>
-          </div>
-
-          <!-- Empty -->
-          <div id="chatEmpty" class="flex-1 flex items-center justify-center text-center p-8 bg-gray-50">
-            <div>
-              <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
-              </svg>
-              <p class="text-gray-500 font-semibold">Selecione uma conversa</p>
-              <p class="text-gray-400 text-sm mt-1">ou inicie uma nova mensagem com um professor</p>
-            </div>
-          </div>
-
-          <!-- Mensagens -->
-          <div id="messagesArea" class="hidden flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50"></div>
-
-          <!-- Input -->
-          <div id="chatInput" class="hidden border-t border-gray-100 p-4 bg-white">
-            <div id="typingIndicator" class="hidden text-xs text-gray-400 mb-2 italic">A escrever...</div>
-            <div class="flex gap-2 items-end">
-              <textarea id="messageInput" rows="1" placeholder="Escreva uma mensagem..."
-                        class="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none max-h-28"
-                        onkeydown="handleMsgKeydown(event)"
-                        oninput="handleTyping()"></textarea>
-              <div class="flex flex-col items-end gap-2">
-                <input id="messageFile" type="file" class="hidden" onchange="handleFileSelected(event)" />
-                <button onclick="document.getElementById('messageFile').click()"
-                        class="bg-gray-100 text-gray-600 p-3 rounded-xl hover:bg-gray-200 transition shrink-0"
-                        type="button" title="Anexar arquivo">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656L4.929 11.586a6 6 0 108.485 8.485L17 15.485"/>
-                  </svg>
-                </button>
-                <button onclick="enviarMensagem()"
-                        class="bg-primary text-white p-3 rounded-xl hover:bg-secondary transition shrink-0"
-                        type="button">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div id="selectedFileName" class="mt-2 text-xs text-gray-500"></div>
-          </div>
-
-          <!-- Botão Eliminar Selecionadas -->
-          <div id="btnEliminarSelecionadas" class="hidden border-t border-gray-100 p-4 bg-white">
-            <button onclick="eliminarSelecionadas()" class="w-full bg-red-500 text-white py-3 rounded-xl hover:bg-red-600 transition">
-              Eliminar selecionadas
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Modal nova mensagem -->
-      <div id="modalNovaMsg" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4 fade-in">
-          <h3 class="text-xl font-bold text-gray-800 mb-6">Nova Mensagem</h3>
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Professor</label>
-              <select id="destinatarioProfessor" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary">
-                <option value="">Selecionar professor...</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-1">Mensagem</label>
-              <textarea id="primeiraMensagem" rows="4" placeholder="Escreva a sua mensagem..."
-                        class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea>
-            </div>
-          </div>
-          <div class="flex gap-3 mt-6">
-            <button onclick="fecharModalNovaMsg()"
-                    class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">
-              Cancelar
-            </button>
-            <button onclick="iniciarConversa()"
-                    class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary font-semibold transition">
-              Enviar
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-
+    <!-- MENSAGENS (CHAT WEBSOCKET) -->
+    <section id="mensagensSection" class="hidden fade-in"><div class="bg-white rounded-2xl shadow overflow-hidden" style="height:calc(100vh - 160px);display:flex;"><div class="w-72 border-r border-gray-100 flex flex-col shrink-0"><div class="p-4 border-b border-gray-100"><h2 class="font-bold text-gray-800 mb-3">Mensagens</h2><input type="text" id="searchConversas" placeholder="Pesquisar professor..." oninput="filtrarConversas()" class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary" /></div><div class="p-3 border-b border-gray-100"><button onclick="abrirModalNovaMsg()" class="w-full bg-primary text-white py-2 rounded-lg hover:bg-secondary transition text-sm font-semibold">+ Nova Mensagem</button></div><div id="listaConversas" class="flex-1 overflow-y-auto"><div class="flex justify-center py-8"><div class="spinner"></div></div></div></div><div class="flex-1 flex flex-col"><div id="chatHeader" class="hidden border-b border-gray-100 p-4 flex items-center justify-between bg-white"><div class="flex items-center gap-3"><div class="relative"><div id="chatAvatar" class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold"></div><span class="online-dot absolute -bottom-0.5 -right-0.5"></span></div><div><p id="chatNome" class="font-bold text-gray-800"></p><p class="text-xs text-green-600 font-medium">Online</p></div></div><button id="btnSelecionarMensagens" onclick="toggleModoSelecao()" class="text-sm text-gray-600 hover:text-gray-800">Selecionar mensagens</button></div><div id="chatEmpty" class="flex-1 flex items-center justify-center text-center p-8 bg-gray-50"><div><svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg><p class="text-gray-500 font-semibold">Selecione uma conversa</p><p class="text-gray-400 text-sm mt-1">ou inicie uma nova mensagem com um professor</p></div></div><div id="messagesArea" class="hidden flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50"></div><div id="chatInput" class="hidden border-t border-gray-100 p-4 bg-white"><div id="typingIndicator" class="hidden text-xs text-gray-400 mb-2 italic">A escrever...</div><div class="flex gap-2 items-end"><textarea id="messageInput" rows="1" placeholder="Escreva uma mensagem..." class="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none max-h-28" onkeydown="handleMsgKeydown(event)" oninput="handleTyping()"></textarea><div class="flex flex-col items-end gap-2"><input id="messageFile" type="file" class="hidden" onchange="handleFileSelected(event)" /><button onclick="document.getElementById('messageFile').click()" class="bg-gray-100 text-gray-600 p-3 rounded-xl hover:bg-gray-200 transition shrink-0" type="button" title="Anexar arquivo"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828a4 4 0 10-5.656-5.656L4.929 11.586a6 6 0 108.485 8.485L17 15.485"/></svg></button><button onclick="enviarMensagem()" class="bg-primary text-white p-3 rounded-xl hover:bg-secondary transition shrink-0" type="button"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg></button></div></div><div id="selectedFileName" class="mt-2 text-xs text-gray-500"></div></div><div id="btnEliminarSelecionadas" class="hidden border-t border-gray-100 p-4 bg-white"><button onclick="eliminarSelecionadas()" class="w-full bg-red-500 text-white py-3 rounded-xl hover:bg-red-600 transition">Eliminar selecionadas</button></div></div></div><div id="modalNovaMsg" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4 fade-in"><h3 class="text-xl font-bold text-gray-800 mb-6">Nova Mensagem</h3><div class="space-y-4"><div><label class="block text-sm font-semibold text-gray-700 mb-1">Professor</label><select id="destinatarioProfessor" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary"><option value="">Selecionar professor...</option></select></div><div><label class="block text-sm font-semibold text-gray-700 mb-1">Mensagem</label><textarea id="primeiraMensagem" rows="4" placeholder="Escreva a sua mensagem..." class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary resize-none"></textarea></div></div><div class="flex gap-3 mt-6"><button onclick="fecharModalNovaMsg()" class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">Cancelar</button><button onclick="iniciarConversa()" class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary font-semibold transition">Enviar</button></div></div></div></section>
   </main>
 </div>
 
-<script>
-  // ALTERADO: Servidor remoto em vez de localhost
-  const API = "https://schoolconnect-0ud2.onrender.com";
-
-  // Configura o WebSocket para wss:// (seguro) no servidor remoto
-  const WS = (window.location.protocol === "https:" ? "wss://" : "ws://") + "schoolconnect-0ud2.onrender.com";
-
-  function getArquivoUrl(url) {
-    if (!url) return undefined;
-    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("blob:")) return url;
-    return url.startsWith("/") ? API + url : url;
-  }
-
-  // ── AUTENTICAÇÃO E CONFIGURAÇÃO INICIAL ────────────────────────────
-  // AUTH 
-  const token      = localStorage.getItem("token");
-  const usuarioStr = localStorage.getItem("usuario");
-  if (!token || !usuarioStr) { window.location.href = "login.html"; }
-  const encarregado = JSON.parse(usuarioStr);
-  if (encarregado.perfil !== "ENCARREGADO") {
-    abrirModalNotificacao("Acesso Negado", "Você não tem permissão para acessar esta página.");
-    document.getElementById("modalNotificacao").querySelector("button").onclick = () => {
-      fecharModalNotificacao();
-      window.location.href = "login.html";
-    };
-  }
-  
-
-  // HELPERS 
-  async function apiFetch(url, opts={}) {
-    return fetch(API + url, { ...opts, headers:{ ...(opts.headers||{}), "Authorization":"Bearer "+token } });
-  }
-
-  function toast(msg, tipo="sucesso") {
-    const ti = document.getElementById("toastInner");
-    ti.className = "flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in " +
-      (tipo==="sucesso"?"bg-green-600":tipo==="erro"?"bg-red-600":"bg-blue-600");
-    document.getElementById("toastIcon").textContent = tipo==="sucesso"?"✓":tipo==="erro"?"✕":"ℹ";
-    document.getElementById("toastMsg").textContent  = msg;
-    const t = document.getElementById("toast");
-    t.classList.remove("hidden");
-    setTimeout(()=>t.classList.add("hidden"), 4000);
-  }
-
-  //  WEBSOCKET 
-  let ws = null;
-  let professorAtual = null;
-  let professores    = [];
-  let typingTimer    = null;
-  let mensagemParaEditar = null;
-
-  function conectarWS() {
-    ws = new WebSocket(WS + "?token=" + token);
-    ws.onopen  = () => console.log("WS conectado");
-    ws.onmessage = (ev) => {
-      const data = JSON.parse(ev.data);
-      if (data.tipo === "mensagem") {
-        if (professorAtual && (data.remetenteId === professorAtual.id || data.destinatarioId === professorAtual.id)) {
-          adicionarMensagem({ conteudo:data.conteudo, remetenteId:data.remetenteId, criadoEm:data.criadoEm||new Date().toISOString() });
-        }
-        if (data.remetenteId !== encarregado.id) {
-          actualizarBadge(1);
-          actualizarPreviewConversa(data.remetenteId, data.conteudo);
-        }
-      }
-      if (data.tipo === "mensagem_editada") {
-        if (professorAtual && data.destinatarioId === professorAtual.id) {
-          const msgElement = document.querySelector(`[data-msg-id="${data.mensagemId}"]`);
-          if (msgElement) {
-            const msgDiv = msgElement.querySelector('.msg-own, .msg-other');
-            if (msgDiv) {
-              msgDiv.textContent = data.conteudo + ' (editado)';
-            }
-          }
-        }
-      }
-      if (data.tipo === "mensagem_deletada") {
-        if (professorAtual && data.destinatarioId === professorAtual.id) {
-          const msgElement = document.querySelector(`[data-msg-id="${data.mensagemId}"]`);
-          if (msgElement) {
-            msgElement.remove();
-          }
-        }
-      }
-      if (data.tipo === "typing" && data.userId === professorAtual?.id) {
-        const ti = document.getElementById("typingIndicator");
-        ti.classList.remove("hidden");
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(()=>ti.classList.add("hidden"), 2000);
-      }
-    };
-    ws.onclose = () => setTimeout(conectarWS, 3000);
-  }
-
-  function enviarWS(payload) {
-    if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(payload));
-  }
-
-  //  NAVEGAÇÃO
-  const seccoes = ["desempenho","reunioes","mensagens"];
-
-  function showSection(sec) {
-    activeSection = sec;
-    seccoes.forEach(s => {
-      document.getElementById(s+"Section").classList.add("hidden");
-      const nav = document.getElementById("nav-"+s);
-      if (nav) { nav.classList.remove("bg-secondary","font-semibold"); nav.classList.add("hover:bg-secondary"); }
-    });
-    document.getElementById(sec+"Section").classList.remove("hidden");
-    const an = document.getElementById("nav-"+sec);
-    if (an) { an.classList.add("bg-secondary","font-semibold"); an.classList.remove("hover:bg-secondary"); }
-
-    const t = {
-      desempenho: ["Desempenho","Acompanhamento académico do seu educando"],
-      reunioes:   ["Reuniões",  "Reuniões agendadas com os professores"],
-      mensagens:  ["Mensagens", "Comunicação com os professores"],
-    };
-    document.getElementById("pageTitle").textContent    = t[sec][0];
-    document.getElementById("pageSubtitle").textContent = t[sec][1];
-
-    if (sec === "reunioes") { const badgeReunioes = document.getElementById("badgeReunioes"); badgeReunioes.classList.add("hidden"); carregarReunioes(); }
-    if (sec === "mensagens") {
-      document.getElementById("badgeMsgs").classList.add("hidden");
-      carregarConversas();
-      if (!ws) conectarWS();
-    }
-  }
-
-  //  PREENCHER PERFIL
-  function preencherPerfil() {
-    const nome    = encarregado.nome || "Encarregado";
-    const inicial = nome[0]?.toUpperCase() || "E";
-    document.getElementById("sidebarNome").textContent   = nome;
-    document.getElementById("headerNome").textContent    = nome;
-    document.getElementById("menuNome").textContent      = nome;
-    document.getElementById("menuEmail").textContent     = encarregado.email || "";
-    document.getElementById("avatarInicial").textContent = inicial;
-  }
-
-  //  DESEMPENHO 
-  let alunoAtual = null;
-
-  async function carregarDesempenho() {
-    try {
-      const res   = await apiFetch("/api/alunos");
-      const todos = await res.json();
-      const alunos = todos.filter(a => a.encarregadoId === encarregado.id);
-
-      if (!alunos.length) {
-        document.getElementById("notasLoading").classList.add("hidden");
-        document.getElementById("notasVazio").classList.remove("hidden");
-        return;
-      }
-
-      alunoAtual = alunos[0];
-      document.getElementById("cardAluno").textContent  = alunoAtual.nome;
-      document.getElementById("cardTurma").textContent  = alunoAtual.turma?.nome  || alunoAtual.classe || "-";
-      document.getElementById("cardClasse").textContent = alunoAtual.classe || "-";
-
-      await carregarNotas();
-      await carregarAvisos();
-
-    } catch {
-      document.getElementById("notasLoading").classList.add("hidden");
-      document.getElementById("notasVazio").classList.remove("hidden");
-    }
-  }
-
-  async function carregarNotas() {
-    if (!alunoAtual) return;
-    
-    document.getElementById("notasLoading").classList.remove("hidden");
-    document.getElementById("notasContainer").classList.add("hidden");
-    document.getElementById("notasVazio").classList.add("hidden");
-
-    try {
-      const res   = await apiFetch("/api/notas");
-      const todas = await res.json();
-      const notas = Array.isArray(todas)
-        ? todas.filter(n => n.alunoId === alunoAtual.id)
-        : [];
-
-      document.getElementById("notasLoading").classList.add("hidden");
-
-      if (!notas.length) {
-        document.getElementById("notasVazio").classList.remove("hidden");
-        return;
-      }
-
-      // Calcular média
-      const media = notas.reduce((s,n)=>s+n.valor,0) / notas.length;
-      document.getElementById("cardMedia").textContent = media.toFixed(1);
-      const corMedia = media>=15?"text-green-600":media>=10?"text-blue-600":"text-red-600";
-      document.getElementById("cardMedia").className = "text-3xl font-bold " + corMedia;
-
-      // Agrupar por disciplina
-      const porDisc = {};
-      notas.forEach(n => {
-        const nome = n.disciplina?.nome || "Disciplina";
-        if (!porDisc[nome]) porDisc[nome] = [];
-        porDisc[nome].push(n.valor);
-      });
-
-      const container = document.getElementById("notasContainer");
-      container.classList.remove("hidden");
-      container.innerHTML = Object.entries(porDisc).map(([disc, vals]) => {
-        const media = vals.reduce((s,v)=>s+v,0) / vals.length;
-        const pct   = (media / 20) * 100;
-        const cor   = media>=15?"#16a34a":media>=10?"#2563eb":"#dc2626";
-        const badge = media>=15?"bg-green-100 text-green-700":media>=10?"bg-blue-100 text-blue-700":"bg-red-100 text-red-700";
-        const label = media>=15?"Muito Bom":media>=10?"Satisfatório":"Insuficiente";
-        return `
-          <div class="border border-gray-100 rounded-xl p-5 hover:shadow-sm transition">
-            <div class="flex items-center justify-between mb-3">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm"
-                     style="background:${cor}">${disc[0]}</div>
-                <div>
-                  <p class="font-bold text-gray-800">${disc}</p>
-                  <p class="text-xs text-gray-400">${vals.length} avaliação${vals.length>1?"ões":""}</p>
-                </div>
-              </div>
-              <div class="text-right">
-                <p class="text-2xl font-bold" style="color:${cor}">${media.toFixed(1)}</p>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded-full ${badge}">${label}</span>
-              </div>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width:${pct}%;background:${cor}"></div>
-            </div>
-            <div class="flex justify-between mt-1">
-              <span class="text-xs text-gray-400">0</span>
-              <span class="text-xs text-gray-400">20</span>
-            </div>
-          </div>`;
-      }).join("");
-
-    } catch {
-      document.getElementById("notasLoading").classList.add("hidden");
-      document.getElementById("notasVazio").classList.remove("hidden");
-    }
-  }
-
-  // AVISOS
-  async function carregarAvisos() {
-    try {
-      const res   = await apiFetch("/api/avisos");
-      const data  = await res.json();
-      const avisos = Array.isArray(data) ? data.slice(0,3) : [];
-      const cont   = document.getElementById("avisosContainer");
-      if (!avisos.length) {
-        cont.innerHTML = '<p class="text-gray-400 text-sm text-center py-4">Sem avisos publicados</p>';
-        return;
-      }
-      cont.innerHTML = avisos.map(a=>`
-        <div class="flex items-start gap-3 p-4 bg-green-50 border border-green-100 rounded-xl">
-          <div class="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></div>
-          <div>
-            <p class="font-semibold text-gray-800 text-sm">${a.titulo}</p>
-            <p class="text-gray-500 text-xs mt-0.5">${a.conteudo.substring(0,100)}${a.conteudo.length>100?"...":""}</p>
-            <p class="text-gray-300 text-xs mt-1">${new Date(a.criadoEm).toLocaleDateString("pt-PT")}</p>
-          </div>
-        </div>`).join("");
-    } catch {}
-  }
-
-  // REUNIÕES 
-  async function carregarReunioes() {
-    document.getElementById("listaReunioes").innerHTML='<div class="flex justify-center py-8"><div class="spinner"></div></div>';
-    try {
-      const res  = await apiFetch(`/api/reunioes?usuarioId=${encarregado.id}`);
-      const data = await res.json();
-      document.getElementById("statTotalR").textContent     = data.length;
-      document.getElementById("statOnlineR").textContent    = data.filter(r=>r.linkMeeting).length;
-      document.getElementById("statPresencialR").textContent= data.filter(r=>!r.linkMeeting).length;
-      const badgeReunioes = document.getElementById("badgeReunioes");
-      badgeReunioes.textContent = data.length;
-      if (data.length > 0) badgeReunioes.classList.remove("hidden"); else badgeReunioes.classList.add("hidden");
-
-      if (!data.length) {
-        document.getElementById("listaReunioes").innerHTML='<p class="text-gray-400 text-center py-8">Nenhuma reunião agendada</p>';
-        return;
-      }
-
-      document.getElementById("listaReunioes").innerHTML = data.map(r=>{
-        const criadoPor = r.criadoPor ? r.criadoPor.nome : "Administrador";
-        const participantsStr = r.participantes && r.participantes.length > 0 
-          ? r.participantes.map(p => p.usuario.nome).join(", ")
-          : "—";
-        return `
-        <div class="border-l-4 ${r.linkMeeting?"border-blue-400":"border-yellow-400"} bg-gray-50 p-5 rounded-xl hover:shadow-md transition">
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold
-                          ${r.linkMeeting?"bg-blue-500":"bg-yellow-500"}">
-                ${r.linkMeeting?"🎥":"📍"}
-              </div>
-              <div>
-                <h3 class="font-bold text-gray-800">${r.titulo}</h3>
-                <p class="text-sm text-gray-500">${r.local}</p>
-              </div>
-            </div>
-            <span class="px-3 py-1 rounded-full text-xs font-semibold shrink-0
-                         ${r.linkMeeting?"bg-blue-100 text-blue-700":"bg-yellow-100 text-yellow-700"}">
-              ${r.linkMeeting?"Online":"Presencial"}
-            </span>
-          </div>
-          <p class="text-xs text-gray-500 mb-2">👤 <strong>Agendada por:</strong> ${criadoPor}</p>
-          <p class="text-xs text-gray-500 mb-3">👥 <strong>Para:</strong> ${participantsStr}</p>
-          <p class="text-xs text-gray-400 mb-3">Agendada em: ${new Date(r.criadoEm).toLocaleDateString("pt-PT")}</p>
-          ${r.linkMeeting?`
-            <a href="${r.linkMeeting}" target="_blank"
-               class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">
-              🎥 Entrar na Reunião
-            </a>`:
-            `<div class="flex items-center gap-2 text-gray-600 text-sm">
-              📍 <span>${r.local}</span>
-            </div>`}
-        </div>`;
-      }).join("");
-
-      // Badge se há reuniões
-      if (data.length > 0) document.getElementById("badgeReunioes").classList.remove("hidden");
-    } catch { toast("Erro ao carregar reuniões","erro"); }
-  }
-
-  // MENSAGENS 
-  async function carregarProfessores() {
-    try {
-      const res   = await apiFetch("/api/usuarios");
-      const users = await res.json();
-      professores = users.filter(u=>u.perfil==="PROFESSOR");
-      const sel   = document.getElementById("destinatarioProfessor");
-      sel.innerHTML = '<option value="">Selecionar professor...</option>';
-      professores.forEach(p=>sel.innerHTML+=`<option value="${p.id}">${p.nome}</option>`);
-    } catch {}
-  }
-
-  async function carregarConversas() {
-    document.getElementById("listaConversas").innerHTML='<div class="flex justify-center py-8"><div class="spinner"></div></div>';
-    await carregarProfessores();
-    try {
-      const res  = await apiFetch("/api/mensagens");
-      const msgs = await res.json();
-      const lista = Array.isArray(msgs) ? msgs : [];
-      const unreadCount = lista.filter(m => m.destinatarioId === encarregado.id && !m.deletadoParaDestinatario && m.remetenteId !== encarregado.id).length;
-      actualizarBadge(unreadCount, true);
-
-      // Agrupar por professor
-      const mapa = {};
-      lista.forEach(m=>{
-        const outroId = m.remetenteId===encarregado.id ? m.destinatarioId : m.remetenteId;
-        if (!mapa[outroId]||new Date(m.criadoEm)>new Date(mapa[outroId].criadoEm)) mapa[outroId]=m;
-      });
-
-      // Todos os professores (com ou sem conversa)
-      const idsComConversa = new Set(Object.keys(mapa).map(Number));
-      const todosIds = [...new Set([...idsComConversa,...professores.map(p=>p.id)])];
-
-      const cont = document.getElementById("listaConversas");
-      if (!todosIds.length) {
-        cont.innerHTML='<p class="text-gray-400 text-sm text-center py-8 px-4">Nenhum professor disponível</p>';
-        return;
-      }
-
-      cont.innerHTML = todosIds.map(id=>{
-        const prof = professores.find(p=>p.id===id);
-        if (!prof) return "";
-        const ultima = mapa[id];
-        const preview = ultima?(ultima.remetenteId===encarregado.id?"Você: ":"")+ultima.conteudo.substring(0,38)+"...":"Clique para iniciar";
-        return `
-          <div onclick="abrirConversa(${prof.id},'${prof.nome}')"
-               class="conversa-item cursor-pointer p-4 border-b border-gray-50 flex items-center gap-3 transition" id="conv-${prof.id}">
-            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold text-sm shrink-0">
-              ${prof.nome[0].toUpperCase()}
-            </div>
-            <div class="flex-1 min-w-0">
-              <p class="font-semibold text-gray-800 text-sm truncate">${prof.nome}</p>
-              <p class="text-xs text-gray-400 truncate">${preview}</p>
-            </div>
-          </div>`;
-      }).join("");
-    } catch {
-      await carregarProfessores();
-      const cont = document.getElementById("listaConversas");
-      cont.innerHTML = professores.map(p=>`
-        <div onclick="abrirConversa(${p.id},'${p.nome}')"
-             class="conversa-item cursor-pointer p-4 border-b border-gray-50 flex items-center gap-3 transition" id="conv-${p.id}">
-          <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold text-sm shrink-0">
-            ${p.nome[0].toUpperCase()}
-          </div>
-          <div class="flex-1 min-w-0">
-            <p class="font-semibold text-gray-800 text-sm truncate">${p.nome}</p>
-            <p class="text-xs text-gray-400">Clique para iniciar</p>
-          </div>
-        </div>`).join("") || '<p class="text-gray-400 text-sm text-center py-8">Sem professores</p>';
-    }
-  }
-
-  function filtrarConversas() {
-    const q = document.getElementById("searchConversas").value.toLowerCase();
-    document.querySelectorAll(".conversa-item").forEach(el=>{
-      el.style.display = el.textContent.toLowerCase().includes(q) ? "" : "none";
-    });
-  }
-
-  async function abrirConversa(profId, profNome) {
-    if (modoSelecao) toggleModoSelecao(); // Sair do modo seleção
-    professorAtual = { id:profId, nome:profNome };
-    document.querySelectorAll(".conversa-item").forEach(el=>el.classList.remove("active"));
-    document.getElementById("conv-"+profId)?.classList.add("active");
-    document.getElementById("chatHeader").classList.remove("hidden");
-    document.getElementById("chatAvatar").textContent = profNome[0].toUpperCase();
-    document.getElementById("chatNome").textContent   = profNome;
-    document.getElementById("chatEmpty").classList.add("hidden");
-    document.getElementById("messagesArea").classList.remove("hidden");
-    document.getElementById("chatInput").classList.remove("hidden");
-    await carregarMensagens(profId);
-    enviarWS({ tipo:"entrar_conversa", destinatarioId:profId });
-  }
-
-  async function carregarMensagens(profId) {
-    const area = document.getElementById("messagesArea");
-    area.innerHTML = '<div class="flex justify-center py-4"><div class="spinner"></div></div>';
-    try {
-      const res  = await apiFetch("/api/mensagens");
-      const msgs = await res.json();
-      const filtradas = Array.isArray(msgs)
-        ? msgs.filter(m=>(m.remetenteId===encarregado.id&&m.destinatarioId===profId)||(m.remetenteId===profId&&m.destinatarioId===encarregado.id))
-        : [];
-      area.innerHTML = filtradas.length ? "" : '<p class="text-gray-400 text-center text-sm py-4">Sem mensagens. Inicie a conversa!</p>';
-      filtradas.forEach(m=>adicionarMensagem(m,false));
-      area.scrollTop = area.scrollHeight;
-    } catch {
-      area.innerHTML = '<p class="text-gray-400 text-center text-sm py-4">Inicie a conversa!</p>';
-    }
-  }
-
-  function adicionarMensagem(msg, scroll=true) {
-    const area  = document.getElementById("messagesArea");
-    const isOwn = msg.remetenteId === encarregado.id;
-    const hora  = new Date(msg.criadoEm).toLocaleTimeString("pt-PT",{hour:"2-digit",minute:"2-digit"});
-    const editado = msg.editadoEm ? " (editado)" : "";
-    const arquivoUrl = getArquivoUrl(msg.arquivoUrl);
-    const isImage = arquivoUrl && (msg.arquivoTipo?.startsWith("image/") || (msg.arquivoNome && /\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(msg.arquivoNome)));
-    const arquivoHtml = arquivoUrl
-      ? isImage
-        ? `<div class="mt-3"><a href="${arquivoUrl}" target="_blank" class="block overflow-hidden rounded-xl border border-gray-200"><img src="${arquivoUrl}" alt="${msg.arquivoNome || 'Imagem'}" class="w-full h-auto object-contain"/></a><div class="mt-2 text-xs text-gray-500">${msg.arquivoNome || 'Imagem'}</div></div>`
-        : `<div class="mt-3 text-sm"><a href="${arquivoUrl}" download="${msg.arquivoNome || ''}" class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl text-blue-600 hover:bg-gray-50" target="_blank">${msg.arquivoNome || 'Baixar arquivo'}</a></div>`
-      : "";
-    const div   = document.createElement("div");
-    div.className = "flex "+(isOwn?"justify-end":"justify-start") + " group cursor-pointer";
-    div.setAttribute('data-msg-id', msg.id);
-    div.onclick = () => mostrarMenuMensagem(msg.id, msg.conteudo, div);
-    div.innerHTML = `
-      <div class="max-w-xs lg:max-w-md relative">
-        <div class="${isOwn?"msg-own":"msg-other"} px-4 py-2.5 text-sm shadow-sm">
-          ${msg.conteudo || ""}${arquivoHtml}${editado}
-        </div>
-        <p class="text-xs text-gray-400 mt-1 ${isOwn?"text-right":"text-left"}">${hora}</p>
-      </div>`;
-    area.appendChild(div);
-    if (scroll) area.scrollTop = area.scrollHeight;
-  }
-
-  function mostrarMenuMensagem(msgId, conteudo, element) {
-    document.querySelectorAll('.menu-mensagem').forEach(m => m.remove());
-
-    const escapedContent = conteudo.replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
-    const menu = document.createElement('div');
-    menu.className = 'menu-mensagem absolute bg-white border border-gray-200 rounded-lg shadow-lg z-10';
-    menu.innerHTML = `
-      <button onclick="editarMensagem(${msgId}, '${escapedContent}')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-blue-600">Editar</button>
-      <button onclick="deletarMensagem(${msgId})" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">Eliminar</button>
-    `;
-
-    element.appendChild(menu);
-    menu.style.minWidth = '130px';
-    menu.style.top = '0';
-    menu.style.left = '0';
-    menu.style.padding = '0.25rem 0';
-
-    setTimeout(() => {
-      document.addEventListener('click', function closeMenu(e) {
-        if (!menu.contains(e.target) && !element.contains(e.target)) {
-          menu.remove();
-          document.removeEventListener('click', closeMenu);
-        }
-      });
-    }, 0);
-  }
-
-  function fecharModalEditar() {
-    document.getElementById("modalEditarMensagem").style.display = "none";
-    document.getElementById("modalEditarMensagem").classList.add("hidden");
-    document.getElementById("editMessageInput").value = "";
-  }
-
-  async function editarMensagem(msgId, conteudoAtual) {
-    mensagemParaEditar = msgId;
-    document.getElementById("editMessageInput").value = conteudoAtual;
-    document.getElementById("modalEditarMensagem").style.display = "flex";
-    document.getElementById("modalEditarMensagem").classList.remove("hidden");
-  }
-
-  async function salvarEdicaoMensagem() {
-    if (!mensagemParaEditar) return;
-    const msgId = mensagemParaEditar;
-    const novoConteudo = document.getElementById("editMessageInput").value.trim();
-    if (!novoConteudo) {
-      toast('A mensagem não pode estar vazia', 'erro');
-      return;
-    }
-    fecharModalEditar();
-    try {
-      const res = await apiFetch(`/api/mensagens/${msgId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conteudo: novoConteudo })
-      });
-      if (res.ok) {
-        const msgElement = document.querySelector(`[data-msg-id="${msgId}"]`);
-        if (msgElement) {
-          const msgDiv = msgElement.querySelector('.msg-own, .msg-other');
-          if (msgDiv) {
-            msgDiv.textContent = novoConteudo + ' (editado)';
-          }
-        }
-        enviarWS({ tipo: 'mensagem_editada', mensagemId: msgId, conteudo: novoConteudo, destinatarioId: professorAtual.id });
-        toast('Mensagem editada!');
-      } else {
-        toast('Erro ao editar mensagem', 'erro');
-      }
-    } catch (error) {
-      toast('Erro ao editar mensagem', 'erro');
-    }
-  }
-
-  function fecharModalDeletar() {
-    document.getElementById("modalDeletarMensagem").style.display = "none";
-    document.getElementById("modalDeletarMensagem").classList.add("hidden");
-    mensagemParaDeletar = null;
-  }
-
-  let mensagemParaDeletar = null;
-
-  async function deletarMensagem(msgId) {
-    mensagemParaDeletar = msgId;
-    document.getElementById("modalDeletarMensagem").style.display = "flex";
-    document.getElementById("modalDeletarMensagem").classList.remove("hidden");
-  }
-
-  async function confirmarDelecaoMensagem(tipo) {
-    if (!mensagemParaDeletar) return;
-    const msgId = mensagemParaDeletar;
-    fecharModalDeletar();
-    try {
-      const res = await apiFetch(`/api/mensagens/${msgId}`, { 
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tipo })
-      });
-      if (res.ok) {
-        const msgDiv = document.querySelector(`[data-msg-id="${msgId}"]`);
-        if (tipo === 'para_mim') {
-          msgDiv.style.display = 'none';
-        } else {
-          msgDiv.remove();
-        }
-        enviarWS({ tipo: 'mensagem_deletada', mensagemId: msgId, destinatarioId: professorAtual.id });
-        toast('Mensagem eliminada!');
-      } else {
-        toast('Erro ao eliminar mensagem', 'erro');
-      }
-    } catch (error) {
-      toast('Erro ao eliminar mensagem', 'erro');
-    }
-  }
-
-  async function enviarMensagem() {
-    const input     = document.getElementById("messageInput");
-    const fileInput = document.getElementById("messageFile");
-    const conteudo  = input.value.trim();
-    const arquivo   = fileInput.files[0];
-    if ((!conteudo && !arquivo) || !professorAtual) return;
-
-    const formData = new FormData();
-    formData.append("remetenteId", encarregado.id);
-    formData.append("destinatarioId", professorAtual.id);
-    if (conteudo) formData.append("conteudo", conteudo);
-    if (arquivo) formData.append("arquivo", arquivo);
-
-    const msg = {
-      remetenteId:    encarregado.id,
-      destinatarioId: professorAtual.id,
-      conteudo,
-      criadoEm:       new Date().toISOString(),
-      arquivoNome:    arquivo?.name,
-      arquivoUrl:     arquivo ? URL.createObjectURL(arquivo) : undefined,
-    };
-    adicionarMensagem(msg);
-    input.value="";
-    input.style.height="auto";
-    fileInput.value="";
-    document.getElementById("selectedFileName").textContent = "";
-    enviarWS({ tipo:"mensagem", ...msg });
-    try {
-      await apiFetch("/api/mensagens", { method:"POST", body: formData });
-      actualizarPreviewConversa(professorAtual.id,"Você: "+(conteudo||arquivo?.name||"Arquivo enviado"));
-    } catch { toast("Erro ao enviar","erro"); }
-  }
-
-  function handleMsgKeydown(e) { if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();enviarMensagem();} }
-  function handleFileSelected(event) {
-    const file = event.target.files[0];
-    document.getElementById("selectedFileName").textContent = file ? `Anexo: ${file.name}` : "";
-  }
-  function handleTyping() {
-    const ta=document.getElementById("messageInput");
-    ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,112)+"px";
-    enviarWS({tipo:"typing",userId:encarregado.id,destinatarioId:professorAtual?.id});
-  }
-
-  function actualizarPreviewConversa(profId, preview) {
-    const el = document.getElementById("conv-"+profId);
-    if (el) { const p=el.querySelector("p:last-child"); if(p) p.textContent=preview.substring(0,42)+"..."; }
-  }
-
-  let badgeCount = 0;
-  let activeSection = "desempenho";
-
-  function actualizarBadge(n, absolute = false) {
-    badgeCount = absolute ? n : badgeCount + n;
-    const b = document.getElementById("badgeMsgs");
-    if (badgeCount > 0 && activeSection !== "mensagens") {
-      b.classList.remove("hidden");
-      b.textContent = badgeCount;
-    } else {
-      b.classList.add("hidden");
-    }
-  }
-
-  async function carregarBadgeMensagens() {
-    try {
-      const res = await apiFetch("/api/mensagens");
-      const msgs = await res.json();
-      const lista = Array.isArray(msgs) ? msgs : [];
-      const unreadCount = lista.filter(m => m.destinatarioId === encarregado.id && !m.deletadoParaDestinatario && m.remetenteId !== encarregado.id).length;
-      actualizarBadge(unreadCount, true);
-    } catch {
-      actualizarBadge(0, true);
-    }
-  }
-
-  async function iniciarConversa() {
-    const profId   = document.getElementById("destinatarioProfessor").value;
-    const conteudo = document.getElementById("primeiraMensagem").value.trim();
-    if (!profId)   return toast("Selecione um professor","erro");
-    if (!conteudo) return toast("Escreva uma mensagem","erro");
-    try {
-      await apiFetch("/api/mensagens",{ method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({remetenteId:encarregado.id,destinatarioId:parseInt(profId),conteudo}) });
-      enviarWS({tipo:"mensagem",remetenteId:encarregado.id,destinatarioId:parseInt(profId),conteudo,criadoEm:new Date().toISOString()});
-      toast("Mensagem enviada!");
-      fecharModalNovaMsg();
-      document.getElementById("primeiraMensagem").value="";
-      const prof=professores.find(p=>p.id===parseInt(profId));
-      if(prof) setTimeout(()=>abrirConversa(prof.id,prof.nome),300);
-      carregarConversas();
-    } catch { toast("Erro ao enviar","erro"); }
-  }
-
-  function abrirModalNovaMsg() {
-    document.getElementById("modalNovaMsg").style.display="flex";
-    document.getElementById("modalNovaMsg").classList.remove("hidden");
-  }
-  function fecharModalNovaMsg() {
-    document.getElementById("modalNovaMsg").style.display="none";
-    document.getElementById("modalNovaMsg").classList.add("hidden");
-  }
-
-  // ── DROPDOWN 
-  document.getElementById("accountButton").addEventListener("click",function(e){
-    e.stopPropagation();
-    document.getElementById("accountMenu").classList.toggle("hidden");
-  });
-  document.addEventListener("click",()=>document.getElementById("accountMenu").classList.add("hidden"));
-
-  function terminarSessao() {
-    abrirModalConfirmacao("Terminar Sessão", "Tem a certeza que deseja terminar a sessão?", () => {
-      if(ws) ws.close();
-      localStorage.removeItem("token"); 
-      localStorage.removeItem("usuario");
-      localStorage.removeItem("adminToken");
-      localStorage.removeItem("adminLogado");
-      window.location.href="login.html";
-    });
-  }
-
-  // ── MODO SELEÇÃO ──────────────────────────────────
-  let modoSelecao = false;
-  let mensagensSelecionadas = [];
-
-  function toggleModoSelecao() {
-    modoSelecao = !modoSelecao;
-    mensagensSelecionadas = [];
-    const btn = document.getElementById("btnSelecionarMensagens");
-    const btnEliminar = document.getElementById("btnEliminarSelecionadas");
-    const chatInput = document.getElementById("chatInput");
-
-    if (modoSelecao) {
-      btn.textContent = "Cancelar seleção";
-      btnEliminar.classList.remove("hidden");
-      chatInput.classList.add("hidden");
-      adicionarCheckboxes();
-    } else {
-      btn.textContent = "Selecionar mensagens";
-      btnEliminar.classList.add("hidden");
-      chatInput.classList.remove("hidden");
-      removerCheckboxes();
-    }
-  }
-
-  function adicionarCheckboxes() {
-    const mensagens = document.querySelectorAll("#messagesArea .flex");
-    mensagens.forEach((msgDiv, index) => {
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.className = "mr-2";
-      checkbox.onchange = () => toggleSelecao(index);
-      msgDiv.insertBefore(checkbox, msgDiv.firstChild);
-    });
-  }
-
-  function removerCheckboxes() {
-    const checkboxes = document.querySelectorAll("#messagesArea input[type='checkbox']");
-    checkboxes.forEach(cb => cb.remove());
-  }
-
-  function toggleSelecao(index) {
-    if (mensagensSelecionadas.includes(index)) {
-      mensagensSelecionadas = mensagensSelecionadas.filter(i => i !== index);
-    } else {
-      mensagensSelecionadas.push(index);
-    }
-  }
-
-  function eliminarSelecionadas() {
-    if (mensagensSelecionadas.length === 0) {
-      toast("Selecione pelo menos uma mensagem", "erro");
-      return;
-    }
-    document.getElementById("modalEliminarSelecionadas").style.display = "flex";
-    document.getElementById("modalEliminarSelecionadas").classList.remove("hidden");
-  }
-
-  async function confirmarEliminarSelecionadas(tipo) {
-    fecharModalEliminarSelecionadas();
-    const mensagens = document.querySelectorAll("#messagesArea .flex");
-    for (const index of mensagensSelecionadas) {
-      const msgDiv = mensagens[index];
-      const msgId = msgDiv.getAttribute('data-msg-id');
-      try {
-        const res = await apiFetch(`/api/mensagens/${msgId}`, { 
-          method: 'DELETE',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tipo })
-        });
-        if (res.ok) {
-          if (tipo === 'para_mim') {
-            msgDiv.style.display = 'none';
-          } else {
-            msgDiv.remove();
-          }
-        }
-      } catch (error) {
-        console.error("Erro ao eliminar mensagem", error);
-      }
-    }
-    toast(`Mensagens eliminadas ${tipo === 'para_todos' ? 'para todos' : 'para você'}!`);
-    toggleModoSelecao();
-  }
-
-  function fecharModalEliminarSelecionadas() {
-    document.getElementById("modalEliminarSelecionadas").style.display = "none";
-    document.getElementById("modalEliminarSelecionadas").classList.add("hidden");
-  }
-
-  // ── ARRANQUE 
-  (async () => {
-    preencherPerfil();
-    await carregarBadgeMensagens();
-    await carregarDesempenho();
-    showSection("desempenho");
-  })();
-</script>
-
-<!-- MODAL EDITAR MENSAGEM -->
-<div id="modalEditarMensagem" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50">
-  <div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
-    <h3 class="text-lg font-semibold mb-4">Editar Mensagem</h3>
-    <textarea id="editMessageInput" class="w-full p-3 border border-gray-300 rounded-lg resize-none" rows="3" placeholder="Digite a nova mensagem..."></textarea>
-    <div class="flex justify-end gap-3 mt-4">
-      <button onclick="fecharModalEditar()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button>
-      <button onclick="salvarEdicaoMensagem()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition">Salvar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL CONFIRMAR DELEÇÃO -->
-<div id="modalDeletarMensagem" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50">
-  <div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
-    <h3 class="text-lg font-semibold mb-4">Eliminar Mensagem</h3>
-    <p class="text-gray-600 mb-4">Escolha como deseja eliminar a mensagem:</p>
-    <div class="flex flex-col gap-3">
-      <button onclick="confirmarDelecaoMensagem('para_mim')" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">Eliminar para mim</button>
-      <button onclick="confirmarDelecaoMensagem('para_todos')" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Eliminar para todos</button>
-    </div>
-    <div class="flex justify-end mt-4">
-      <button onclick="fecharModalDeletar()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL ELIMINAR SELECIONADAS -->
-<div id="modalEliminarSelecionadas" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50">
-  <div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
-    <h3 class="text-lg font-semibold mb-4">Eliminar Mensagens Selecionadas</h3>
-    <p class="text-gray-600 mb-4">Escolha como deseja eliminar as mensagens selecionadas:</p>
-    <div class="flex flex-col gap-3">
-      <button onclick="confirmarEliminarSelecionadas('para_mim')" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">Eliminar para mim</button>
-      <button onclick="confirmarEliminarSelecionadas('para_todos')" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Eliminar para todos</button>
-    </div>
-    <div class="flex justify-end mt-4">
-      <button onclick="fecharModalEliminarSelecionadas()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button>
-    </div>
-  </div>
-</div>
-<div id="modalConfirmar" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4 fade-in">
-
-    <h2 id="modalTitulo" class="text-xl font-bold text-gray-800 mb-4">
-      Confirmar ação
-    </h2>
-
-    <p id="mensagemConfirmar" class="text-gray-600 mb-6">
-      Tem a certeza desta ação?
-    </p>
-
-    <div class="flex gap-3">
-      <button onclick="fecharModalConfirmar()"
-        class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">
-        Cancelar
-      </button>
-
-      <button id="btnConfirmarRemocao"
-        class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-semibold transition">
-        Confirmar
-      </button>
-    </div>
-
-  </div>
-</div>
-
-<!-- MODAL DE NOTIFICAÇÃO -->
-<div id="modalNotificacao" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm">
-  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4 fade-in">
-
-    <h2 id="modalNotificacaoTitulo" class="text-xl font-bold text-gray-800 mb-4">
-      Notificação
-    </h2>
-
-    <p id="mensagemNotificacao" class="text-gray-600 mb-6">
-      Mensagem aqui.
-    </p>
-
-    <div class="flex justify-center">
-      <button onclick="fecharModalNotificacao()"
-        class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 font-semibold transition">
-        OK
-      </button>
-    </div>
-
-  </div>
-</div>
+<div id="modalConfirmar" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4"><h2 id="modalTitulo" class="text-xl font-bold text-gray-800 mb-4">Confirmar ação</h2><p id="mensagemConfirmar" class="text-gray-600 mb-6">Tem a certeza desta ação?</p><div class="flex gap-3"><button onclick="fecharModalConfirmar()" class="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg hover:bg-gray-50 font-semibold transition">Cancelar</button><button id="btnConfirmarRemocao" class="flex-1 bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-semibold transition">Confirmar</button></div></div></div>
+<div id="modalNotificacao" class="fixed inset-0 z-50 flex hidden items-center justify-center bg-black/50 backdrop-blur-sm"><div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 mx-4"><h2 id="modalNotificacaoTitulo" class="text-xl font-bold text-gray-800 mb-4">Notificação</h2><p id="mensagemNotificacao" class="text-gray-600 mb-6">Mensagem aqui.</p><div class="flex justify-center"><button onclick="fecharModalNotificacao()" class="bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 font-semibold transition">OK</button></div></div></div>
+<div id="modalEditarMensagem" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50"><div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4"><h3 class="text-lg font-semibold mb-4">Editar Mensagem</h3><textarea id="editMessageInput" class="w-full p-3 border border-gray-300 rounded-lg resize-none" rows="3" placeholder="Digite a nova mensagem..."></textarea><div class="flex justify-end gap-3 mt-4"><button onclick="fecharModalEditar()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button><button onclick="salvarEdicaoMensagem()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-secondary transition">Salvar</button></div></div></div>
+<div id="modalDeletarMensagem" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50"><div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4"><h3 class="text-lg font-semibold mb-4">Eliminar Mensagem</h3><p class="text-gray-600 mb-4">Escolha como deseja eliminar a mensagem:</p><div class="flex flex-col gap-3"><button onclick="confirmarDelecaoMensagem('para_mim')" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">Eliminar para mim</button><button onclick="confirmarDelecaoMensagem('para_todos')" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Eliminar para todos</button></div><div class="flex justify-end mt-4"><button onclick="fecharModalDeletar()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button></div></div></div>
+<div id="modalEliminarSelecionadas" class="fixed inset-0 bg-black bg-opacity-50 flex hidden items-center justify-center z-50"><div class="bg-white rounded-lg p-6 w-96 max-w-full mx-4"><h3 class="text-lg font-semibold mb-4">Eliminar Mensagens Selecionadas</h3><p class="text-gray-600 mb-4">Escolha como deseja eliminar as mensagens selecionadas:</p><div class="flex flex-col gap-3"><button onclick="confirmarEliminarSelecionadas('para_mim')" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition">Eliminar para mim</button><button onclick="confirmarEliminarSelecionadas('para_todos')" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">Eliminar para todos</button></div><div class="flex justify-end mt-4"><button onclick="fecharModalEliminarSelecionadas()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">Cancelar</button></div></div></div>
 
 <script src="utils.js"></script>
-
 <script>
-  // ── MENU RESPONSIVO ──────────────────────────────────────────
-  const sidebar = document.getElementById('sidebar');
-  const sidebarOverlay = document.getElementById('sidebarOverlay');
-  const menuToggle = document.getElementById('menuToggle');
-  
-  function toggleSidebar() {
-    sidebar.classList.toggle('-translate-x-full');
-    sidebarOverlay.classList.toggle('hidden');
-  }
-  
-  menuToggle?.addEventListener('click', toggleSidebar);
-  sidebarOverlay?.addEventListener('click', toggleSidebar);
-  
-  document.querySelectorAll('#sidebar a').forEach(link => {
-    link.addEventListener('click', () => {
-      if (window.innerWidth < 768) {
-        toggleSidebar();
-      }
-    });
-  });
-</script>
+  const API = "https://schoolconnect-0ud2.onrender.com";
+  const WS = (window.location.protocol === "https:" ? "wss://" : "ws://") + "schoolconnect-0ud2.onrender.com";
 
+  function getArquivoUrl(url){ if(!url) return undefined; if(url.startsWith("http://")||url.startsWith("https://")||url.startsWith("blob:")) return url; return url.startsWith("/")?API+url:url; }
+
+  const token = localStorage.getItem("token"); const usuarioStr = localStorage.getItem("usuario");
+  if(!token||!usuarioStr) window.location.href="login.html";
+  const encarregado = JSON.parse(usuarioStr);
+  if(encarregado.perfil!=="ENCARREGADO"){ alert("Acesso negado"); window.location.href="login.html"; }
+
+  async function apiFetch(url,opts={}){ const headers={...(opts.headers||{}),"Authorization":"Bearer "+token}; return fetch(API+url,{...opts,headers}); }
+  function toast(msg,tipo="sucesso"){ const ti=document.getElementById("toastInner"); ti.className="flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in "+(tipo==="sucesso"?"bg-green-600":tipo==="erro"?"bg-red-600":"bg-blue-600"); document.getElementById("toastIcon").textContent=tipo==="sucesso"?"✓":tipo==="erro"?"✕":"ℹ"; document.getElementById("toastMsg").textContent=msg; const t=document.getElementById("toast"); t.classList.remove("hidden"); setTimeout(()=>t.classList.add("hidden"),3500); }
+
+  let ws=null, professorAtual=null, professores=[], typingTimer=null;
+  function conectarWS(){ ws=new WebSocket(WS+"?token="+token); ws.onopen=()=>console.log("WS conectado"); ws.onmessage=(ev)=>{ const data=JSON.parse(ev.data); if(data.tipo==="nova_mensagem"){ if(professorAtual&&(data.mensagem.remetenteId===professorAtual.id||data.mensagem.destinatarioId===professorAtual.id)) adicionarMensagemNoChat(data.mensagem); if(data.mensagem.remetenteId!==encarregado.id){ actualizarBadge(1); actualizarPreviewConversa(data.mensagem.remetenteId,data.mensagem.conteudo); } } if(data.tipo==="mensagem_editada"&&professorAtual&&data.destinatarioId===professorAtual.id){ const msgElement=document.querySelector(`[data-msg-id="${data.mensagemId}"]`); if(msgElement){ const msgDiv=msgElement.querySelector('.msg-own, .msg-other'); if(msgDiv) msgDiv.textContent=data.novoConteudo+' (editado)'; } } if(data.tipo==="mensagem_deletada"&&professorAtual&&data.destinatarioId===professorAtual.id){ const msgElement=document.querySelector(`[data-msg-id="${data.mensagemId}"]`); if(msgElement) msgElement.remove(); } if(data.tipo==="typing"&&data.userId===professorAtual?.id){ const ti=document.getElementById("typingIndicator"); ti.classList.remove("hidden"); clearTimeout(typingTimer); typingTimer=setTimeout(()=>ti.classList.add("hidden"),2000); } }; ws.onclose=()=>setTimeout(conectarWS,3000); }
+  function enviarWS(payload){ if(ws&&ws.readyState===WebSocket.OPEN) ws.send(JSON.stringify(payload)); }
+
+  const seccoes=["desempenho","reunioes","mensagens"];
+  function showSection(sec){ activeSection=sec; seccoes.forEach(s=>{ document.getElementById(s+"Section").classList.add("hidden"); const nav=document.getElementById("nav-"+s); if(nav){ nav.classList.remove("bg-secondary","font-semibold"); nav.classList.add("hover:bg-secondary"); } }); document.getElementById(sec+"Section").classList.remove("hidden"); const an=document.getElementById("nav-"+sec); if(an){ an.classList.add("bg-secondary","font-semibold"); an.classList.remove("hover:bg-secondary"); } const t={desempenho:["Desempenho","Acompanhamento académico do seu educando"],reunioes:["Reuniões","Reuniões agendadas com os professores"],mensagens:["Mensagens","Comunicação com os professores"]}; document.getElementById("pageTitle").textContent=t[sec][0]; document.getElementById("pageSubtitle").textContent=t[sec][1]; if(sec==="reunioes"){ const badgeReunioes=document.getElementById("badgeReunioes"); badgeReunioes.classList.add("hidden"); carregarReunioes(); } if(sec==="mensagens"){ document.getElementById("badgeMsgs").classList.add("hidden"); carregarConversas(); if(!ws) conectarWS(); } }
+
+  function preencherPerfil(){ const nome=encarregado.nome||"Encarregado"; const inicial=nome[0]?.toUpperCase()||"E"; document.getElementById("sidebarNome").textContent=nome; document.getElementById("headerNome").textContent=nome; document.getElementById("menuNome").textContent=nome; document.getElementById("menuEmail").textContent=encarregado.email||""; document.getElementById("avatarInicial").textContent=inicial; }
+
+  let alunoAtual=null;
+  async function carregarDesempenho(){ try{ const res=await apiFetch("/api/alunos"); const todos=await res.json(); const alunos=todos.filter(a=>a.encarregadoId===encarregado.id); if(!alunos.length){ document.getElementById("notasLoading").classList.add("hidden"); document.getElementById("notasVazio").classList.remove("hidden"); return; } alunoAtual=alunos[0]; document.getElementById("cardAluno").textContent=alunoAtual.nome; document.getElementById("cardTurma").textContent=alunoAtual.turma?.nome||alunoAtual.classe||"-"; document.getElementById("cardClasse").textContent=alunoAtual.classe||"-"; await carregarNotas(); await carregarAvisos(); } catch{ document.getElementById("notasLoading").classList.add("hidden"); document.getElementById("notasVazio").classList.remove("hidden"); } }
+  async function carregarNotas(){ if(!alunoAtual) return; document.getElementById("notasLoading").classList.remove("hidden"); document.getElementById("notasContainer").classList.add("hidden"); document.getElementById("notasVazio").classList.add("hidden"); try{ const res=await apiFetch("/api/notas"); const todas=await res.json(); const notas=Array.isArray(todas)?todas.filter(n=>n.alunoId===alunoAtual.id):[]; document.getElementById("notasLoading").classList.add("hidden"); if(!notas.length){ document.getElementById("notasVazio").classList.remove("hidden"); return; } const media=notas.reduce((s,n)=>s+n.valor,0)/notas.length; document.getElementById("cardMedia").textContent=media.toFixed(1); const corMedia=media>=15?"text-green-600":media>=10?"text-blue-600":"text-red-600"; document.getElementById("cardMedia").className="text-3xl font-bold "+corMedia; const porDisc={}; notas.forEach(n=>{ const nome=n.disciplina?.nome||"Disciplina"; if(!porDisc[nome]) porDisc[nome]=[]; porDisc[nome].push(n.valor); }); const container=document.getElementById("notasContainer"); container.classList.remove("hidden"); container.innerHTML=Object.entries(porDisc).map(([disc,vals])=>{ const media=vals.reduce((s,v)=>s+v,0)/vals.length; const pct=(media/20)*100; const cor=media>=15?"#16a34a":media>=10?"#2563eb":"#dc2626"; const badge=media>=15?"bg-green-100 text-green-700":media>=10?"bg-blue-100 text-blue-700":"bg-red-100 text-red-700"; const label=media>=15?"Muito Bom":media>=10?"Satisfatório":"Insuficiente"; return `<div class="border border-gray-100 rounded-xl p-5 hover:shadow-sm transition"><div class="flex items-center justify-between mb-3"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm" style="background:${cor}">${disc[0]}</div><div><p class="font-bold text-gray-800">${disc}</p><p class="text-xs text-gray-400">${vals.length} avaliação${vals.length>1?"ões":""}</p></div></div><div class="text-right"><p class="text-2xl font-bold" style="color:${cor}">${media.toFixed(1)}</p><span class="text-xs font-semibold px-2 py-0.5 rounded-full ${badge}">${label}</span></div></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${cor}"></div></div><div class="flex justify-between mt-1"><span class="text-xs text-gray-400">0</span><span class="text-xs text-gray-400">20</span></div></div>`; }).join(""); } catch{ document.getElementById("notasLoading").classList.add("hidden"); document.getElementById("notasVazio").classList.remove("hidden"); } }
+  async function carregarAvisos(){ try{ const res=await apiFetch("/api/avisos"); const data=await res.json(); const avisos=Array.isArray(data)?data.slice(0,3):[]; const cont=document.getElementById("avisosContainer"); if(!avisos.length){ cont.innerHTML='<p class="text-gray-400 text-sm text-center py-4">Sem avisos publicados</p>'; return; } cont.innerHTML=avisos.map(a=>`<div class="flex items-start gap-3 p-4 bg-green-50 border border-green-100 rounded-xl"><div class="w-2 h-2 rounded-full bg-primary mt-2 shrink-0"></div><div><p class="font-semibold text-gray-800 text-sm">${a.titulo}</p><p class="text-gray-500 text-xs mt-0.5">${a.conteudo.substring(0,100)}${a.conteudo.length>100?"...":""}</p><p class="text-gray-300 text-xs mt-1">${new Date(a.criadoEm).toLocaleDateString("pt-PT")}</p></div></div>`).join(""); } catch{} }
+
+  async function carregarReunioes(){ document.getElementById("listaReunioes").innerHTML='<div class="flex justify-center py-8"><div class="spinner"></div></div>'; try{ const res=await apiFetch(`/api/reunioes?usuarioId=${encarregado.id}`); const data=await res.json(); document.getElementById("statTotalR").textContent=data.length; document.getElementById("statOnlineR").textContent=data.filter(r=>r.linkMeeting).length; document.getElementById("statPresencialR").textContent=data.filter(r=>!r.linkMeeting).length; const badgeReunioes=document.getElementById("badgeReunioes"); badgeReunioes.textContent=data.length; if(data.length>0) badgeReunioes.classList.remove("hidden"); else badgeReunioes.classList.add("hidden"); if(!data.length){ document.getElementById("listaReunioes").innerHTML='<p class="text-gray-400 text-center py-8">Nenhuma reunião agendada</p>'; return; } document.getElementById("listaReunioes").innerHTML=data.map(r=>{ const criadoPor=r.criadoPor?r.criadoPor.nome:"Administrador"; const participantsStr=r.participantes&&r.participantes.length>0?r.participantes.map(p=>p.usuario.nome).join(", "):"—"; return `<div class="border-l-4 ${r.linkMeeting?"border-blue-400":"border-yellow-400"} bg-gray-50 p-5 rounded-xl hover:shadow-md transition"><div class="flex justify-between items-start mb-3"><div class="flex items-center gap-3"><div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold ${r.linkMeeting?"bg-blue-500":"bg-yellow-500"}">${r.linkMeeting?"🎥":"📍"}</div><div><h3 class="font-bold text-gray-800">${r.titulo}</h3><p class="text-sm text-gray-500">${r.local}</p></div></div><span class="px-3 py-1 rounded-full text-xs font-semibold shrink-0 ${r.linkMeeting?"bg-blue-100 text-blue-700":"bg-yellow-100 text-yellow-700"}">${r.linkMeeting?"Online":"Presencial"}</span></div><p class="text-xs text-gray-500 mb-2">👤 <strong>Agendada por:</strong> ${criadoPor}</p><p class="text-xs text-gray-500 mb-3">👥 <strong>Para:</strong> ${participantsStr}</p><p class="text-xs text-gray-400 mb-3">Agendada em: ${new Date(r.criadoEm).toLocaleDateString("pt-PT")}</p>${r.linkMeeting?`<a href="${r.linkMeeting}" target="_blank" class="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm">🎥 Entrar na Reunião</a>`:`<div class="flex items-center gap-2 text-gray-600 text-sm">📍 <span>${r.local}</span></div>`}</div>`; }).join(""); if(data.length>0) document.getElementById("badgeReunioes").classList.remove("hidden"); } catch{ toast("Erro ao carregar reuniões","erro"); } }
+
+  async function carregarProfessores(){ try{ const res=await apiFetch("/api/usuarios"); const users=await res.json(); professores=users.filter(u=>u.perfil==="PROFESSOR"); const sel=document.getElementById("destinatarioProfessor"); sel.innerHTML='<option value="">Selecionar professor...</option>'; professores.forEach(p=>sel.innerHTML+=`<option value="${p.id}">${p.nome}</option>`); } catch{} }
+  async function carregarConversas(){ document.getElementById("listaConversas").innerHTML='<div class="flex justify-center py-8"><div class="spinner"></div></div>'; await carregarProfessores(); try{ const res=await apiFetch("/api/mensagens"); const msgs=await res.json(); const lista=Array.isArray(msgs)?msgs:[]; const unreadCount=lista.filter(m=>m.destinatarioId===encarregado.id&&!m.deletadoParaDestinatario&&m.remetenteId!==encarregado.id).length; actualizarBadge(unreadCount,true); const mapa={}; lista.forEach(m=>{ const outro=m.remetenteId===encarregado.id?m.destinatarioId:m.remetenteId; if(!mapa[outro]||new Date(m.criadoEm)>new Date(mapa[outro].criadoEm)) mapa[outro]=m; }); const idsComConversa=new Set(Object.keys(mapa).map(Number)); const todosIds=[...new Set([...idsComConversa,...professores.map(p=>p.id)])]; const cont=document.getElementById("listaConversas"); if(!todosIds.length){ cont.innerHTML='<p class="text-gray-400 text-sm text-center py-8 px-4">Nenhum professor disponível</p>'; return; } cont.innerHTML=todosIds.map(id=>{ const prof=professores.find(p=>p.id===id); if(!prof) return ""; const ultima=mapa[id]; const preview=ultima?(ultima.remetenteId===encarregado.id?"Você: ":"")+ultima.conteudo.substring(0,38)+"...":"Clique para iniciar"; return `<div onclick="abrirConversa(${prof.id},'${prof.nome}')" class="conversa-item cursor-pointer p-4 border-b border-gray-50 flex items-center gap-3 transition" id="conv-${prof.id}"><div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold text-sm shrink-0">${prof.nome[0].toUpperCase()}</div><div class="flex-1 min-w-0"><p class="font-semibold text-gray-800 text-sm truncate">${prof.nome}</p><p class="text-xs text-gray-400 truncate">${preview}</p></div></div>`; }).join(""); } catch{ await carregarProfessores(); const cont=document.getElementById("listaConversas"); cont.innerHTML=professores.map(p=>`<div onclick="abrirConversa(${p.id},'${p.nome}')" class="conversa-item cursor-pointer p-4 border-b border-gray-50 flex items-center gap-3 transition" id="conv-${p.id}"><div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-700 font-bold text-sm shrink-0">${p.nome[0].toUpperCase()}</div><div class="flex-1 min-w-0"><p class="font-semibold text-gray-800 text-sm truncate">${p.nome}</p><p class="text-xs text-gray-400">Clique para iniciar</p></div></div>`).join("")||'<p class="text-gray-400 text-sm text-center py-8">Sem professores</p>'; } }
+  function filtrarConversas(){ const q=document.getElementById("searchConversas").value.toLowerCase(); document.querySelectorAll(".conversa-item").forEach(el=>{ el.style.display=el.textContent.toLowerCase().includes(q)?"":"none"; }); }
+  async function abrirConversa(profId,profNome){ if(modoSelecao) toggleModoSelecao(); professorAtual={id:profId,nome:profNome}; document.querySelectorAll(".conversa-item").forEach(el=>el.classList.remove("active")); document.getElementById("conv-"+profId)?.classList.add("active"); document.getElementById("chatHeader").classList.remove("hidden"); document.getElementById("chatAvatar").textContent=profNome[0].toUpperCase(); document.getElementById("chatNome").textContent=profNome; document.getElementById("chatEmpty").classList.add("hidden"); document.getElementById("messagesArea").classList.remove("hidden"); document.getElementById("chatInput").classList.remove("hidden"); await carregarMensagens(profId); enviarWS({tipo:"entrar_conversa",destinatarioId:profId}); }
+  async function carregarMensagens(profId){ const area=document.getElementById("messagesArea"); area.innerHTML='<div class="flex justify-center py-4"><div class="spinner"></div></div>'; try{ const res=await apiFetch("/api/mensagens"); const msgs=await res.json(); const filtradas=Array.isArray(msgs)?msgs.filter(m=>(m.remetenteId===encarregado.id&&m.destinatarioId===profId)||(m.remetenteId===profId&&m.destinatarioId===encarregado.id)):[]; area.innerHTML=filtradas.length?"":'<p class="text-gray-400 text-center text-sm py-4">Sem mensagens. Inicie a conversa!</p>'; filtradas.forEach(m=>adicionarMensagemNoChat(m,false)); area.scrollTop=area.scrollHeight; } catch{ area.innerHTML='<p class="text-gray-400 text-center text-sm py-4">Inicie a conversa!</p>'; } }
+  function adicionarMensagemNoChat(msg,scroll=true){ const area=document.getElementById("messagesArea"); const isOwn=msg.remetenteId===encarregado.id; const hora=new Date(msg.criadoEm).toLocaleTimeString("pt-PT",{hour:"2-digit",minute:"2-digit"}); const editado=msg.editadoEm?" (editado)":""; const arquivoUrl=getArquivoUrl(msg.arquivoUrl); const isImage=arquivoUrl&&(msg.arquivoTipo?.startsWith("image/")||(msg.arquivoNome&&/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i.test(msg.arquivoNome))); const arquivoHtml=arquivoUrl?isImage?`<div class="mt-3"><a href="${arquivoUrl}" target="_blank" class="block overflow-hidden rounded-xl border border-gray-200"><img src="${arquivoUrl}" alt="${msg.arquivoNome||'Imagem'}" class="w-full h-auto object-contain"/></a><div class="mt-2 text-xs text-gray-500">${msg.arquivoNome||'Imagem'}</div></div>`:`<div class="mt-3 text-sm"><a href="${arquivoUrl}" download="${msg.arquivoNome||''}" class="inline-flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-xl text-blue-600 hover:bg-gray-50" target="_blank">${msg.arquivoNome||'Baixar arquivo'}</a></div>`:""; const div=document.createElement("div"); div.className="flex "+(isOwn?"justify-end":"justify-start")+" group cursor-pointer"; div.setAttribute('data-msg-id',msg.id); div.onclick=()=>mostrarMenuMensagem(msg.id,msg.conteudo,div); div.innerHTML=`<div class="max-w-xs lg:max-w-md relative"><div class="${isOwn?"msg-own":"msg-other"} px-4 py-2.5 text-sm shadow-sm">${msg.conteudo||""}${arquivoHtml}${editado}</div><p class="text-xs text-gray-400 mt-1 ${isOwn?"text-right":"text-left"}">${hora}</p></div>`; area.appendChild(div); if(scroll) area.scrollTop=area.scrollHeight; }
+  function mostrarMenuMensagem(msgId,conteudo,element){ document.querySelectorAll('.menu-mensagem').forEach(m=>m.remove()); const escapedContent=conteudo.replace(/'/g,"\\'").replace(/\n/g,'\\n').replace(/\r/g,''); const menu=document.createElement('div'); menu.className='menu-mensagem absolute bg-white border border-gray-200 rounded-lg shadow-lg z-10'; menu.innerHTML=`<button onclick="editarMensagem(${msgId},'${escapedContent}')" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-blue-600">Editar</button><button onclick="deletarMensagem(${msgId})" class="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 text-red-600">Eliminar</button>`; element.appendChild(menu); menu.style.minWidth='130px'; menu.style.top='0'; menu.style.left='0'; menu.style.padding='0.25rem 0'; setTimeout(()=>{ document.addEventListener('click',function closeMenu(e){ if(!menu.contains(e.target)&&!element.contains(e.target)){ menu.remove(); document.removeEventListener('click',closeMenu); } }); },0); }
+  let mensagemParaEditar=null; function fecharModalEditar(){ document.getElementById("modalEditarMensagem").style.display="none"; document.getElementById("modalEditarMensagem").classList.add("hidden"); document.getElementById("editMessageInput").value=""; }
+  async function editarMensagem(msgId,conteudoAtual){ mensagemParaEditar=msgId; document.getElementById("editMessageInput").value=conteudoAtual; document.getElementById("modalEditarMensagem").style.display="flex"; document.getElementById("modalEditarMensagem").classList.remove("hidden"); }
+  async function salvarEdicaoMensagem(){ if(!mensagemParaEditar) return; const msgId=mensagemParaEditar; const novoConteudo=document.getElementById("editMessageInput").value.trim(); if(!novoConteudo){ toast('A mensagem não pode estar vazia','erro'); return; } fecharModalEditar(); try{ const res=await apiFetch(`/api/mensagens/${msgId}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({conteudo:novoConteudo})}); if(res.ok){ const msgElement=document.querySelector(`[data-msg-id="${msgId}"]`); if(msgElement){ const msgDiv=msgElement.querySelector('.msg-own, .msg-other'); if(msgDiv) msgDiv.textContent=novoConteudo+' (editado)'; } enviarWS({tipo:'mensagem_editada',mensagemId:msgId,conteudo:novoConteudo,destinatarioId:professorAtual.id}); toast('Mensagem editada!'); } else{ toast('Erro ao editar mensagem','erro'); } } catch(error){ toast('Erro ao editar mensagem','erro'); } }
+  let mensagemParaDeletar=null; function fecharModalDeletar(){ document.getElementById("modalDeletarMensagem").style.display="none"; document.getElementById("modalDeletarMensagem").classList.add("hidden"); mensagemParaDeletar=null; }
+  async function deletarMensagem(msgId){ mensagemParaDeletar=msgId; document.getElementById("modalDeletarMensagem").style.display="flex"; document.getElementById("modalDeletarMensagem").classList.remove("hidden"); }
+  async function confirmarDelecaoMensagem(tipo){ if(!mensagemParaDeletar) return; const msgId=mensagemParaDeletar; fecharModalDeletar(); try{ const res=await apiFetch(`/api/mensagens/${msgId}`,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo})}); if(res.ok){ const msgDiv=document.querySelector(`[data-msg-id="${msgId}"]`); if(tipo==='para_mim') msgDiv.style.display='none'; else msgDiv.remove(); toast('Mensagem eliminada!'); } else{ toast('Erro ao eliminar mensagem','erro'); } } catch(error){ toast('Erro ao eliminar mensagem','erro'); } }
+  async function enviarMensagem(){ const input=document.getElementById("messageInput"); const fileInput=document.getElementById("messageFile"); const conteudo=input.value.trim(); const arquivo=fileInput.files[0]; if((!conteudo&&!arquivo)||!professorAtual) return; const formData=new FormData(); formData.append("remetenteId",encarregado.id); formData.append("destinatarioId",professorAtual.id); if(conteudo) formData.append("conteudo",conteudo); if(arquivo) formData.append("arquivo",arquivo); const msg={remetenteId:encarregado.id,destinatarioId:professorAtual.id,conteudo,criadoEm:new Date().toISOString(),arquivoNome:arquivo?.name,arquivoUrl:arquivo?URL.createObjectURL(arquivo):undefined}; adicionarMensagemNoChat(msg); input.value=""; input.style.height="auto"; fileInput.value=""; document.getElementById("selectedFileName").textContent=""; enviarWS({tipo:"nova_mensagem",mensagem:msg}); try{ await apiFetch("/api/mensagens",{method:"POST",body:formData}); actualizarPreviewConversa(professorAtual.id,"Você: "+(conteudo||arquivo?.name||"Arquivo enviado")); } catch{ toast("Erro ao enviar","erro"); } }
+  function handleFileSelected(event){ const file=event.target.files[0]; document.getElementById("selectedFileName").textContent=file?`Anexo: ${file.name}`:""; }
+  function handleMsgKeydown(e){ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); enviarMensagem(); } }
+  function handleTyping(){ const ta=document.getElementById("messageInput"); ta.style.height="auto"; ta.style.height=Math.min(ta.scrollHeight,112)+"px"; enviarWS({tipo:"typing",userId:encarregado.id,destinatarioId:professorAtual?.id}); }
+  function actualizarPreviewConversa(profId,preview){ const el=document.getElementById("conv-"+profId); if(el){ const p=el.querySelector("p:last-child"); if(p) p.textContent=preview.substring(0,45)+"..."; } }
+  let badgeCount=0, activeSection="desempenho";
+  function actualizarBadge(n,absolute=false){ badgeCount=absolute?n:badgeCount+n; const b=document.getElementById("badgeMsgs"); if(badgeCount>0&&activeSection!=="mensagens"){ b.classList.remove("hidden"); b.textContent=badgeCount; } else{ b.classList.add("hidden"); } }
+  async function carregarBadgeMensagens(){ try{ const res=await apiFetch("/api/mensagens"); const msgs=await res.json(); const lista=Array.isArray(msgs)?msgs:[]; const unreadCount=lista.filter(m=>m.destinatarioId===encarregado.id&&!m.deletadoParaDestinatario&&m.remetenteId!==encarregado.id).length; actualizarBadge(unreadCount,true); } catch{ actualizarBadge(0,true); } }
+  async function iniciarConversa(){ const profId=document.getElementById("destinatarioProfessor").value; const conteudo=document.getElementById("primeiraMensagem").value.trim(); if(!profId) return toast("Selecione um professor","erro"); if(!conteudo) return toast("Escreva uma mensagem","erro"); try{ await apiFetch("/api/mensagens",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({remetenteId:encarregado.id,destinatarioId:parseInt(profId),conteudo})}); enviarWS({tipo:"nova_mensagem",mensagem:{remetenteId:encarregado.id,destinatarioId:parseInt(profId),conteudo,criadoEm:new Date().toISOString()}}); toast("Mensagem enviada!"); fecharModalNovaMsg(); document.getElementById("primeiraMensagem").value=""; const prof=professores.find(p=>p.id===parseInt(profId)); if(prof) setTimeout(()=>abrirConversa(prof.id,prof.nome),300); carregarConversas(); } catch{ toast("Erro ao enviar","erro"); } }
+  function abrirModalNovaMsg(){ document.getElementById("modalNovaMsg").style.display="flex"; document.getElementById("modalNovaMsg").classList.remove("hidden"); }
+  function fecharModalNovaMsg(){ document.getElementById("modalNovaMsg").style.display="none"; document.getElementById("modalNovaMsg").classList.add("hidden"); }
+
+  let modoSelecao=false, mensagensSelecionadas=[];
+  function toggleModoSelecao(){ modoSelecao=!modoSelecao; mensagensSelecionadas=[]; const btnSelecionar=document.getElementById("btnSelecionarMensagens"); const btnEliminar=document.getElementById("btnEliminarSelecionadas"); const chatInput=document.getElementById("chatInput"); if(modoSelecao){ btnSelecionar.textContent="Cancelar seleção"; btnEliminar.classList.remove("hidden"); chatInput.classList.add("hidden"); adicionarCheckboxes(); }else{ btnSelecionar.textContent="Selecionar mensagens"; btnEliminar.classList.add("hidden"); chatInput.classList.remove("hidden"); removerCheckboxes(); } }
+  function adicionarCheckboxes(){ const mensagens=document.querySelectorAll("#messagesArea .flex"); mensagens.forEach((msgDiv,index)=>{ const checkbox=document.createElement("input"); checkbox.type="checkbox"; checkbox.className="mr-2 w-4 h-4"; checkbox.onchange=()=>toggleSelecao(index); msgDiv.insertBefore(checkbox,msgDiv.firstChild); }); }
+  function removerCheckboxes(){ const checkboxes=document.querySelectorAll("#messagesArea input[type='checkbox']"); checkboxes.forEach(cb=>cb.remove()); }
+  function toggleSelecao(index){ if(mensagensSelecionadas.includes(index)) mensagensSelecionadas=mensagensSelecionadas.filter(i=>i!==index); else mensagensSelecionadas.push(index); }
+  function abrirModalEliminarSelecionadas(){ const modal=document.getElementById("modalEliminarSelecionadas"); modal.style.display="flex"; modal.classList.remove("hidden"); }
+  function fecharModalEliminarSelecionadas(){ const modal=document.getElementById("modalEliminarSelecionadas"); modal.style.display="none"; modal.classList.add("hidden"); }
+  async function confirmarEliminarSelecionadas(tipo){ fecharModalEliminarSelecionadas(); const mensagens=document.querySelectorAll("#messagesArea .flex"); for(const index of mensagensSelecionadas){ const msgDiv=mensagens[index]; if(!msgDiv) continue; const msgId=msgDiv.dataset.msgId; if(!msgId) continue; try{ const res=await apiFetch(`/api/mensagens/${msgId}`,{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({tipo})}); if(res.ok){ if(tipo==='para_mim') msgDiv.style.display='none'; else msgDiv.remove(); } else console.error(`Falha ao eliminar mensagem ${msgId}`); } catch(error){ console.error("Erro ao eliminar mensagem",error); } } toast(`Mensagens eliminadas ${tipo==='para_todos'?'para todos':'para você'}!`); toggleModoSelecao(); }
+
+  document.getElementById("accountButton").addEventListener("click",function(e){ e.stopPropagation(); document.getElementById("accountMenu").classList.toggle("hidden"); }); document.addEventListener("click",()=>document.getElementById("accountMenu").classList.add("hidden"));
+  function terminarSessao(){ abrirModalConfirmacao("Terminar Sessão","Tem a certeza que deseja terminar a sessão?",()=>{ if(ws) ws.close(); localStorage.removeItem("token"); localStorage.removeItem("usuario"); localStorage.removeItem("adminToken"); localStorage.removeItem("adminLogado"); window.location.href="login.html"; }); }
+
+  (async()=>{ preencherPerfil(); await carregarBadgeMensagens(); await carregarDesempenho(); showSection("desempenho"); })();
+
+  const sidebar=document.getElementById('sidebar'); const sidebarOverlay=document.getElementById('sidebarOverlay'); const menuToggle=document.getElementById('menuToggle');
+  function toggleSidebar(){ sidebar.classList.toggle('-translate-x-full'); sidebarOverlay.classList.toggle('hidden'); }
+  menuToggle?.addEventListener('click',toggleSidebar); sidebarOverlay?.addEventListener('click',toggleSidebar);
+  document.querySelectorAll('#sidebar a').forEach(link=>{ link.addEventListener('click',()=>{ if(window.innerWidth<768) toggleSidebar(); }); });
+</script>
 </body>
 </html>

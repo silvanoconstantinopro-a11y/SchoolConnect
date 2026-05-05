@@ -136,11 +136,11 @@ exports.Prisma.AlunoScalarFieldEnum = {
   nome: 'nome',
   matricula: 'matricula',
   telefone: 'telefone',
-  imagem: 'imagem',
   classe: 'classe',
+  imagem: 'imagem',
   turmaId: 'turmaId',
-  encarregadoId: 'encarregadoId',
   cursoId: 'cursoId',
+  encarregadoId: 'encarregadoId',
   criadoEm: 'criadoEm',
   atualizadoEm: 'atualizadoEm'
 };
@@ -149,6 +149,14 @@ exports.Prisma.TurmaScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   professorId: 'professorId',
+  criadoEm: 'criadoEm',
+  atualizadoEm: 'atualizadoEm'
+};
+
+exports.Prisma.CursoScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  descricao: 'descricao',
   criadoEm: 'criadoEm',
   atualizadoEm: 'atualizadoEm'
 };
@@ -177,15 +185,14 @@ exports.Prisma.MensagemScalarFieldEnum = {
   conteudo: 'conteudo',
   remetenteId: 'remetenteId',
   destinatarioId: 'destinatarioId',
-  editadoEm: 'editadoEm',
-  criadoEm: 'criadoEm',
-  atualizadoEm: 'atualizadoEm',
-  deletadoParaRemetente: 'deletadoParaRemetente',
-  deletadoParaDestinatario: 'deletadoParaDestinatario',
   arquivoUrl: 'arquivoUrl',
   arquivoNome: 'arquivoNome',
   arquivoTipo: 'arquivoTipo',
-  arquivoTamanho: 'arquivoTamanho'
+  arquivoTamanho: 'arquivoTamanho',
+  editadoEm: 'editadoEm',
+  deletadoParaRemetente: 'deletadoParaRemetente',
+  deletadoParaDestinatario: 'deletadoParaDestinatario',
+  criadoEm: 'criadoEm'
 };
 
 exports.Prisma.AvisoScalarFieldEnum = {
@@ -223,14 +230,6 @@ exports.Prisma.ReuniaoParticipanteScalarFieldEnum = {
   usuarioId: 'usuarioId'
 };
 
-exports.Prisma.CursoScalarFieldEnum = {
-  id: 'id',
-  nome: 'nome',
-  descricao: 'descricao',
-  criadoEm: 'criadoEm',
-  atualizadoEm: 'atualizadoEm'
-};
-
 exports.Prisma.RelatorioScalarFieldEnum = {
   id: 'id',
   titulo: 'titulo',
@@ -253,8 +252,7 @@ exports.Prisma.CodigoProfessorScalarFieldEnum = {
   codigo: 'codigo',
   usado: 'usado',
   professorId: 'professorId',
-  criadoEm: 'criadoEm',
-  atualizadoEm: 'atualizadoEm'
+  criadoEm: 'criadoEm'
 };
 
 exports.Prisma.SortOrder = {
@@ -266,13 +264,13 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-exports.Perfil = exports.$Enums.Perfil = {
+exports.PerfilUsuario = exports.$Enums.PerfilUsuario = {
   ADMIN: 'ADMIN',
   PROFESSOR: 'PROFESSOR',
   ENCARREGADO: 'ENCARREGADO'
 };
 
-exports.Relacao = exports.$Enums.Relacao = {
+exports.RelacaoEducando = exports.$Enums.RelacaoEducando = {
   PAI: 'PAI',
   MAE: 'MAE',
   TUTOR: 'TUTOR'
@@ -282,6 +280,7 @@ exports.Prisma.ModelName = {
   Usuario: 'Usuario',
   Aluno: 'Aluno',
   Turma: 'Turma',
+  Curso: 'Curso',
   Disciplina: 'Disciplina',
   Nota: 'Nota',
   Mensagem: 'Mensagem',
@@ -289,7 +288,6 @@ exports.Prisma.ModelName = {
   Evento: 'Evento',
   Reuniao: 'Reuniao',
   ReuniaoParticipante: 'ReuniaoParticipante',
-  Curso: 'Curso',
   Relatorio: 'Relatorio',
   Feedback: 'Feedback',
   CodigoProfessor: 'CodigoProfessor'

@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS "_prisma_migrations" (
   "migration_name"        TEXT NOT NULL,
   "logs"                  TEXT,
   "rolled_back_at"        DATETIME,
-  "started_at"            DATETIME NOT NULL DEFAULT current_timestamp,
+  "started_at"            DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "applied_steps_count"   INTEGER UNSIGNED NOT NULL DEFAULT 0
 );
 

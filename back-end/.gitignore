@@ -1,3 +1,48 @@
-node_modules
+# Dependencies
+node_modules/
+package-lock.json
+
+# Database
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+prisma/*.db
+prisma/*.db-journal
+dev.db
+
+# Environment
 .env
-generated/prisma
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Uploads
+uploads/
+!uploads/.gitkeep
+
+# Generated
+generated/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp

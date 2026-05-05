@@ -1,274 +1,174 @@
 <!doctype html>
 <html lang="pt">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - SchoolConnect</title>
-    <script defer src="utils.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" href="../img/logo.png" type="image/png" />
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              primary: "#15803D",
-              secondary: "#16A34A",
-              accent: "#FACC15",
-            },
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - SchoolConnect</title>
+  <script defer src="utils.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="../img/logo.png" type="image/png" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#15803D",
+            secondary: "#16A34A",
+            accent: "#FACC15",
           },
         },
-      };
-    </script>
-    <style>
-      @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .fade-up {
-        animation: fadeUp 0.5s ease forwards;
-      }
-    </style>
-  </head>
+      },
+    };
+  </script>
+  <style>
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.5s ease forwards; }
+  </style>
+</head>
 
-  <body
-    class="min-h-screen bg-cover bg-center flex items-center justify-center"
-    style="background-image: url(&quot;../img/background.png&quot;)"
-  >
-    <div class="absolute inset-0 bg-black/20"></div>
+<body class="min-h-screen bg-cover bg-center flex items-center justify-center" style="background-image: url('../img/background.png')">
+  <div class="absolute inset-0 bg-black/20"></div>
 
-    <div
-      class="relative bg-white/80 backdrop-blur border border-white/40 p-8 rounded-2xl shadow-2xl w-[90%] max-w-md fade-up"
-    >
-      <div class="text-center mb-10">
-        <div class="flex justify-center mb-4">
-          <div
-            class="w-20 h-20 bg-white shadow-md rounded-2xl flex items-center justify-center"
-          >
-            <img src="../img/logo.png" class="h-12 object-contain" alt="Logo" />
-          </div>
+  <div class="relative bg-white/80 backdrop-blur border border-white/40 p-8 rounded-2xl shadow-2xl w-[90%] max-w-md fade-up">
+    <div class="text-center mb-10">
+      <div class="flex justify-center mb-4">
+        <div class="w-20 h-20 bg-white shadow-md rounded-2xl flex items-center justify-center">
+          <img src="../img/logo.png" class="h-12 object-contain" alt="Logo" />
         </div>
-
-        <h2 class="text-3xl font-bold text-primary tracking-wide">
-          Bem-vindo 
-        </h2>
-
-        <p class="text-gray-500 text-sm mt-2">Inicie sessão na sua conta</p>
       </div>
-
-      <div
-        id="errorBox"
-        class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2"
-      >
-        <svg
-          class="w-5 h-5 text-red-500 shrink-0"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-            clip-rule="evenodd"
-          />
-        </svg>
-        <p class="text-sm text-red-700" id="errorMsg"></p>
-      </div>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Email</label
-          >
-          <input
-            type="email"
-            id="loginEmail"
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
-            placeholder="o.seu@email.com"
-            autocomplete="email"
-          />
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-1"
-            >Palavra-passe</label
-          >
-          <div class="relative">
-            <input
-              type="password"
-              id="loginSenha"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
-              placeholder="••••••••"
-              autocomplete="current-password"
-            />
-            <button
-              type="button"
-              id="toggleSenha"
-              class="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-            >
-              <svg
-                class="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          id="btnLogin"
-          class="w-full bg-primary text-white py-3 rounded-lg hover:bg-secondary font-semibold transition mt-2"
-        >
-          <span id="btnLoginText">Entrar</span>
-        </button>
-      </div>
-
-      <p class="text-center text-sm mt-6 text-gray-600">
-        Não tem conta?
-        <a
-          href="registro.html"
-          class="text-primary font-semibold hover:underline"
-          >Criar Conta</a
-        >
-      </p>
-
-      <div class="mt-4 pt-4 border-t border-gray-200 text-center">
-        <a
-          href="login-admin.html"
-          class="text-xs text-gray-400 hover:text-gray-600 transition"
-        >
-          Acesso Administrativo →
-        </a>
-      </div>
+      <h2 class="text-3xl font-bold text-primary tracking-wide">Bem-vindo</h2>
+      <p class="text-gray-500 text-sm mt-2">Inicie sessão na sua conta</p>
     </div>
 
-    <script>
-      const API = "https://schoolconnect-0ud2.onrender.com";
-      
-      document.getElementById("toggleSenha").addEventListener("click", () => {
-        const input = document.getElementById("loginSenha");
-        input.type = input.type === "password" ? "text" : "password";
-      });
+    <div id="errorBox" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2">
+      <svg class="w-5 h-5 text-red-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+      </svg>
+      <p class="text-sm text-red-700" id="errorMsg"></p>
+    </div>
 
-      document.getElementById("loginSenha").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") fazerLogin();
-      });
-      document.getElementById("loginEmail").addEventListener("keydown", (e) => {
-        if (e.key === "Enter") fazerLogin();
-      });
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+        <input type="email" id="loginEmail" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="o.seu@email.com" autocomplete="email" />
+      </div>
 
-      function mostrarErro(msg) {
-        document.getElementById("errorMsg").textContent = msg;
-        document.getElementById("errorBox").classList.remove("hidden");
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Palavra-passe</label>
+        <div class="relative">
+          <input type="password" id="loginSenha" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition" placeholder="••••••••" autocomplete="current-password" />
+          <button type="button" id="toggleSenha" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="button" id="btnLogin" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-secondary font-semibold transition mt-2">
+        <span id="btnLoginText">Entrar</span>
+      </button>
+    </div>
+
+    <p class="text-center text-sm mt-6 text-gray-600">
+      Não tem conta?
+      <a href="registro.html" class="text-primary font-semibold hover:underline">Criar Conta</a>
+    </p>
+
+    <div class="mt-4 pt-4 border-t border-gray-200 text-center">
+      <a href="login-admin.html" class="text-xs text-gray-400 hover:text-gray-600 transition">
+        Acesso Administrativo →
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const API = "https://schoolconnect-0ud2.onrender.com";
+    
+    document.getElementById("toggleSenha").addEventListener("click", () => {
+      const input = document.getElementById("loginSenha");
+      input.type = input.type === "password" ? "text" : "password";
+    });
+
+    document.getElementById("loginSenha").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") fazerLogin();
+    });
+    document.getElementById("loginEmail").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") fazerLogin();
+    });
+
+    function mostrarErro(msg) {
+      document.getElementById("errorMsg").textContent = msg;
+      document.getElementById("errorBox").classList.remove("hidden");
+    }
+
+    function esconderErro() {
+      document.getElementById("errorBox").classList.add("hidden");
+    }
+
+    document.getElementById("btnLogin").addEventListener("click", fazerLogin);
+
+    async function fazerLogin() {
+      esconderErro();
+      const email = document.getElementById("loginEmail").value.trim();
+      const senha = document.getElementById("loginSenha").value;
+
+      if (!email || !senha) {
+        mostrarErro("Por favor preencha o email e a palavra-passe.");
+        return;
       }
 
-      function esconderErro() {
-        document.getElementById("errorBox").classList.add("hidden");
-      }
+      const btn = document.getElementById("btnLogin");
+      const text = document.getElementById("btnLoginText");
+      btn.disabled = true;
+      text.textContent = "A entrar...";
 
-      document.getElementById("btnLogin").addEventListener("click", fazerLogin);
+      try {
+        const res = await fetch(API + "/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify({ email, senha }),
+        });
 
-      async function fazerLogin() {
-        esconderErro();
-        const email = document.getElementById("loginEmail").value.trim();
-        const senha = document.getElementById("loginSenha").value;
+        const data = await res.json();
 
-        console.log("Tentando login com:", email); // DEBUG
-
-        if (!email || !senha) {
-          mostrarErro("Por favor preencha o email e a palavra-passe.");
-          return;
+        if (!res.ok) {
+          throw new Error(data.error || "Credenciais inválidas");
         }
 
-        const btn = document.getElementById("btnLogin");
-        const text = document.getElementById("btnLoginText");
-        btn.disabled = true;
-        text.textContent = "A entrar...";
-
-        try {
-          console.log("A enviar requisição para:", API + "/api/login");
-          
-          const res = await fetch(API + "/api/login", {
-            method: "POST",
-            headers: { 
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: JSON.stringify({ email, senha }),
-          });
-
-          console.log("Status da resposta:", res.status);
-          
-          const texto = await res.text();
-          console.log("Resposta raw:", texto);
-
-          let data;
-          try {
-            data = JSON.parse(texto);
-          } catch (e) {
-            console.error("Erro ao parsear JSON:", e);
-            throw new Error("Resposta inválida do servidor: " + texto.substring(0, 100));
-          }
-
-          if (!res.ok) {
-            throw new Error(data.error || `Erro ${res.status}: Credenciais inválidas`);
-          }
-
-          // Verificar se data.token e data.usuario existem
-          if (!data.token || !data.usuario) {
-            throw new Error("Resposta do servidor incompleta");
-          }
-
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("usuario", JSON.stringify(data.usuario));
-          
-          localStorage.removeItem("adminToken");
-          localStorage.removeItem("adminLogado");
-
-          console.log("Login bem sucedido! Perfil:", data.usuario.perfil);
-          
-          if (typeof toast === 'function') {
-            toast("Login realizado com sucesso");
-          }
-
-          const perfil = data.usuario.perfil;
-          if (perfil === "PROFESSOR")
-            window.location.href = "dashboard-professor.html";
-          else if (perfil === "ENCARREGADO")
-            window.location.href = "dashboard-encarregado.html";
-          else if (perfil === "ADMIN") 
-            window.location.href = "admin.html";
-          else 
-            mostrarErro("Perfil desconhecido: " + perfil);
-            
-        } catch (err) {
-          console.error("Erro no login:", err);
-          mostrarErro(err.message);
-        } finally {
-          btn.disabled = false;
-          text.textContent = "Entrar";
+        if (!data.token || !data.usuario) {
+          throw new Error("Resposta do servidor incompleta");
         }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("usuario", JSON.stringify(data.usuario));
+        localStorage.removeItem("adminToken");
+        localStorage.removeItem("adminLogado");
+
+        if (typeof toast === 'function') {
+          toast("Login realizado com sucesso");
+        }
+
+        const perfil = data.usuario.perfil;
+        if (perfil === "PROFESSOR")
+          window.location.href = "dashboard-professor.html";
+        else if (perfil === "ENCARREGADO")
+          window.location.href = "dashboard-encarregado.html";
+        else
+          mostrarErro("Perfil desconhecido: " + perfil);
+          
+      } catch (err) {
+        console.error("Erro no login:", err);
+        mostrarErro(err.message);
+      } finally {
+        btn.disabled = false;
+        text.textContent = "Entrar";
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
 </html>
