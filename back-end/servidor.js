@@ -22,7 +22,6 @@ import { routerMensagem } from "./rotas/rotasMensagem.js";
 import statsRoutes from "./rotas/rotasStats.js";
 import routerFeedback from "./rotas/rotasFeedback.js";
 
-// ES Modules config
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -31,46 +30,61 @@ const PORTA = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 
-// 🔐 CORS
+// =====================================
+// CORS
+// =====================================
 app.use(cors({
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
-// Adicionar NO servidor.js, depois de app.use(cors(...)) e antes das outras rotas
 
-// 🏥 Health check (para o frontend testar conexão)
-app.get("/api/health", (req, res) => {
-    res.json({ 
-        status: "ok", 
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()
-    });
-});
-
-// Alternativa para teste simples
-app.get("/api/ping", (req, res) => {
-    res.json({ pong: true });
-});
-
-// 📦 Body parser
+// =====================================
+// BODY PARSER
+// =====================================
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// 📁 Static files
+// =====================================
+// STATIC FILES
+// =====================================
 app.use(express.static(path.join(__dirname, "../front-end")));
 app.use("/img", express.static(path.join(__dirname, "../img")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-app.use("/front-end", express.static(path.join(__dirname, "../front-end")));
 
-// 🧪 API test
-app.get("/api", (_, res) => {
+// =====================================
+// HEALTH CHECK (Render)
+app.get("/api/health", (req, res) => {
+    res.json({ status: "ok" });
+});
+
+// =====================================
+// API TEST
+app.get("/api", (req, res) => {
     res.json({
         mensagem: "Seja bem-vindo à API SchoolConnect 🚀"
     });
 });
 
-// 🌐 Rotas de páginas
+// =====================================
+// ROTAS API (IMPORTANTE: ANTES DO FALLBACK)
+app.use("/api", routerUsuarios);
+app.use("/api", routerAviso);
+app.use("/api", routerAluno);
+app.use("/api", routerDisciplina);
+app.use("/api", routerEvento);
+app.use("/api", routerNota);
+app.use("/api", routerReuniao);
+app.use("/api", routerRelatorio);
+app.use("/api", routerTurma);
+app.use("/api", routerAdmin);
+app.use("/api", routerCurso);
+app.use("/api", routerMensagem);
+app.use("/api", statsRoutes);
+app.use("/api/feedbacks", routerFeedback);
+
+// =====================================
+// PÁGINAS FRONTEND
 const pages = [
     "index.html",
     "login-admin.html",
@@ -87,33 +101,18 @@ pages.forEach(page => {
     });
 });
 
-
-// 🔥 FALLBACK CORRIGIDO (SEM * — isso evitava crash)
-app.use((req, res) => {
+// =====================================
+// FALLBACK CORRETO (SEMPRE POR ÚLTIMO)
+app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../front-end", "index.html"));
 });
 
-
-// 🔌 APIs
-app.use("/api", routerUsuarios);
-app.use("/api", routerAviso);
-app.use("/api", routerAluno);
-app.use("/api", routerDisciplina);
-app.use("/api", routerEvento);
-app.use("/api", routerNota);
-app.use("/api", routerReuniao);
-app.use("/api", routerRelatorio);
-app.use("/api", routerTurma);
-app.use("/api", routerAdmin);
-app.use("/api", routerCurso);
-app.use("/api", routerMensagem);
-app.use("/api", statsRoutes);
-app.use("/api/feedbacks", routerFeedback);
-
-// 🔌 WebSocket
+// =====================================
+// WEBSOCKET
 configurarWebSocket(server);
 
-// 🚀 Start server
+// =====================================
+// START
 server.listen(PORTA, () => {
     console.log(`🚀 Servidor rodando em http://localhost:${PORTA}`);
     console.log(`📡 API: http://localhost:${PORTA}/api`);
