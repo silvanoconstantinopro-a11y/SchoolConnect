@@ -3,7 +3,7 @@ services:
     name: SchoolConnect
     runtime: node
     rootDir: back-end
-    buildCommand: npm install && npx prisma migrate deploy
+    buildCommand: npm install
     startCommand: npm start
     envVars:
       - key: DATABASE_URL
@@ -20,5 +20,5 @@ services:
         sync: false
     disk:
       name: schoolconnect-db
-      mountPath: /opt/render/project/src
+      mountPath: /opt/render/project/src/back-end
       sizeGB: 1
