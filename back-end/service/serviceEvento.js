@@ -2,7 +2,7 @@ import { prisma } from "../prismaClient/prismaClient.js";
 
 export class ServiceEvento {
 
-  static async criarEvento({ titulo, descricao, imagem, dataHora }) {
+  static async criarEvento({ titulo, descricao, imagem }) {
     if (!titulo?.trim()) throw new Error("Título é obrigatório.");
     if (!descricao?.trim()) throw new Error("Descrição é obrigatória.");
 
@@ -15,24 +15,9 @@ export class ServiceEvento {
     });
   }
 
-  static async listarEventos({ limit, offset, futuros } = {}) {
-    const where = {};
-    
-    if (futuros === "true" || futuros === true) {
-      where.dataHora = { gte: new Date() };
-    }
-
-    const [eventos, total] = await Promise.all([
-      prisma.evento.findMany({
-        where,
-        orderBy: { criadoEm: "desc" },
-        ...(limit ? { take: Number(limit) } : {}),
-        ...(offset ? { skip: Number(offset) } : {})
-      }),
-      prisma.evento.count({ where })
-    ]);
-
-    return { data: eventos, total };
+  static async listarEventos({ limit } = {}) {
+    const eventos = await prisma.evento.findMany({ limit: limit ? Number(limit) : undefined });
+    return eventos;
   }
 
   static async obterEventoPorId(id) {
@@ -45,13 +30,14 @@ export class ServiceEvento {
     const evento = await prisma.evento.findUnique({ where: { id: Number(id) } });
     if (!evento) throw new Error("Evento não encontrado.");
 
+    const updateData = {};
+    if (titulo) updateData.titulo = titulo.trim();
+    if (descricao) updateData.descricao = descricao.trim();
+    if (imagem !== undefined) updateData.imagem = imagem;
+
     return prisma.evento.update({
       where: { id: Number(id) },
-      data: {
-        titulo: titulo?.trim() ?? evento.titulo,
-        descricao: descricao?.trim() ?? evento.descricao,
-        imagem: imagem !== undefined ? imagem : evento.imagem
-      }
+      data: updateData
     });
   }
 
@@ -61,15 +47,5 @@ export class ServiceEvento {
     
     await prisma.evento.delete({ where: { id: Number(id) } });
     return { mensagem: "Evento removido com sucesso." };
-  }
-
-  static async getProximosEventos(limit = 5) {
-    return prisma.evento.findMany({
-      where: {
-        dataHora: { gte: new Date() }
-      },
-      orderBy: { dataHora: "asc" },
-      take: limit
-    });
   }
 }
