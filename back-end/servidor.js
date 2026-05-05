@@ -5,9 +5,8 @@ import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import { configurarWebSocket } from "./websocket.js";
-import { JWT } from "./bcrypt-jwt/jwt.js";
 
-// Importando as rotas
+// Rotas
 import { routerUsuarios } from "./rotas/rotasUsuario.js";
 import { routerAviso } from "./rotas/rotasAviso.js";
 import { routerAluno } from "./rotas/rotasAluno.js";
@@ -23,40 +22,64 @@ import { routerMensagem } from "./rotas/rotasMensagem.js";
 import statsRoutes from "./rotas/rotasStats.js";
 import routerFeedback from "./rotas/rotasFeedback.js";
 
-const PORTA = process.env.PORT || 3000;
-
-// Configuração para ES modules
+// ES Modules config
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const PORTA = process.env.PORT || 3000;
 
 const app = express();
 const server = http.createServer(app);
 
-// Configurações do middleware
+// 🔐 CORS
 app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
+// 📦 Body parser
 app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
-// Servir arquivos estáticos do front-end
+// 📁 Static files
 app.use(express.static(path.join(__dirname, "../front-end")));
 app.use("/img", express.static(path.join(__dirname, "../img")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/front-end", express.static(path.join(__dirname, "../front-end")));
 
-// Rotas da API
+// 🧪 API test
 app.get("/api", (_, res) => {
     res.json({
-        mensagem: "Seja bem-vindo à API da Plataforma de Comunicação Escola-Família (SchoolConnect)!",
-        versao: "1.0.0",
-        status: "online"
+        mensagem: "Seja bem-vindo à API SchoolConnect 🚀"
     });
 });
 
-// Usando as rotas da API
+// 🌐 Rotas de páginas
+const pages = [
+    "index.html",
+    "login-admin.html",
+    "login.html",
+    "registro.html",
+    "dashboard-encarregado.html",
+    "dashboard-professor.html",
+    "admin.html"
+];
+
+pages.forEach(page => {
+    app.get(`/${page.replace(".html", "")}`, (req, res) => {
+        res.sendFile(path.join(__dirname, "../front-end", page));
+    });
+});
+
+
+// 🔥 FALLBACK CORRIGIDO (SEM * — isso evitava crash)
+app.use((req, res) => {
+    res.sendFile(path.join(__dirname, "../front-end", "index.html"));
+});
+
+
+// 🔌 APIs
 app.use("/api", routerUsuarios);
 app.use("/api", routerAviso);
 app.use("/api", routerAluno);
@@ -72,63 +95,11 @@ app.use("/api", routerMensagem);
 app.use("/api", statsRoutes);
 app.use("/api/feedbacks", routerFeedback);
 
-// Rota para servir o index.html como página inicial
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/index.html"));
-});
+// 🔌 WebSocket
+configurarWebSocket(server);
 
-// Rota para servir arquivos HTML específicos
-app.get("/login", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/login.html"));
-});
-
-app.get("/login-admin", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/login-admin.html"));
-});
-
-app.get("/registro", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/registro.html"));
-});
-
-app.get("/dashboard-encarregado", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/dashboard-encarregado.html"));
-});
-
-app.get("/dashboard-professor", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/dashboard-professor.html"));
-});
-
-app.get("/admin", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/admin.html"));
-});
-
-// Rota para servir outros arquivos HTML (capturar qualquer .html)
-app.get("/*.html", (req, res) => {
-    const fileName = req.params[0] + ".html";
-    res.sendFile(path.join(__dirname, "../front-end", fileName));
-});
-
-// Rota 404 para API (rotas não encontradas)
-app.use("/api/*", (req, res) => {
-    res.status(404).json({
-        erro: "Rota não encontrada",
-        mensagem: `A rota ${req.originalUrl} não existe`
-    });
-});
-
-// Rota 404 para páginas (fallback)
-app.use((req, res) => {
-    res.status(404).sendFile(path.join(__dirname, "../front-end/index.html"));
-});
-
-// Configurar WebSocket
-const wss = configurarWebSocket(server);
-
-// Iniciar servidor
+// 🚀 Start server
 server.listen(PORTA, () => {
-    console.log(`🚀 Servidor rodando com sucesso!`);
-    console.log(`📍 URL: http://localhost:${PORTA}`);
+    console.log(`🚀 Servidor rodando em http://localhost:${PORTA}`);
     console.log(`📡 API: http://localhost:${PORTA}/api`);
-    console.log(`🔌 WebSocket: ws://localhost:${PORTA}`);
-    console.log(`📁 Front-end sendo servido na raiz`);
 });
