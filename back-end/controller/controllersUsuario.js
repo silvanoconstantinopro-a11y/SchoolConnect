@@ -59,7 +59,7 @@ export class ControllerUsuarios {
     return ServiceUsuario.criarCodigoProfessor(codigo);
   }, 201);
 
-  static listarCodigosProfessor = handle(async () => {
+  static listarCodigosProfessor = handle(async (req) => {
     return ServiceUsuario.listarCodigosProfessor();
   });
 

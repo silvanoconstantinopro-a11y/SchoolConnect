@@ -1,15 +1,24 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.SECRET_KEY || "schoolconnect-super-secret-key-change-in-production";
+const SECRET_KEY = process.env.SECRET_KEY || "schoolconnect-super-secret-key-change-in-production-2026";
 const EXPIRATION = process.env.EXPIRATION_TIME || "24h";
 
 export const JWT = {
   gerarToken(payload) {
-    if (!payload || !payload.id) {
+    if (!payload) {
       throw new Error("Payload inválido para geração de token.");
     }
     
-    return jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION });
+    // Garantir que o payload tem os campos mínimos
+    const tokenPayload = {
+      id: payload.id,
+      email: payload.email || null,
+      perfil: payload.perfil,
+      nome: payload.nome || (payload.perfil === "ADMIN" ? "Administrador" : "Usuário"),
+      iat: Math.floor(Date.now() / 1000)
+    };
+    
+    return jwt.sign(tokenPayload, SECRET_KEY, { expiresIn: EXPIRATION });
   },
   
   verificarToken(token) {
@@ -19,11 +28,6 @@ export const JWT = {
     
     try {
       const decoded = jwt.verify(token, SECRET_KEY);
-      
-      if (!decoded.id || !decoded.perfil) {
-        throw new Error("Token mal formatado.");
-      }
-      
       return decoded;
     } catch (err) {
       if (err.name === "TokenExpiredError") {

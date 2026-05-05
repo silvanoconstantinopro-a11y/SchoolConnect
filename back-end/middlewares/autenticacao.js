@@ -2,7 +2,7 @@ import { JWT } from "../bcrypt-jwt/jwt.js";
 
 export class MiddlewareAutenticacao {
   /**
-   * Valida o Bearer token e injeta req.user = { id, email, perfil }
+   * Valida o Bearer token e injeta req.user
    */
   static autenticar(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -19,22 +19,39 @@ export class MiddlewareAutenticacao {
     
     try {
       const decoded = JWT.verificarToken(token);
-      req.user = decoded;
+      
+      // Garantir que o usuário tem os campos necessários
+      req.user = {
+        id: decoded.id,
+        email: decoded.email,
+        perfil: decoded.perfil,
+        nome: decoded.nome || (decoded.perfil === "ADMIN" ? "Administrador" : "Usuário")
+      };
+      
+      console.log(`✅ Token validado para: ${req.user.perfil} (${req.user.id})`);
       return next();
     } catch (err) {
+      console.error("❌ Erro na autenticação:", err.message);
       return res.status(401).json({ error: err.message });
     }
   }
   
   /**
-   * Autenticação opcional - não falha se não houver token
+   * Autenticação opcional
    */
   static autenticarOpcional(req, res, next) {
     const authHeader = req.headers.authorization;
     
     if (authHeader?.startsWith("Bearer ")) {
       try {
-        req.user = JWT.verificarToken(authHeader.slice(7));
+        const token = authHeader.slice(7);
+        const decoded = JWT.verificarToken(token);
+        req.user = {
+          id: decoded.id,
+          email: decoded.email,
+          perfil: decoded.perfil,
+          nome: decoded.nome
+        };
       } catch {
         // Ignora erro - autenticação é opcional
       }
@@ -44,9 +61,7 @@ export class MiddlewareAutenticacao {
   }
   
   /**
-   * Garante que o utilizador autenticado tem um dos perfis permitidos
-   * @param {...string} perfis - Perfis permitidos
-   * @returns {Function} - Middleware
+   * Verifica se o utilizador tem um dos perfis permitidos
    */
   static exigirPerfil(...perfis) {
     return (req, res, next) => {
@@ -67,8 +82,6 @@ export class MiddlewareAutenticacao {
   
   /**
    * Verifica se o utilizador é o próprio ou tem perfil admin/professor
-   * @param {string} paramIdField - Nome do campo no req.params (padrão: "id")
-   * @returns {Function} - Middleware
    */
   static permitirProprioOuPerfil(paramIdField = "id") {
     return (req, res, next) => {

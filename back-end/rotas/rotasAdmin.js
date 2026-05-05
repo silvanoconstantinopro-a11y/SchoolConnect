@@ -1,19 +1,11 @@
 import { Router } from "express";
-import jwt from "jsonwebtoken";
+import { JWT } from "../bcrypt-jwt/jwt.js";
 import { ControllerUsuarios } from "../controller/controllersUsuario.js";
 import { MiddlewareAutenticacao } from "../middlewares/autenticacao.js";
 
 const router = Router();
 
-const SECRET_KEY = process.env.SECRET_KEY || "schoolconnect-super-secret-key-change-in-production";
-const EXPIRATION = process.env.EXPIRATION_TIME || "24h";
-
-// Função para gerar token (simplificada para admin)
-function gerarTokenAdmin(payload) {
-  return jwt.sign(payload, SECRET_KEY, { expiresIn: EXPIRATION });
-}
-
-// Login do Administrador
+// Login do Administrador (público)
 router.post("/admin/login", async (req, res) => {
   try {
     const { utilizador, senha } = req.body;
@@ -26,29 +18,25 @@ router.post("/admin/login", async (req, res) => {
 
     const adminUser = process.env.ADMIN_USER || "admin";
     const adminSenha = process.env.ADMIN_SENHA || "schoolconnect2026";
-    
-    console.log("👤 Admin esperado:", { user: adminUser });
 
     if (utilizador !== adminUser || senha !== adminSenha) {
-      console.log("❌ Credenciais inválidas");
       return res.status(401).json({ error: "Credenciais inválidas." });
     }
 
-    // Gerar token para admin
-    const token = gerarTokenAdmin({
-      id: 0,
+    const token = JWT.gerarToken({
+      id: "admin",
       email: "admin@schoolconnect.com",
       perfil: "ADMIN",
       nome: "Administrador"
     });
 
-    console.log("✅ Login admin bem-sucedido, token gerado");
-    
+    console.log("✅ Login admin bem-sucedido");
+
     return res.json({ 
       token, 
       perfil: "ADMIN",
       usuario: { 
-        id: 0,
+        id: "admin",
         nome: "Administrador", 
         email: "admin@schoolconnect.com",
         perfil: "ADMIN"
@@ -57,24 +45,21 @@ router.post("/admin/login", async (req, res) => {
     
   } catch (error) {
     console.error("❌ Erro no login admin:", error);
-    return res.status(500).json({ 
-      error: "Erro interno do servidor",
-      message: error.message 
-    });
+    return res.status(500).json({ error: "Erro interno do servidor" });
   }
 });
 
-// Gestão de Códigos de Professor
-router.post("/admin/codigos",
-  MiddlewareAutenticacao.autenticar,
-  MiddlewareAutenticacao.exigirPerfil("ADMIN"),
-  ControllerUsuarios.criarCodigoProfessor
-);
-
+// Rotas protegidas
 router.get("/admin/codigos",
   MiddlewareAutenticacao.autenticar,
   MiddlewareAutenticacao.exigirPerfil("ADMIN"),
   ControllerUsuarios.listarCodigosProfessor
+);
+
+router.post("/admin/codigos",
+  MiddlewareAutenticacao.autenticar,
+  MiddlewareAutenticacao.exigirPerfil("ADMIN"),
+  ControllerUsuarios.criarCodigoProfessor
 );
 
 router.delete("/admin/codigos/:id",
@@ -82,5 +67,10 @@ router.delete("/admin/codigos/:id",
   MiddlewareAutenticacao.exigirPerfil("ADMIN"),
   ControllerUsuarios.deletarCodigoProfessor
 );
+
+// Health check para admin
+router.get("/admin/health", (req, res) => {
+  res.json({ status: "online", adminApi: true });
+});
 
 export const routerAdmin = router;
