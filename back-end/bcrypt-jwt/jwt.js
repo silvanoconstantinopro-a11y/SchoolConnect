@@ -1,50 +1,50 @@
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.SECRET_KEY || "schoolconnect-super-secret-key-change-in-production-2026";
-const EXPIRATION = process.env.EXPIRATION_TIME || "24h";
+const SECRET = process.env.JWT_SECRET || process.env.SECRET_KEY;
+const EXPIRATION = process.env.JWT_EXPIRATION || process.env.EXPIRATION_TIME || "24h";
 
-export const JWT = {
-  gerarToken(payload) {
-    if (!payload) {
-      throw new Error("Payload inválido para geração de token.");
+if (!SECRET) {
+  console.error("❌ JWT_SECRET não está definida nas variáveis de ambiente");
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("JWT_SECRET is required in production");
+  }
+}
+
+export class JWT {
+  static gerarToken(payload) {
+    if (!payload || !payload.id) {
+      throw new Error("Payload inválido para geração de token");
     }
-    
-    // Garantir que o payload tem os campos mínimos
-    const tokenPayload = {
-      id: payload.id,
-      email: payload.email || null,
-      perfil: payload.perfil,
-      nome: payload.nome || (payload.perfil === "ADMIN" ? "Administrador" : "Usuário"),
-      iat: Math.floor(Date.now() / 1000)
-    };
-    
-    return jwt.sign(tokenPayload, SECRET_KEY, { expiresIn: EXPIRATION });
-  },
-  
-  verificarToken(token) {
+    return jwt.sign(payload, SECRET, { expiresIn: EXPIRATION });
+  }
+
+  static verificarToken(token) {
     if (!token || typeof token !== "string") {
-      throw new Error("Token não fornecido.");
+      throw new Error("Token não fornecido ou inválido");
     }
-    
     try {
-      const decoded = jwt.verify(token, SECRET_KEY);
+      const decoded = jwt.verify(token, SECRET);
+      if (!decoded || !decoded.id) {
+        throw new Error("Token inválido: dados ausentes");
+      }
       return decoded;
-    } catch (err) {
-      if (err.name === "TokenExpiredError") {
-        throw new Error("Token expirado. Faça login novamente.");
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        throw new Error("Token expirado");
       }
-      if (err.name === "JsonWebTokenError") {
-        throw new Error("Token inválido.");
+      if (error.name === "JsonWebTokenError") {
+        throw new Error("Token inválido");
       }
-      throw err;
+      throw new Error(`Erro na verificação do token: ${error.message}`);
     }
-  },
+  }
   
-  decodificarToken(token) {
+  static decodificarToken(token) {
+    if (!token) return null;
     try {
       return jwt.decode(token);
     } catch {
       return null;
     }
   }
-};
+}

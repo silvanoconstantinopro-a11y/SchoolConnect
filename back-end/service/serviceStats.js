@@ -1,229 +1,249 @@
+/**
+ * serviceStats.js
+ * Estatísticas e métricas do sistema
+ */
 import { prisma } from "../prismaClient/prismaClient.js";
+import { logger } from "../utils/logger.js";
 
 export class ServiceStats {
 
-  static async getStats() {
-    const [
-      totalUsuarios,
-      professores,
-      encarregados,
-      cursos,
-      alunos,
-      avisos,
-      eventos,
-      reunioes,
-      turmas,
-      disciplinas,
-      feedbacks,
-      mensagens
-    ] = await Promise.all([
-      prisma.usuario.count(),
-      prisma.usuario.count({ where: { perfil: "PROFESSOR" } }),
-      prisma.usuario.count({ where: { perfil: "ENCARREGADO" } }),
-      prisma.curso.count(),
-      prisma.aluno.count(),
-      prisma.aviso.count(),
-      prisma.evento.count(),
-      prisma.reuniao.count(),
-      prisma.turma.count(),
-      prisma.disciplina.count(),
-      prisma.feedback.count(),
-      prisma.mensagem.count()
-    ]);
-
-    // Reuniões futuras
-    const reunioesFuturas = await prisma.reuniao.count({
-      where: { dataHora: { gte: new Date() } }
-    });
-
-    // Reuniões hoje
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    const amanha = new Date(hoje);
-    amanha.setDate(amanha.getDate() + 1);
-    
-    const reunioesHoje = await prisma.reuniao.count({
-      where: {
-        dataHora: { gte: hoje, lt: amanha }
-      }
-    });
-
-    // Notas por faixa
-    const notas = await prisma.nota.findMany({
-      select: { valor: true }
-    });
-    
-    const notasDistribuicao = {
-      excelente: notas.filter(n => n.valor >= 18).length,
-      bom: notas.filter(n => n.valor >= 14 && n.valor < 18).length,
-      suficiente: notas.filter(n => n.valor >= 10 && n.valor < 14).length,
-      insuficiente: notas.filter(n => n.valor < 10).length
-    };
-
-    return {
-      usuarios: {
-        total: totalUsuarios,
-        professores,
-        encarregados
-      },
-      academicos: {
+  static async getStats(filtros = {}) {
+    try {
+      const [
+        usuarios,
         cursos,
         alunos,
-        turmas,
-        disciplinas
-      },
-      comunicacao: {
         avisos,
         eventos,
         reunioes,
-        reunioesFuturas,
-        reunioesHoje,
-        mensagens,
-        feedbacks
-      },
-      notasDistribuicao
-    };
+        turmas,
+        disciplinas,
+        feedbacks,
+        mensagensHoje,
+        notasMedia
+      ] = await Promise.all([
+        prisma.usuario.findMany(),
+        prisma.curso.count(),
+        prisma.aluno.count(),
+        prisma.aviso.count(),
+        prisma.evento.count(),
+        prisma.reuniao.count(),
+        prisma.turma.count(),
+        prisma.disciplina.count(),
+        prisma.feedback.count(),
+        prisma.mensagem.count({
+          where: {
+            criadoEm: { gte: new Date(new Date().setHours(0, 0, 0, 0)) }
+          }
+        }),
+        prisma.nota.aggregate({
+          _avg: { valor: true }
+        })
+      ]);
+
+      const now = new Date();
+      const inicioMes = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      const [novosUsuariosMes, eventosProximos] = await Promise.all([
+        prisma.usuario.count({
+          where: { criadoEm: { gte: inicioMes } }
+        }),
+        prisma.evento.count({
+          where: { dataEvento: { gte: now, lte: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000) } }
+        })
+      ]);
+
+      return {
+        timestamp: new Date().toISOString(),
+        usuarios: {
+          total: usuarios.length,
+          professores: usuarios.filter(u => u.perfil === "PROFESSOR").length,
+          encarregados: usuarios.filter(u => u.perfil === "ENCARREGADO").length,
+          administradores: usuarios.filter(u => u.perfil === "ADMIN").length,
+          novosMes: novosUsuariosMes
+        },
+        academicos: {
+          cursos,
+          alunos,
+          turmas,
+          disciplinas,
+          mediaGeralNotas: notasMedia._avg.valor || 0
+        },
+        comunicacao: {
+          avisos,
+          eventos,
+          reunioes,
+          eventosProximos,
+          mensagensHoje
+        },
+        feedbacks: {
+          total: feedbacks,
+          pendentes: await prisma.feedback.count({ where: { status: "pendente" } })
+        }
+      };
+      
+    } catch (error) {
+      logger.error(`Erro ao obter estatísticas: ${error.message}`);
+      throw error;
+    }
   }
 
-  static async getStatsPorPeriodo(inicio, fim) {
-    const startDate = new Date(inicio);
-    const endDate = new Date(fim);
-    endDate.setHours(23, 59, 59, 999);
-
-    const [usuariosNovos, avisosPeriodo, reunioesPeriodo, mensagensPeriodo] = await Promise.all([
-      prisma.usuario.count({
-        where: { criadoEm: { gte: startDate, lte: endDate } }
-      }),
-      prisma.aviso.count({
-        where: { criadoEm: { gte: startDate, lte: endDate } }
-      }),
-      prisma.reuniao.count({
-        where: { criadoEm: { gte: startDate, lte: endDate } }
-      }),
-      prisma.mensagem.count({
-        where: { criadoEm: { gte: startDate, lte: endDate } }
-      })
-    ]);
-
-    return {
-      periodo: { inicio, fim },
-      usuariosNovos,
-      avisosPeriodo,
-      reunioesPeriodo,
-      mensagensPeriodo
-    };
+  static async getStatsDetalhadas() {
+    try {
+      const [notasPorDisciplina, alunosPorTurma, usuariosPorPerfil, eventosPorMes] = await Promise.all([
+        prisma.nota.groupBy({
+          by: ['disciplinaId'],
+          _avg: { valor: true },
+          _count: { id: true }
+        }),
+        prisma.aluno.groupBy({
+          by: ['turmaId'],
+          _count: { id: true }
+        }),
+        prisma.usuario.groupBy({
+          by: ['perfil'],
+          _count: { id: true }
+        }),
+        prisma.evento.groupBy({
+          by: ['categoria'],
+          _count: { id: true }
+        })
+      ]);
+      
+      return {
+        notasPorDisciplina,
+        alunosPorTurma,
+        usuariosPorPerfil,
+        eventosPorMes
+      };
+      
+    } catch (error) {
+      logger.error(`Erro ao obter estatísticas detalhadas: ${error.message}`);
+      throw error;
+    }
   }
 
   static async listarUsuarios() {
-    const usuarios = await prisma.usuario.findMany({
-      include: {
-        disciplinas: { select: { id: true, nome: true } },
-        turmas: { select: { id: true, nome: true } },
-        cursos: { select: { id: true, nome: true } },
-        _count: {
-          select: {
-            mensagensEnviadas: true,
-            mensagensRecebidas: true,
-            reunioesCriadas: true
-          }
-        }
-      },
-      orderBy: { nome: "asc" }
-    });
-    
-    return usuarios.map(({ senha, ...rest }) => rest);
+    try {
+      const lista = await prisma.usuario.findMany({ 
+        include: { 
+          disciplinas: { select: { id: true, nome: true } }, 
+          turmas: { select: { id: true, nome: true } } 
+        } 
+      });
+      return lista.map(({ senha, ...resto }) => resto);
+    } catch (error) {
+      logger.error(`Erro ao listar usuários: ${error.message}`);
+      throw error;
+    }
   }
 
-  static async listarCursos() {
-    return prisma.curso.findMany({
-      include: {
-        _count: {
-          select: {
-            alunos: true,
-            disciplinas: true,
-            professores: true
-          }
-        }
-      },
-      orderBy: { nome: "asc" }
-    });
+  static async listarCursos() { 
+    try {
+      return await prisma.curso.findMany({
+        include: { disciplinas: true, turmas: true }
+      });
+    } catch (error) {
+      logger.error(`Erro ao listar cursos: ${error.message}`);
+      throw error;
+    }
   }
 
-  static async listarAlunos() {
-    return prisma.aluno.findMany({
-      include: {
-        turma: { select: { id: true, nome: true } },
-        curso: { select: { id: true, nome: true } },
-        encarregado: { select: { id: true, nome: true, email: true, telefone: true } },
-        _count: { select: { notas: true } }
-      },
-      orderBy: { nome: "asc" }
-    });
+  static async listarAlunos() { 
+    try {
+      return await prisma.aluno.findMany({
+        include: { turma: true, curso: true }
+      });
+    } catch (error) {
+      logger.error(`Erro ao listar alunos: ${error.message}`);
+      throw error;
+    }
   }
 
-  static async listarAvisos() {
-    return prisma.aviso.findMany({
-      orderBy: { criadoEm: "desc" }
-    });
+  static async listarAvisos() { 
+    try {
+      return await prisma.aviso.findMany({ 
+        orderBy: { criadoEm: "desc" } 
+      });
+    } catch (error) {
+      logger.error(`Erro ao listar avisos: ${error.message}`);
+      throw error;
+    }
   }
 
-  static async listarEventos() {
-    return prisma.evento.findMany({
-      orderBy: { criadoEm: "desc" }
-    });
+  static async listarEventos() { 
+    try {
+      return await prisma.evento.findMany({ 
+        orderBy: { dataEvento: "asc" } 
+      });
+    } catch (error) {
+      logger.error(`Erro ao listar eventos: ${error.message}`);
+      throw error;
+    }
   }
 
-  static async listarReunioes() {
-    return prisma.reuniao.findMany({
-      include: {
-        criadoPor: { select: { id: true, nome: true, email: true } },
-        participantes: {
-          include: { usuario: { select: { id: true, nome: true, email: true } } }
-        }
-      },
-      orderBy: { criadoEm: "desc" }
-    });
+  static async listarReunioes() { 
+    try {
+      return await prisma.reuniao.findMany({ 
+        include: { participantes: true },
+        orderBy: { dataHora: "desc" } 
+      });
+    } catch (error) {
+      logger.error(`Erro ao listar reuniões: ${error.message}`);
+      throw error;
+    }
   }
 
-  static async listarTurmas() {
-    return prisma.turma.findMany({
-      include: {
-        professor: { select: { id: true, nome: true, email: true } },
-        _count: { select: { alunos: true } }
-      },
-      orderBy: { nome: "asc" }
-    });
+  static async listarTurmas() { 
+    try {
+      return await prisma.turma.findMany({
+        include: { curso: true, alunos: true }
+      });
+    } catch (error) {
+      logger.error(`Erro ao listar turmas: ${error.message}`);
+      throw error;
+    }
   }
 
   static async getDashboardData() {
-    const [
-      stats,
-      ultimosAvisos,
-      proximosEventos,
-      proximasReunioes,
-      alunosPorTurma
-    ] = await Promise.all([
-      ServiceStats.getStats(),
-      prisma.aviso.findMany({ take: 5, orderBy: { criadoEm: "desc" } }),
-      prisma.evento.findMany({ take: 5, orderBy: { dataHora: "asc" } }),
-      prisma.reuniao.findMany({ 
-        where: { dataHora: { gte: new Date() } },
-        take: 5, 
-        orderBy: { dataHora: "asc" },
-        include: { criadoPor: { select: { nome: true } } }
-      }),
-      prisma.turma.findMany({
-        select: { nome: true, _count: { select: { alunos: true } } },
-        orderBy: { nome: "asc" }
-      })
-    ]);
-
-    return {
-      stats,
-      ultimosAvisos,
-      proximosEventos,
-      proximasReunioes,
-      alunosPorTurma
-    };
+    try {
+      const [
+        stats,
+        ultimosAvisos,
+        proximosEventos,
+        proximasReunioes,
+        ultimosFeedbacks
+      ] = await Promise.all([
+        this.getStats(),
+        prisma.aviso.findMany({ take: 5, orderBy: { criadoEm: "desc" } }),
+        prisma.evento.findMany({ 
+          where: { dataEvento: { gte: new Date() } },
+          take: 5, 
+          orderBy: { dataEvento: "asc" } 
+        }),
+        prisma.reuniao.findMany({ 
+          where: { dataHora: { gte: new Date() } },
+          take: 5, 
+          orderBy: { dataHora: "asc" } 
+        }),
+        prisma.feedback.findMany({ 
+          where: { status: "pendente" },
+          take: 5, 
+          orderBy: { criadoEm: "desc" } 
+        })
+      ]);
+      
+      return {
+        stats,
+        ultimosAvisos,
+        proximosEventos,
+        proximasReunioes,
+        ultimosFeedbacks
+      };
+      
+    } catch (error) {
+      logger.error(`Erro ao obter dados do dashboard: ${error.message}`);
+      throw error;
+    }
   }
 }

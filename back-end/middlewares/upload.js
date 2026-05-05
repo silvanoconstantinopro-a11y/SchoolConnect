@@ -1,137 +1,196 @@
+/**
+ * upload.js
+ * Configuração de upload de arquivos
+ */
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { logger } from "../utils/logger.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const rootPath = path.resolve(__dirname, "..");
 
-// ── Diretórios ────────────────────────────────────────────────
-const DIR_ARQUIVOS = path.join(__dirname, "..", "uploads", "arquivos");
-const DIR_IMAGENS = path.join(__dirname, "..", "uploads", "imagens");
-const DIR_TEMP = path.join(__dirname, "..", "uploads", "temp");
+// Configurações
+const UPLOAD_DIR = path.join(rootPath, "uploads", "arquivos");
+const MAX_FILE_SIZE = 30 * 1024 * 1024; // 30MB
+const ALLOWED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/plain"
+];
 
-// Criar diretórios recursivamente
-[DIR_ARQUIVOS, DIR_IMAGENS, DIR_TEMP].forEach(dir => {
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-    console.log(`📁  Criado diretório: ${dir}`);
+// Garantir que diretório existe
+if (!fs.existsSync(UPLOAD_DIR)) {
+  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
+  logger.info(`Diretório de upload criado: ${UPLOAD_DIR}`);
+}
+
+/**
+ * Filtro de arquivos por tipo MIME
+ */
+const fileFilter = (req, file, cb) => {
+  if (ALLOWED_MIME_TYPES.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    logger.warn(`Tipo de arquivo não permitido: ${file.mimetype}`);
+    cb(new Error(`Tipo de arquivo não permitido. Tipos permitidos: ${ALLOWED_MIME_TYPES.join(", ")}`), false);
+  }
+};
+
+/**
+ * Configuração de storage com validação de nome
+ */
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, UPLOAD_DIR);
+  },
+  filename: (req, file, cb) => {
+    // Sanitizar nome do arquivo
+    const originalName = file.originalname;
+    const ext = path.extname(originalName);
+    const baseName = path.basename(originalName, ext);
+    const sanitizedBase = baseName.replace(/[^a-zA-Z0-9]/g, "_");
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    const filename = `${sanitizedBase}-${uniqueSuffix}${ext}`;
+    
+    cb(null, filename);
   }
 });
 
-// ── Limpeza periódica de arquivos temporários (opcional) ─────
-setInterval(() => {
-  const now = Date.now();
-  const maxAge = 24 * 60 * 60 * 1000; // 24 horas
-  
-  if (fs.existsSync(DIR_TEMP)) {
-    fs.readdir(DIR_TEMP, (err, files) => {
-      if (err) return;
-      files.forEach(file => {
-        const filePath = path.join(DIR_TEMP, file);
-        fs.stat(filePath, (err, stats) => {
-          if (err) return;
-          if (now - stats.mtimeMs > maxAge) {
-            fs.unlink(filePath, () => {});
-          }
-        });
-      });
-    });
-  }
-}, 6 * 60 * 60 * 1000); // A cada 6 horas
-
-// ── Factory de storage ────────────────────────────────────────
-const makeStorage = (dir) => 
-  multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, dir);
-    },
-    filename: (req, file, cb) => {
-      const sanitizedName = file.originalname
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "") // Remove acentos
-        .replace(/[^a-zA-Z0-9.-]/g, "_"); // Remove caracteres especiais
-      
-      const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-      const ext = path.extname(sanitizedName);
-      const baseName = path.basename(sanitizedName, ext);
-      const finalName = `${unique}-${baseName.substring(0, 50)}${ext}`;
-      
-      cb(null, finalName);
-    }
-  });
-
-// ── Filtros ───────────────────────────────────────────────────
-const filtroImagem = (req, file, cb) => {
-  const allowedMimes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
-  
-  if (allowedMimes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error(`Tipo de ficheiro não permitido. Use: ${allowedMimes.join(", ")}`));
-  }
-};
-
-const filtroDocumento = (req, file, cb) => {
-  const allowedMimes = [
-    "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif",
-    "application/pdf",
-    "application/msword",
-    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    "text/plain"
-  ];
-  
-  if (allowedMimes.includes(file.mimetype)) {
-    cb(null, true);
-  } else {
-    cb(new Error(`Tipo de ficheiro não permitido. Formatos aceites: imagens, PDF, DOC, TXT`));
-  }
-};
-
-// ── Instâncias exportadas ─────────────────────────────────────
-/** Para ficheiros gerais (PDFs, docs, imagens de mensagens) */
+/**
+ * Configuração do multer
+ */
 export const upload = multer({
-  storage: makeStorage(DIR_ARQUIVOS),
-  fileFilter: filtroDocumento,
+  storage,
   limits: { 
-    fileSize: 30 * 1024 * 1024, // 30 MB
-    files: 5
-  }
+    fileSize: MAX_FILE_SIZE,
+    files: 5 // máximo de 5 arquivos por requisição
+  },
+  fileFilter
 });
 
-/** Apenas para imagens de perfil / avisos / eventos */
-export const uploadImagem = multer({
-  storage: makeStorage(DIR_IMAGENS),
-  fileFilter: filtroImagem,
-  limits: { 
-    fileSize: 5 * 1024 * 1024, // 5 MB
-    files: 1
-  }
-});
+/**
+ * Middleware para upload único com tratamento de erro
+ */
+export const uploadSingle = (fieldName = "arquivo") => {
+  return (req, res, next) => {
+    const uploadMiddleware = upload.single(fieldName);
+    
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        if (err instanceof multer.MulterError) {
+          if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({ 
+              error: `Arquivo muito grande. Máximo: ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
+              code: "FILE_TOO_LARGE"
+            });
+          }
+          if (err.code === "LIMIT_FILE_COUNT") {
+            return res.status(400).json({ 
+              error: "Muitos arquivos enviados",
+              code: "TOO_MANY_FILES"
+            });
+          }
+          return res.status(400).json({ 
+            error: `Erro no upload: ${err.message}`,
+            code: "UPLOAD_ERROR"
+          });
+        }
+        
+        if (err.message.includes("não permitido")) {
+          return res.status(400).json({ 
+            error: err.message,
+            code: "FILE_TYPE_NOT_ALLOWED"
+          });
+        }
+        
+        logger.error(`Erro no upload: ${err.message}`);
+        return res.status(500).json({ 
+          error: "Erro interno ao processar upload",
+          code: "INTERNAL_UPLOAD_ERROR"
+        });
+      }
+      
+      next();
+    });
+  };
+};
 
-/** Para uploads temporários */
-export const uploadTemp = multer({
-  storage: makeStorage(DIR_TEMP),
-  fileFilter: filtroDocumento,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10 MB
-});
+/**
+ * Middleware para upload múltiplo
+ */
+export const uploadMultiple = (fieldName = "arquivos", maxCount = 5) => {
+  return (req, res, next) => {
+    const uploadMiddleware = upload.array(fieldName, maxCount);
+    
+    uploadMiddleware(req, res, (err) => {
+      if (err) {
+        if (err instanceof multer.MulterError) {
+          if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({ 
+              error: `Arquivo muito grande. Máximo: ${MAX_FILE_SIZE / (1024 * 1024)}MB`,
+              code: "FILE_TOO_LARGE"
+            });
+          }
+          if (err.code === "LIMIT_FILE_COUNT") {
+            return res.status(400).json({ 
+              error: `Muitos arquivos. Máximo: ${maxCount}`,
+              code: "TOO_MANY_FILES"
+            });
+          }
+          return res.status(400).json({ 
+            error: `Erro no upload: ${err.message}`,
+            code: "UPLOAD_ERROR"
+          });
+        }
+        
+        return res.status(400).json({ 
+          error: err.message,
+          code: "UPLOAD_ERROR"
+        });
+      }
+      
+      next();
+    });
+  };
+};
 
-// ── Helpers para gerenciar arquivos ──────────────────────────
-export function deleteUploadedFile(filePath) {
-  if (!filePath) return false;
-  
-  // Converte URL path para path do sistema
-  let systemPath = filePath;
-  if (filePath.startsWith("/uploads/")) {
-    systemPath = path.join(__dirname, "..", filePath);
-  }
-  
+/**
+ * Função para deletar arquivo
+ */
+export const deleteFile = (filePath) => {
   try {
-    if (fs.existsSync(systemPath)) {
-      fs.unlinkSync(systemPath);
+    const fullPath = path.join(UPLOAD_DIR, path.basename(filePath));
+    if (fs.existsSync(fullPath)) {
+      fs.unlinkSync(fullPath);
+      logger.info(`Arquivo deletado: ${fullPath}`);
       return true;
     }
-  } catch (err) {
-    console.error(`Erro ao deletar arquivo ${systemPath}:`, err.message);
+    return false;
+  } catch (error) {
+    logger.error(`Erro ao deletar arquivo: ${error.message}`);
+    return false;
   }
-  return false;
-}
+};
+
+/**
+ * Obter caminho completo do arquivo
+ */
+export const getFilePath = (filename) => {
+  return path.join(UPLOAD_DIR, filename);
+};
+
+/**
+ * Verificar se arquivo existe
+ */
+export const fileExists = (filename) => {
+  return fs.existsSync(getFilePath(filename));
+};
+
+export default upload;

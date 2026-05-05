@@ -1,26 +1,25 @@
 services:
   - type: web
-    name: SchoolConnect
+    name: schoolconnect-api
     runtime: node
-    rootDir: back-end
-    buildCommand: npm install
-    startCommand: npm start
+    plan: free
+    region: ohio
+    buildCommand: |
+      npm ci --legacy-peer-deps
+      cd back-end && npm ci --legacy-peer-deps
+      cd ..
+      npx prisma generate
+    startCommand: cd back-end && node index.js
     envVars:
-      - key: DATABASE_URL
-        value: file:./dev.db
-      - key: PORT
-        value: 3002
       - key: NODE_ENV
         value: production
-      - key: SECRET_KEY
-        sync: false
-      - key: EXPIRATION_TIME
-        value: 1h
-      - key: ADMIN_USER
-        value: admin
-      - key: ADMIN_SENHA
-        sync: false
+      - key: DATABASE_URL
+        value: file:./dev.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://schoolconnect-0ud2.onrender.com
     disk:
-      name: schoolconnect-db
+      name: schoolconnect-data
       mountPath: /opt/render/project/src/back-end
       sizeGB: 1

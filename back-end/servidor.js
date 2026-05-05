@@ -4,12 +4,11 @@ import "dotenv/config";
 import http from "http";
 import express from "express";
 import cors from "cors";
-import helmet from "helmet";
 import path from "path";
-import rateLimit from "express-rate-limit";
 import { fileURLToPath } from "url";
+import fs from "fs";
 
-// Prisma — importado depois do dotenv
+// Prisma — importado depois do dotenv para garantir que DATABASE_URL já existe
 import { prisma } from "./prismaClient/prismaClient.js";
 import { configurarWebSocket } from "./websocket.js";
 
@@ -36,45 +35,44 @@ const frontPath = path.join(rootPath, "front-end");
 const imgPath = path.join(rootPath, "img");
 const uploadsPath = path.join(__dirname, "uploads");
 
+// ── Validação de diretórios necessários ─────────────────────
+const verificarDiretorios = () => {
+  const diretorios = [frontPath, imgPath, uploadsPath];
+  
+  diretorios.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      console.warn(`⚠️  Diretório não encontrado: ${dir}`);
+      try {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log(`✅ Diretório criado: ${dir}`);
+      } catch (error) {
+        console.error(`❌ Erro ao criar diretório ${dir}:`, error.message);
+      }
+    }
+  });
+};
+
 // ── App ───────────────────────────────────────────────────────
 const PORTA = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 
-// ── Security Middleware ───────────────────────────────────────
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" },
-  contentSecurityPolicy: false // Permite flexibilidade para frontend
-}));
-
-// ── Rate Limiting ─────────────────────────────────────────────
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: { error: "Muitas requisições, tente novamente mais tarde." },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-app.use("/api/", limiter);
-
-// ── CORS ──────────────────────────────────────────────────────
-app.use(cors({
+// ── Configuração CORS melhorada ───────────────────────────────
+const corsOptions = {
   origin: process.env.CORS_ORIGIN?.split(",") || "*",
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
-}));
+  maxAge: 86400 // 24 horas
+};
 
-// ── Body Parsers ──────────────────────────────────────────────
+app.use(cors(corsOptions));
+
+// ── Middlewares de parsing ────────────────────────────────────
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// ── Static Files ──────────────────────────────────────────────
-app.use(express.static(frontPath));
-app.use("/img", express.static(imgPath));
-app.use("/uploads", express.static(uploadsPath));
-
-// ── Request Logging (Development) ────────────────────────────
+// ── Middleware de logging (apenas em desenvolvimento) ─────────
 if (process.env.NODE_ENV !== "production") {
   app.use((req, res, next) => {
     console.log(`📝 ${req.method} ${req.path}`);
@@ -82,101 +80,250 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 
-// ── Health Check ──────────────────────────────────────────────
-app.get("/api/health", async (_, res) => {
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    res.json({ status: "online", database: "connected", ts: new Date() });
-  } catch (error) {
-    res.status(503).json({ status: "degraded", database: "disconnected", error: error.message });
-  }
+// ── Middleware de segurança básica ────────────────────────────
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  next();
 });
 
-// ── API Routes ────────────────────────────────────────────────
-app.use("/api", routerUsuarios);
-app.use("/api", routerAdmin);
-app.use("/api", routerAluno);
-app.use("/api", routerTurma);
-app.use("/api", routerCurso);
-app.use("/api", routerDisciplina);
-app.use("/api", routerNota);
-app.use("/api", routerAviso);
-app.use("/api", routerEvento);
-app.use("/api", routerReuniao);
-app.use("/api", routerMensagem);
-app.use("/api", routerRelatorio);
-app.use("/api", routerStats);
-app.use("/api/feedbacks", routerFeedback);
+// ── Verificar diretórios antes de iniciar ─────────────────────
+verificarDiretorios();
 
-// ── SPA Fallback ──────────────────────────────────────────────
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api")) return next();
-  res.sendFile(path.join(frontPath, "index.html"), err => {
-    if (err) next();
+// ── Estáticos com fallback ────────────────────────────────────
+app.use(express.static(frontPath, { 
+  maxAge: "1d",
+  etag: true,
+  lastModified: true 
+}));
+
+app.use("/img", express.static(imgPath, { 
+  maxAge: "7d",
+  etag: true 
+}));
+
+app.use("/uploads", express.static(uploadsPath, { 
+  maxAge: "1d",
+  etag: true 
+}));
+
+// ── Health check aprimorado ───────────────────────────────────
+app.get("/api/health", async (_, res) => {
+  const health = {
+    status: "online",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+    database: "checking..."
+  };
+  
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    health.database = "connected";
+  } catch (error) {
+    health.database = "disconnected";
+    health.status = "degraded";
+    console.error("[HEALTH] Database check failed:", error.message);
+  }
+  
+  res.json(health);
+});
+
+// ── API Routes ─────────────────────────────────────────────────
+const apiRouter = express.Router();
+
+apiRouter.use("/usuarios", routerUsuarios);
+apiRouter.use("/admin", routerAdmin);
+apiRouter.use("/alunos", routerAluno);
+apiRouter.use("/turmas", routerTurma);
+apiRouter.use("/cursos", routerCurso);
+apiRouter.use("/disciplinas", routerDisciplina);
+apiRouter.use("/notas", routerNota);
+apiRouter.use("/avisos", routerAviso);
+apiRouter.use("/eventos", routerEvento);
+apiRouter.use("/reunioes", routerReuniao);
+apiRouter.use("/mensagens", routerMensagem);
+apiRouter.use("/relatorios", routerRelatorio);
+apiRouter.use("/stats", routerStats);
+apiRouter.use("/feedbacks", routerFeedback);
+
+app.use("/api", apiRouter);
+
+// ── Rota de teste para verificar API ──────────────────────────
+app.get("/api/test", (req, res) => {
+  res.json({ 
+    message: "API está funcionando!", 
+    endpoints: [
+      "/api/usuarios",
+      "/api/admin",
+      "/api/alunos",
+      "/api/turmas",
+      "/api/cursos",
+      "/api/disciplinas",
+      "/api/notas",
+      "/api/avisos",
+      "/api/eventos",
+      "/api/reunioes",
+      "/api/mensagens",
+      "/api/relatorios",
+      "/api/stats",
+      "/api/feedbacks"
+    ]
   });
 });
 
-// ── 404 Handler ───────────────────────────────────────────────
-app.use((req, res) => {
-  res.status(404).json({ error: "Rota não encontrada", path: req.path });
+// ── SPA fallback melhorado ────────────────────────────────────
+app.use((req, res, next) => {
+  // Ignora requisições de API, arquivos estáticos e websocket
+  if (req.path.startsWith("/api") || 
+      req.path.includes(".") || 
+      req.headers.upgrade === "websocket") {
+    return next();
+  }
+  
+  const indexPath = path.join(frontPath, "index.html");
+  
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error("[SPA FALLBACK] Erro ao servir index.html:", err);
+        next();
+      }
+    });
+  } else {
+    console.warn(`[SPA FALLBACK] index.html não encontrado em: ${indexPath}`);
+    res.status(404).json({ 
+      error: "Página não encontrada",
+      message: "O arquivo index.html não foi encontrado no front-end"
+    });
+  }
 });
 
-// ── Global Error Handler ──────────────────────────────────────
+// ── 404 handler para API ──────────────────────────────────────
+app.use("/api/*", (req, res) => {
+  res.status(404).json({ 
+    error: "Rota não encontrada",
+    path: req.originalUrl,
+    method: req.method
+  });
+});
+
+// ── Error handler global melhorado ────────────────────────────
+// eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   console.error("[ERRO GLOBAL]", {
     message: err.message,
-    stack: err.stack,
-    path: req.path,
+    stack: process.env.NODE_ENV !== "production" ? err.stack : undefined,
+    url: req.url,
     method: req.method,
-    ip: req.ip
+    body: req.body,
+    timestamp: new Date().toISOString()
   });
-
-  // Erro específico do multer
-  if (err.code === "LIMIT_FILE_SIZE") {
-    return res.status(413).json({ error: "Ficheiro demasiado grande." });
+  
+  // Erros específicos
+  if (err.type === "entity.too.large") {
+    return res.status(413).json({ error: "Payload muito grande" });
   }
-
-  res.status(500).json({ error: "Erro interno do servidor" });
+  
+  if (err.name === "SyntaxError" && err.message.includes("JSON")) {
+    return res.status(400).json({ error: "JSON mal formatado" });
+  }
+  
+  res.status(err.status || 500).json({ 
+    error: process.env.NODE_ENV !== "production" ? err.message : "Erro interno do servidor"
+  });
 });
 
 // ── WebSocket ─────────────────────────────────────────────────
-configurarWebSocket(server);
+try {
+  configurarWebSocket(server);
+  console.log("✅ WebSocket configurado com sucesso");
+} catch (error) {
+  console.error("❌ Erro ao configurar WebSocket:", error.message);
+}
 
-// ── Graceful Shutdown ─────────────────────────────────────────
-const shutdown = async (sig) => {
-  console.log(`\n🛑 ${sig} recebido — a encerrar...`);
+// ── Graceful shutdown aprimorado ──────────────────────────────
+const shutdown = async (signal) => {
+  console.log(`\n⚠️  ${signal} recebido — iniciando shutdown graceful...`);
   
-  // Fechar conexões WebSocket
-  server.close(async () => {
-    console.log("🔌 Servidor HTTP fechado.");
-    
-    // Desconectar Prisma
-    await prisma.$disconnect();
-    console.log("🗄️  Prisma desconectado.");
-    
-    process.exit(0);
-  });
-  
-  // Forçar encerramento após 10 segundos
-  setTimeout(() => {
-    console.error("⚠️  Timeout - forçando encerramento.");
+  // Timeout para forçar encerramento
+  const forceExit = setTimeout(() => {
+    console.error("❌ Shutdown forçado após timeout de 10 segundos");
     process.exit(1);
   }, 10000);
+  
+  try {
+    // Desconectar Prisma
+    await prisma.$disconnect();
+    console.log("✅ Prisma desconectado");
+    
+    // Fechar servidor HTTP/WebSocket
+    server.close(() => {
+      console.log("✅ Servidor HTTP fechado");
+      clearTimeout(forceExit);
+      console.log("👋 Servidor encerrado com sucesso");
+      process.exit(0);
+    });
+  } catch (error) {
+    console.error("❌ Erro durante shutdown:", error);
+    clearTimeout(forceExit);
+    process.exit(1);
+  }
 };
 
 process.on("SIGINT", () => shutdown("SIGINT"));
 process.on("SIGTERM", () => shutdown("SIGTERM"));
-process.on("uncaughtException", (err) => {
-  console.error("❌ Uncaught Exception:", err);
-  shutdown("uncaughtException");
+
+// Tratamento de exceções não capturadas
+process.on("uncaughtException", (error) => {
+  console.error("❌ Uncaught Exception:", error);
+  shutdown("UNCAUGHT_EXCEPTION");
 });
 
-// ── Start Server ──────────────────────────────────────────────
-server.listen(PORTA, "0.0.0.0", () => {
-  console.log("\n═══════════════════════════════════════════════");
-  console.log(`🚀  SchoolConnect Backend v2.0.0`);
-  console.log(`📡  Servidor na porta ${PORTA}`);
-  console.log(`🗄️   DATABASE_URL: ${process.env.DATABASE_URL ?? "NÃO DEFINIDA"}`);
-  console.log(`🔧  Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log("═══════════════════════════════════════════════\n");
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("❌ Unhandled Rejection at:", promise, "reason:", reason);
+  shutdown("UNHANDLED_REJECTION");
 });
+
+// ── Validação de ambiente ─────────────────────────────────────
+const validarAmbiente = () => {
+  const requiredVars = ["DATABASE_URL"];
+  const missingVars = requiredVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length > 0) {
+    console.error("❌ Variáveis de ambiente ausentes:", missingVars.join(", "));
+    if (process.env.NODE_ENV === "production") {
+      process.exit(1);
+    }
+  }
+  
+  console.log("✅ Ambiente validado");
+  console.log(`📦 Modo: ${process.env.NODE_ENV || "development"}`);
+};
+
+// ── Start aprimorado ──────────────────────────────────────────
+validarAmbiente();
+
+server.listen(PORTA, "0.0.0.0", () => {
+  console.log("\n" + "=".repeat(50));
+  console.log(`🚀 Servidor iniciado com sucesso!`);
+  console.log("=".repeat(50));
+  console.log(`📡 Porta: ${PORTA}`);
+  console.log(`🌐 URL: http://localhost:${PORTA}`);
+  console.log(`🗄️  Database: ${process.env.DATABASE_URL ? "✅ Configurada" : "❌ Não definida"}`);
+  console.log(`📁 Front-end: ${fs.existsSync(frontPath) ? "✅" : "❌"} ${frontPath}`);
+  console.log(`🖼️  Imagens: ${fs.existsSync(imgPath) ? "✅" : "❌"} ${imgPath}`);
+  console.log(`📤 Uploads: ${fs.existsSync(uploadsPath) ? "✅" : "❌"} ${uploadsPath}`);
+  console.log("=".repeat(50));
+  
+  if (!fs.existsSync(frontPath)) {
+    console.warn("⚠️  ATENÇÃO: Diretório front-end não encontrado!");
+    console.warn(`   Certifique-se de que o front-end está em: ${frontPath}`);
+  }
+  
+  console.log("\n✅ Servidor pronto para receber requisições\n");
+});
+
+// Exportar para testes (opcional)
+export { app, server };

@@ -1,242 +1,272 @@
 #!/usr/bin/env node
+
 /**
  * migrate.js
- * Script simplificado para o Render - cria tabelas diretamente com SQLite
+ * Script de migração para produção (Render, Heroku, etc.)
+ * Aplica baseline se necessário e executa migrações
  */
 
 import "dotenv/config";
+import { execSync } from "child_process";
+import { readFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
-import Database from "better-sqlite3";
-import fs from "fs";
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
+// Constantes
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 2000;
+const MIGRATION_TIMEOUT = 60000;
 
-// Configurar caminho do banco
-const rawUrl = process.env.DATABASE_URL || "file:./dev.db";
-const cleanUrl = rawUrl.trim().replace(/^["']|["']$/g, "");
-const dbPath = cleanUrl.startsWith("file:") ? cleanUrl.slice(5) : cleanUrl;
+// Logger customizado
+const logger = {
+  info: (msg, ...args) => console.log(`✅ ${msg}`, ...args),
+  error: (msg, ...args) => console.error(`❌ ${msg}`, ...args),
+  warn: (msg, ...args) => console.warn(`⚠️  ${msg}`, ...args),
+  step: (msg, ...args) => console.log(`\n📌 ${msg}`, ...args),
+  progress: (msg, ...args) => console.log(`   → ${msg}`, ...args)
+};
 
-console.log(`🔍  Banco de dados: ${dbPath}`);
-
-// Criar diretório se não existir
-const dbDir = path.dirname(dbPath);
-if (!fs.existsSync(dbDir) && dbDir !== ".") {
-  fs.mkdirSync(dbDir, { recursive: true });
+/**
+ * Valida e limpa URL do banco de dados
+ */
+function validateDatabaseUrl() {
+  let url = process.env.DATABASE_URL;
+  
+  if (!url) {
+    logger.warn("DATABASE_URL não definida, usando padrão: file:./dev.db");
+    url = "file:./dev.db";
+  }
+  
+  const cleanUrl = url.trim().replace(/^["']|["']$/g, "");
+  
+  // Verifica se é SQLite
+  if (!cleanUrl.startsWith("sqlite:") && !cleanUrl.startsWith("file:")) {
+    logger.info("Banco de dados não-SQLite detectado, ignorando baseline manual");
+    return null;
+  }
+  
+  const dbPath = cleanUrl.startsWith("file:") ? cleanUrl.slice(5) : cleanUrl.slice(7);
+  
+  if (!dbPath || dbPath === ":memory:") {
+    logger.warn("Banco de dados em memória detectado");
+    return null;
+  }
+  
+  return { dbPath, cleanUrl };
 }
 
-let db;
-try {
-  db = new Database(dbPath);
-  db.pragma("journal_mode = WAL");
-  db.pragma("foreign_keys = ON");
-  console.log("✅ Conexão com banco estabelecida");
-} catch (err) {
-  console.error(`❌ Erro ao conectar ao banco: ${err.message}`);
-  process.exit(1);
+/**
+ * Abre conexão com banco SQLite
+ */
+async function openDatabase(dbPath) {
+  return open({
+    filename: dbPath,
+    driver: sqlite3.Database
+  });
 }
 
-// Função para criar tabelas diretamente
-function criarTabelas() {
-  const tables = [
-    `CREATE TABLE IF NOT EXISTS usuarios (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      senha TEXT NOT NULL,
-      telefone TEXT NOT NULL,
-      perfil TEXT NOT NULL,
-      imagem TEXT,
-      relacaoEducando TEXT,
-      codigoVerificacao TEXT UNIQUE,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS alunos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT NOT NULL,
-      matricula TEXT UNIQUE NOT NULL,
-      telefone TEXT,
-      classe TEXT,
-      imagem TEXT,
-      turmaId INTEGER,
-      cursoId INTEGER,
-      encarregadoId INTEGER,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS turmas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT UNIQUE NOT NULL,
-      professorId INTEGER,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS cursos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT UNIQUE NOT NULL,
-      descricao TEXT NOT NULL,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS disciplinas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT NOT NULL,
-      descricao TEXT,
-      cursoId INTEGER NOT NULL,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      UNIQUE(nome, cursoId)
-    )`,
-    `CREATE TABLE IF NOT EXISTS notas (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      valor REAL NOT NULL,
-      tipo TEXT NOT NULL,
-      alunoId INTEGER NOT NULL,
-      disciplinaId INTEGER NOT NULL,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      UNIQUE(alunoId, disciplinaId, tipo)
-    )`,
-    `CREATE TABLE IF NOT EXISTS mensagens (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      conteudo TEXT NOT NULL,
-      remetenteId INTEGER NOT NULL,
-      destinatarioId INTEGER NOT NULL,
-      arquivoUrl TEXT,
-      arquivoNome TEXT,
-      arquivoTipo TEXT,
-      arquivoTamanho INTEGER,
-      editadoEm DATETIME,
-      deletadoParaRemetente INTEGER DEFAULT 0,
-      deletadoParaDestinatario INTEGER DEFAULT 0,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS avisos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      titulo TEXT NOT NULL,
-      conteudo TEXT NOT NULL,
-      imagem TEXT,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS eventos (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      titulo TEXT NOT NULL,
-      descricao TEXT NOT NULL,
-      imagem TEXT,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS reunioes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      titulo TEXT NOT NULL,
-      local TEXT NOT NULL,
-      linkMeeting TEXT,
-      dataHora DATETIME,
-      criadoPorId INTEGER,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS reuniao_participantes (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      reuniaoId INTEGER NOT NULL,
-      usuarioId INTEGER NOT NULL,
-      UNIQUE(reuniaoId, usuarioId)
-    )`,
-    `CREATE TABLE IF NOT EXISTS relatorios (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      titulo TEXT NOT NULL,
-      conteudo TEXT NOT NULL,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP,
-      atualizadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS feedbacks (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nome TEXT NOT NULL,
-      email TEXT NOT NULL,
-      assunto TEXT NOT NULL,
-      mensagem TEXT NOT NULL,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`,
-    `CREATE TABLE IF NOT EXISTS codigos_professor (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      codigo TEXT UNIQUE NOT NULL,
-      usado INTEGER DEFAULT 0,
-      professorId INTEGER UNIQUE,
-      criadoEm DATETIME DEFAULT CURRENT_TIMESTAMP
-    )`
-  ];
+/**
+ * Verifica se tabela de migrações existe
+ */
+async function checkMigrationsTable(db) {
+  try {
+    const result = await db.get(`
+      SELECT name FROM sqlite_master 
+      WHERE type='table' AND name='_prisma_migrations'
+    `);
+    return !!result;
+  } catch (error) {
+    logger.error("Erro ao verificar tabela _prisma_migrations:", error.message);
+    return false;
+  }
+}
 
-  for (const sql of tables) {
+/**
+ * Aplica baseline SQL
+ */
+async function applyBaseline(db, baselinePath) {
+  try {
+    if (!existsSync(baselinePath)) {
+      logger.error(`Arquivo baseline não encontrado: ${baselinePath}`);
+      return false;
+    }
+    
+    const sql = readFileSync(baselinePath, "utf-8");
+    const statements = sql.split(";").filter(stmt => stmt.trim().length > 0);
+    
+    logger.progress(`Aplicando ${statements.length} comandos SQL...`);
+    
+    for (const statement of statements) {
+      if (statement.trim()) {
+        await db.exec(statement);
+      }
+    }
+    
+    logger.info("Baseline aplicado com sucesso");
+    return true;
+    
+  } catch (error) {
+    logger.error("Erro ao aplicar baseline:", error.message);
+    return false;
+  }
+}
+
+/**
+ * Executa comando com retry
+ */
+function execWithRetry(command, options = {}) {
+  const {
+    retries = MAX_RETRIES,
+    delay = RETRY_DELAY,
+    timeout = MIGRATION_TIMEOUT,
+    stdio = "inherit"
+  } = options;
+  
+  for (let attempt = 1; attempt <= retries; attempt++) {
     try {
-      db.exec(sql);
-    } catch (err) {
-      console.error(`Erro ao criar tabela: ${err.message}`);
+      logger.progress(`Tentativa ${attempt}/${retries}...`);
+      execSync(command, { stdio, timeout });
+      return true;
+    } catch (error) {
+      logger.error(`Falha na tentativa ${attempt}:`, error.message);
+      
+      if (attempt < retries) {
+        logger.progress(`Aguardando ${delay}ms antes de tentar novamente...`);
+        const waitUntil = Date.now() + delay;
+        while (Date.now() < waitUntil) {
+          // Busy wait simples
+        }
+      } else {
+        throw error;
+      }
     }
   }
-  console.log("✅ Tabelas criadas/verificadas");
+  return false;
 }
 
-// Criar tabelas
-criarTabelas();
-
-// Verificar se há dados iniciais
-const verificarAdmin = db.prepare("SELECT COUNT(*) as count FROM usuarios WHERE perfil = 'ADMIN'").get();
-
-if (verificarAdmin.count === 0) {
-  console.log("📋  Criando utilizador admin padrão...");
+/**
+ * Função principal de migração
+ */
+async function runMigration() {
+  const startTime = Date.now();
   
-  // Importar bcrypt dinamicamente
-  const bcrypt = await import("bcrypt");
-  const senhaHash = await bcrypt.hash(process.env.ADMIN_SENHA || "schoolconnect2026", 10);
-  const agora = new Date().toISOString();
+  console.log("\n" + "=".repeat(60));
+  logger.info("INICIANDO PROCESSO DE MIGRAÇÃO");
+  console.log("=".repeat(60));
   
-  const stmt = db.prepare(`
-    INSERT INTO usuarios (nome, email, senha, telefone, perfil, criadoEm, atualizadoEm)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-  `);
+  logger.info(`Ambiente: ${process.env.NODE_ENV || "development"}`);
+  logger.info(`Timestamp: ${new Date().toISOString()}`);
   
-  stmt.run(
-    "Administrador",
-    "admin@schoolconnect.com",
-    senhaHash,
-    "+244 900 000 000",
-    "ADMIN",
-    agora,
-    agora
-  );
-  console.log("✅ Admin criado com sucesso");
-} else {
-  console.log("✅ Admin já existe");
-}
-
-// Criar índices para performance
-function criarIndices() {
-  const indices = [
-    "CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios(email)",
-    "CREATE INDEX IF NOT EXISTS idx_usuarios_perfil ON usuarios(perfil)",
-    "CREATE INDEX IF NOT EXISTS idx_alunos_matricula ON alunos(matricula)",
-    "CREATE INDEX IF NOT EXISTS idx_alunos_turma ON alunos(turmaId)",
-    "CREATE INDEX IF NOT EXISTS idx_notas_aluno ON notas(alunoId)",
-    "CREATE INDEX IF NOT EXISTS idx_mensagens_remetente ON mensagens(remetenteId)",
-    "CREATE INDEX IF NOT EXISTS idx_mensagens_destinatario ON mensagens(destinatarioId)",
-    "CREATE INDEX IF NOT EXISTS idx_avisos_criadoEm ON avisos(criadoEm)",
-    "CREATE INDEX IF NOT EXISTS idx_eventos_criadoEm ON eventos(criadoEm)",
-    "CREATE INDEX IF NOT EXISTS idx_reunioes_dataHora ON reunioes(dataHora)"
-  ];
+  let db = null;
   
-  for (const sql of indices) {
+  try {
+    // Validar ambiente
+    const dbInfo = validateDatabaseUrl();
+    
+    // Só processa SQLite se for o caso
+    if (dbInfo) {
+      const { dbPath, cleanUrl } = dbInfo;
+      logger.info(`Banco SQLite detectado: ${dbPath}`);
+      
+      // Verificar se arquivo existe
+      if (!existsSync(dbPath) && dbPath !== ":memory:") {
+        logger.warn(`Arquivo do banco não encontrado: ${dbPath}`);
+        logger.progress("Será criado automaticamente durante a migração");
+      }
+      
+      // Conectar ao banco
+      try {
+        db = await openDatabase(dbPath);
+        logger.info("Conexão com banco de dados estabelecida");
+        
+        // Verificar se já existem tabelas
+        const hasMigrations = await checkMigrationsTable(db);
+        
+        if (!hasMigrations) {
+          logger.step("Tabela _prisma_migrations não encontrada");
+          logger.progress("Verificando baseline...");
+          
+          const baselinePath = path.join(__dirname, "..", "prisma", "baseline.sql");
+          const success = await applyBaseline(db, baselinePath);
+          
+          if (!success) {
+            logger.warn("Falha ao aplicar baseline. Continuando com migrate deploy...");
+          }
+        } else {
+          logger.info("Tabela _prisma_migrations já existe - pulando baseline");
+        }
+        
+      } catch (error) {
+        logger.error("Erro ao conectar ao banco SQLite:", error.message);
+        throw error;
+      }
+    } else {
+      logger.info("Banco não-SQLite detectado - usando migrate deploy padrão");
+    }
+    
+    // Executar migrate deploy
+    logger.step("Executando prisma migrate deploy...");
+    
+    // Verificar se Prisma CLI está disponível
     try {
-      db.exec(sql);
-    } catch (err) {
-      // Ignorar erros de índice
+      execSync("npx prisma --version", { stdio: "pipe" });
+      logger.info("Prisma CLI disponível");
+    } catch {
+      logger.warn("Prisma CLI não encontrado, instalando...");
+      execSync("npm install -g prisma@latest", { stdio: "inherit" });
+    }
+    
+    // Gerar Prisma Client
+    logger.progress("Gerando Prisma Client...");
+    execSync("npx prisma generate", { stdio: "inherit" });
+    
+    // Executar migração com retry
+    await execWithRetry("npx prisma migrate deploy", {
+      retries: MAX_RETRIES,
+      timeout: MIGRATION_TIMEOUT
+    });
+    
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    
+    console.log("\n" + "=".repeat(60));
+    logger.info(`MIGRAÇÃO CONCLUÍDA COM SUCESSO em ${duration}s`);
+    console.log("=".repeat(60));
+    
+  } catch (error) {
+    const duration = ((Date.now() - startTime) / 1000).toFixed(2);
+    
+    console.log("\n" + "=".repeat(60));
+    logger.error(`MIGRAÇÃO FALHOU após ${duration}s`);
+    logger.error("Erro:", error.message);
+    console.log("=".repeat(60));
+    
+    if (error.stderr) {
+      console.error("\nDetalhes do erro:");
+      console.error(error.stderr.toString());
+    }
+    
+    process.exit(1);
+  } finally {
+    if (db) {
+      await db.close();
+      logger.progress("Conexão com banco fechada");
     }
   }
-  console.log("✅ Índices criados/verificados");
 }
 
-criarIndices();
+// Tratamento de sinais
+process.on("SIGINT", () => {
+  logger.warn("\nMigração interrompida pelo usuário");
+  process.exit(130);
+});
 
-db.close();
-console.log("✅ Migração concluída com sucesso!");
+process.on("SIGTERM", () => {
+  logger.warn("\nMigração interrompida pelo sistema");
+  process.exit(143);
+});
+
+// Executar migração
+runMigration();
