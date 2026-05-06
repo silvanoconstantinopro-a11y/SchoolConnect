@@ -572,11 +572,7 @@
   }
 
   // ── HELPERS ───────────────────────────────────────────
-  async function apiFetch(url, opts = {}) {
-    const headers = { ...(opts.headers||{}), "Authorization": "Bearer " + token };
-    return fetch(API + url, { ...opts, headers });
-  }
-
+ 
   function toast(msg, tipo = "sucesso") {
     const ti = document.getElementById("toastInner");
     ti.className = "flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl text-white font-medium text-sm fade-in " +
@@ -1632,7 +1628,7 @@ Clique no link para entrar na reunião.`;
   </div>
 </div>
 
-<script src="utils.js"></script>
+
 
 <script>
   // ── MENU RESPONSIVO ──────────────────────────────────────────

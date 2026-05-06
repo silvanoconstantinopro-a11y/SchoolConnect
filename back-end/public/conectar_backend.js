@@ -2,12 +2,20 @@
     console.log("🚀 SchoolConnect: Conector iniciado");
 
     // ============================================
-    // BASE URL (MESMO DOMÍNIO DO BACKEND)
+    // BASE URL (LOCAL + PRODUÇÃO)
     // ============================================
-    const API_BASE = window.location.origin;
+    const API_BASE =
+        window.location.hostname.includes("localhost")
+            ? "http://localhost:3000"
+            : "https://schoolconnect-0ud2.onrender.com"; // <- FIX para produção
 
     window.API = API_BASE;
-    console.log("📍 API base:", window.API);
+    window.API_BASE_URL = API_BASE;
+
+    // WebSocket compatível
+    window.WS = API_BASE.replace("http", "ws");
+
+    console.log("📍 API base:", API_BASE);
 
     // ============================================
     // TOKEN HELPER
@@ -22,80 +30,78 @@
     async function parseJsonSafe(response) {
         const text = await response.text();
 
+        if (!text) return {};
+
         try {
             return JSON.parse(text);
         } catch (err) {
-            console.error("❌ Resposta inválida do backend:", text);
+            console.error("❌ JSON inválido:", text);
             throw new Error("Resposta do backend não é JSON válido");
         }
     }
 
     // ============================================
-    // FETCH CENTRAL (ROBUSTO)
+    // FETCH CENTRAL (API ÚNICA)
     // ============================================
     window.apiFetch = async function (endpoint, options = {}) {
         const url = endpoint.startsWith("http")
             ? endpoint
-            : `${window.API}${endpoint}`;
+            : `${API_BASE}${endpoint}`;
 
         const token = getToken();
+        const isFormData = options.body instanceof FormData;
 
         const config = {
             ...options,
             headers: {
-                ...(options.body instanceof FormData
-                    ? {}
-                    : { "Content-Type": "application/json" }),
-
+                ...(isFormData ? {} : { "Content-Type": "application/json" }),
                 ...(token && { Authorization: `Bearer ${token}` }),
                 ...(options.headers || {})
             }
         };
 
-        try {
-            const response = await fetch(url, config);
-            const data = await parseJsonSafe(response);
+        const response = await fetch(url, config);
+        const data = await parseJsonSafe(response);
 
-            if (!response.ok) {
-                throw new Error(data.error || data.message || "Erro na API");
-            }
-
-            return data;
-        } catch (err) {
-            console.error("❌ API error:", err.message);
-            throw err;
+        if (!response.ok) {
+            throw new Error(data.error || data.message || "Erro na API");
         }
+
+        return data;
     };
 
     // ============================================
     // HELPERS HTTP
     // ============================================
-    window.apiGet = (e) => window.apiFetch(e);
+    window.apiGet = (e) => apiFetch(e);
 
     window.apiPost = (e, d) =>
-        window.apiFetch(e, {
+        apiFetch(e, {
             method: "POST",
             body: JSON.stringify(d)
         });
 
+    window.apiPostForm = (e, f) =>
+        apiFetch(e, {
+            method: "POST",
+            body: f
+        });
+
     window.apiPut = (e, d) =>
-        window.apiFetch(e, {
+        apiFetch(e, {
             method: "PUT",
             body: JSON.stringify(d)
         });
 
     window.apiDelete = (e) =>
-        window.apiFetch(e, { method: "DELETE" });
+        apiFetch(e, { method: "DELETE" });
 
     // ============================================
     // LOGIN NORMAL
     // ============================================
     window.fazerLogin = async function (email, senha) {
         try {
-            const data = await window.apiFetch("/api/login", {
-                method: "POST",
-                body: JSON.stringify({ email, senha })
-            });
+            const data = await apiPost("/api/login", { email, senha });
 
             if (data.token) {
                 localStorage.setItem("token", data.token);
@@ -113,9 +119,9 @@
     // ============================================
     window.fazerLoginAdmin = async function (utilizador, senha) {
         try {
-            const data = await window.apiFetch("/api/admin/login", {
-                method: "POST",
-                body: JSON.stringify({ utilizador, senha })
+            const data = await apiPost("/api/admin/login", {
+                utilizador,
+                senha
             });
 
             if (data.token) {
@@ -130,13 +136,25 @@
     };
 
     // ============================================
+    // REGISTO
+    // ============================================
+    window.registarUsuario = async function (formData) {
+        return apiPostForm("/api/usuarios", formData);
+    };
+
+    // ============================================
+    // DADOS DINÂMICOS
+    // ============================================
+    window.getDisciplinas = () => apiGet("/api/disciplinas");
+    window.getTurmas = () => apiGet("/api/turmas");
+    window.getCursos = () => apiGet("/api/cursos");
+
+    // ============================================
     // TESTE DE CONEXÃO
     // ============================================
     window.testarConexao = async function () {
         try {
-            const res = await fetch(`${window.API}/api`);
-            const data = await res.json();
-
+            const data = await apiFetch("/api");
             console.log("✅ Backend OK:", data);
             return true;
         } catch (err) {
@@ -151,16 +169,35 @@
     window.estaLogado = () =>
         !!(localStorage.getItem("token") || localStorage.getItem("adminToken"));
 
+    window.getUsuario = () => {
+        try {
+            return JSON.parse(localStorage.getItem("usuario"));
+        } catch {
+            return null;
+        }
+    };
+
     window.sair = function () {
         localStorage.clear();
         window.location.href = "login.html";
     };
 
     // ============================================
+    // ERROS GLOBAIS
+    // ============================================
+    window.addEventListener("unhandledrejection", (e) => {
+        console.error("🔥 Erro não tratado:", e.reason);
+    });
+
+    // ============================================
     // INIT AUTOMÁTICO
     // ============================================
     document.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => window.testarConexao(), 800);
+        console.log("⚡ DOM carregado");
+
+        setTimeout(() => {
+            window.testarConexao();
+        }, 500);
     });
 
 })();
